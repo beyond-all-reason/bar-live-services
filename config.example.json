@@ -1,0 +1,9 @@
+{
+    "ssl_key": "../cert/key.pem",
+    "ssl_cert": "../cert/cert.pem",
+    "port": 4001,
+    "slp_host": "road-flag.bnr.la",
+    "slp_port": 8200,
+    "username": "MyBotUsername",
+    "password": "greatpassword"
+}

@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "common/*": ["./*"]
+        }
+    },
+    "include": [
+        "**/*"
+    ]
+}

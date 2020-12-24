@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "strictPropertyInitialization": false,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "target": "es2018",
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": [
+            "DOM",
+            "ESNext"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "common/*": ["../../common/*"]
+        }
+    },
+    "include": [
+        "**/*",
+        "../../common/**/*"
+    ]
+}
