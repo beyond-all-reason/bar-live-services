@@ -8,6 +8,7 @@ import WebpackDevServer from "webpack-dev-server";
 import webpackNodeExternals from "webpack-node-externals";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { VueLoaderPlugin } from "vue-loader";
+import VueSSRServerPlugin  from "vue-server-renderer/server-plugin";
 
 export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configuration & webpack.Configuration = (env) => {
     const isDev = env === "dev";
@@ -113,7 +114,8 @@ export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env
         },
         output: {
             path: path.resolve(__dirname, "dist/server"),
-            filename: "[name].js"
+            filename: "[name].js",
+            libraryTarget: "commonjs2"
         },
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
@@ -154,7 +156,8 @@ export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env
             new webpack.DefinePlugin({
                 __IS_DEV__: JSON.stringify(isDev)
             }),
-            new VueLoaderPlugin()
+            new VueLoaderPlugin(),
+            //new VueSSRServerPlugin()
         ]
     }
 };

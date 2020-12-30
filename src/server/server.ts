@@ -4,6 +4,7 @@ import webpack, { Configuration } from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 import { Player } from "common/model/player";
+import { router } from "controllers";
 
 export interface ServerConfig {
     port: number;
@@ -20,10 +21,8 @@ export class Server {
 
         this.app = express();
 
-        this.app.set("view engine", "ejs");
-        this.app.set("views", "dist/client");
-
-        this.app.use(express.static("dist/client"));
+        //this.app.set("view engine", "ejs");
+        //this.app.set("views", "dist/client");
 
         if (this.config.isDev){
             const clientWebpackConfig = webpackConfig(this.config.isDev ? "dev" : "prod")[0];
@@ -34,6 +33,10 @@ export class Server {
             }));
             this.app.use(webpackHotMiddleware(compiler, { log: false }));
         }
+
+        this.app.use(express.static("dist/client"));
+
+        this.app.use(router);
     }
 
     public async start() {
