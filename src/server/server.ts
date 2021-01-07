@@ -3,7 +3,7 @@ import express from "express";
 import webpack, { Configuration } from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
-import { Player } from "common/model/player";
+import { Player } from "common/model/battles/player";
 import { router } from "controllers";
 
 export interface ServerConfig {

@@ -1,7 +1,8 @@
 module.exports = {
     apps: [{
-        name: "bar-battles",
+        name: "bar-live-services",
         script: "npm",
-        args: "start"
+        args: "start",
+        restart_delay: 60000
     }]
 }

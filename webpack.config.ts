@@ -93,7 +93,7 @@ export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configurati
             isDev ? () => { } : new MiniCssExtractPlugin(),
         ]
     }
-};
+}
 
 export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env) => {
     const isDev = env === "dev";
@@ -160,11 +160,72 @@ export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env
             //new VueSSRServerPlugin()
         ]
     }
-};
+}
+
+export const dataProcessorConfig: (env: "dev" | "prod") => webpack.Configuration = (env) => {
+    const isDev = env === "dev";
+
+    return {
+        name: "data-processor",
+        mode: isDev ? "development" : "production",
+        watch: isDev,
+        devtool: "source-map",
+        target: "node",
+        node: {
+            __dirname: true,
+            __filename: true
+        },
+        externals: [webpackNodeExternals()],
+        entry: {
+            app: path.resolve(__dirname, "src/data-processor/app.ts"),
+        },
+        output: {
+            path: path.resolve(__dirname, "dist/data-processor"),
+            filename: "[name].js"
+        },
+        resolve: {
+            extensions: [".js", ".ts"],
+            plugins: [
+                new TsconfigPathsPlugin({
+                    configFile: "src/data-processor/tsconfig.json"
+                }),
+            ],
+            modules: [
+                path.resolve(__dirname, "node_modules"),
+                path.resolve(__dirname, "src/data-processor")
+            ],
+            alias: {
+                common: path.resolve(__dirname, "src/common")
+            }
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: [{
+                        loader: "ts-loader",
+                        options: {
+                            configFile: path.resolve(__dirname, "src/data-processor/tsconfig.json")
+                        }
+                    }],
+                }
+            ]
+        },
+        plugins: [
+            new CleanWebpackPlugin({
+                cleanOnceBeforeBuildPatterns: [path.join(__dirname, "dist/data-processor/**/*")]
+            }),
+            new webpack.DefinePlugin({
+                __IS_DEV__: JSON.stringify(isDev)
+            })
+        ]
+    }
+}
 
 export default (env: "dev" | "prod") => {
     return [
         clientConfig(env),
-        serverConfig(env)
+        serverConfig(env),
+        dataProcessorConfig(env)
     ];
 }

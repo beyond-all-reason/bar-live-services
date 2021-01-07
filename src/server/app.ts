@@ -10,17 +10,27 @@ declare const __IS_DEV__: boolean;
 (async () => {
     const server = new Server({ isDev: __IS_DEV__, port: config.port });
 
+    let stuff: MapParser;
+
     const renderer = createRenderer();
 
-    server.app.get("/test", async (req, res) => {
-        const test = await import("test");
-        res.send(test.test.str);
-        // const indexStr = await fs.readFile("./src/server/views/index.vue");
-        // const vueIndex = new Vue(indexStr);
-        // const html = await renderer.renderToString(vueIndex);
-        // res.end(html);
-        
+    server.app.get("/test", (req, res) => {
+        res.send("test");
     });
+
+    server.app.get("/bob", (req, res) => {
+        res.send("bob");
+    });
+
+    // server.app.get("/test", async (req, res) => {
+    //     const test = await import("test");
+    //     res.send(test.test.str);
+    //     // const indexStr = await fs.readFile("./src/server/views/index.vue");
+    //     // const vueIndex = new Vue(indexStr);
+    //     // const html = await renderer.renderToString(vueIndex);
+    //     // res.end(html);
+        
+    // });
     
     await server.start();
     // const template = await fs.readFile("./dist/client/bar.html", "utf-8");
@@ -42,6 +52,7 @@ declare const __IS_DEV__: boolean;
 })();
 
 import index from "views/index.vue";
+import { SpringLobbyProtocolClient } from "sluts";
 
 function test() {
     return Promise.resolve(
