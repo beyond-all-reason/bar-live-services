@@ -10,8 +10,6 @@ declare const __IS_DEV__: boolean;
 (async () => {
     const server = new Server({ isDev: __IS_DEV__, port: config.port });
 
-    let stuff: MapParser;
-
     const renderer = createRenderer();
 
     server.app.get("/test", (req, res) => {

@@ -21,7 +21,7 @@ export class App {
     public config: AppConfig;
     public logger: LoggerService;
     public db: DatabaseService;
-    public demoProcessor: DemoProcessorService;
+    //public demoProcessor: DemoProcessorService;
     public mapProcessor: MapProcessorService;
 
     constructor(config?: AppConfig) {
@@ -29,7 +29,7 @@ export class App {
 
         this.logger = new LoggerService(this);
         this.db = new DatabaseService(this);
-        this.demoProcessor = new DemoProcessorService(this, "demos");
+        //this.demoProcessor = new DemoProcessorService(this, "demos");
         this.mapProcessor = new MapProcessorService(this, "maps");
     }
 
@@ -37,9 +37,9 @@ export class App {
         await this.logger.init();
         await this.db.init();
 
-        this.demoProcessor.processFiles();
+        //this.demoProcessor.processFiles();
 
-        //this.mapProcessor.processFiles();
+        this.mapProcessor.processFiles();
     }
 }
 

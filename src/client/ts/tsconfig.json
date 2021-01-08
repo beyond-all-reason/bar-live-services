@@ -22,5 +22,10 @@
     "include": [
         "**/*",
         "../../common/**/*"
+    ],
+    "exclude": [
+        "../../data-processor/**",
+        "../../server/**",
+        "../../../node_modules",
     ]
 }

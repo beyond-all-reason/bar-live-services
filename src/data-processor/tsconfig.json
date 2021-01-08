@@ -18,5 +18,10 @@
     "include": [
         "**/*",
         "../common/**/*"
+    ],
+    "exclude": [
+        "../client/**",
+        "../server/**",
+        "../../node_modules",
     ]
 }

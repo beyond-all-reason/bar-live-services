@@ -2,30 +2,29 @@ import { Model, Optional } from "sequelize";
 
 export interface Map {
     id: number;
-    name: string;
-    checksum: string;
-    /*
-    shortname: string;
+    filename: string;
     description: string;
-    author: string;
-    version: string;
-    mutator: string;
-    mapfile: string;
-    modtype: number;
-    depend: object;
-    replace: object;
-    hardness: number;
-    notDeformable: boolean;
+    mapHardness: number;
     gravity: number;
     tidalStrength: number;
     maxMetal: number;
     extractorRadius: number;
-    voidWater: boolean;
-    autoShowMetal: boolean;
-    minHeight: number;
-    maxHeight: number;
-    startPositions: Array<{x: number, z: number}>;
-    */
+    minWind: number;
+    maxWind: number;
+    startPositions: Array<{
+        x: number;
+        z: number;
+    }>;
+    name?: string;
+    shortname?: string;
+    author?: string;
+    version?: string;
+    mapfile?: string;
+    modtype?: number;
+    notDeformable?: boolean;
+    voidWater?: boolean;
+    voidGround?: boolean;
+    autoShowMetal?: boolean;
 }
 
 export interface MapCreationAttributes extends Optional<Map, "id"> { }

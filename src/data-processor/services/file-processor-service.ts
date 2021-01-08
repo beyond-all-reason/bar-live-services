@@ -31,8 +31,12 @@ export abstract class FileProcessorService extends Service {
 
             try {
                 this.app.logger.info(`Processing file: ${fileName}`);
-                await this.processFile(unprocessedDemoPath);
-                await fs.rename(unprocessedDemoPath, processedDemoPath);
+                const outPath = await this.processFile(unprocessedDemoPath);
+                if (outPath){
+                    await fs.rename(unprocessedDemoPath, outPath);
+                } else {
+                    await fs.rename(unprocessedDemoPath, processedDemoPath);
+                }
             } catch (err) {
                 console.log(`Failed to process file: ${fileName}.`);
                 console.error(err);
@@ -46,8 +50,8 @@ export abstract class FileProcessorService extends Service {
         this.processFiles();
     }
 
-    protected async processFile(filePath: string) {
-
+    protected async processFile(filePath: string) : Promise<string | void> {
+        return;
     }
 
     protected async getUnprocessedFile() : Promise<string | undefined> {

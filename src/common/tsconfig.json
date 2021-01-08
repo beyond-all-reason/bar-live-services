@@ -9,5 +9,11 @@
     },
     "include": [
         "**/*"
+    ],
+    "exclude": [
+        "../client/**",
+        "../server/**",
+        "../data-processor/**",
+        "../../node_modules",
     ]
 }
