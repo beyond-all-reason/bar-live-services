@@ -2,7 +2,8 @@ import { Model, Optional } from "sequelize";
 
 export interface Map {
     id: number;
-    filename: string;
+    fileName: string;
+    scriptName: string;
     description: string;
     mapHardness: number;
     gravity: number;
@@ -15,6 +16,10 @@ export interface Map {
         x: number;
         z: number;
     }>;
+    width: number;
+    height: number;
+    minDepth: number;
+    maxDepth: number;
     name?: string;
     shortname?: string;
     author?: string;

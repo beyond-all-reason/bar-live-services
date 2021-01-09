@@ -22,11 +22,12 @@ export class MapProcessorService extends FileProcessorService {
         await mapData.heightMap.toFile(`${folder}/height.png`);
         await mapData.metalMap.toFile(`${folder}/metal.png`);
         await mapData.typeMap.toFile(`${folder}/type.png`);
-        await mapData.miniMap.toFile(`${folder}/height.png`);
-        await mapData.textureMap.toFile(`${folder}/texture.png`);
+        await mapData.miniMap.toFile(`${folder}/mini.png`);
+        await mapData.textureMap!.toFile(`${folder}/texture.png`);
 
         const map = await this.app.db.mapModel.create({
-            filename: mapData.fileName,
+            fileName: mapData.fileName,
+            scriptName: mapData.scriptName,
             description: mapData.info.description,
             mapHardness: mapData.info.mapHardness,
             gravity: mapData.info.gravity,
@@ -36,6 +37,10 @@ export class MapProcessorService extends FileProcessorService {
             minWind: mapData.info.minWind,
             maxWind: mapData.info.maxWind,
             startPositions: mapData.info.startPositions,
+            width: mapData.meta.mapWidthUnits * 2,
+            height: mapData.meta.mapHeightUnits * 2,
+            minDepth: mapData.meta.minDepth,
+            maxDepth: mapData.meta.maxDepth,
             name: mapData.info.name,
             shortname: mapData.info.shortname,
             author: mapData.info.author,

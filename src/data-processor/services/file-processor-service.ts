@@ -33,7 +33,7 @@ export abstract class FileProcessorService extends Service {
                 this.app.logger.info(`Processing file: ${fileName}`);
                 const outPath = await this.processFile(unprocessedDemoPath);
                 if (outPath){
-                    await fs.rename(unprocessedDemoPath, outPath);
+                    await fs.rename(unprocessedDemoPath, path.join(outPath, fileName));
                 } else {
                     await fs.rename(unprocessedDemoPath, processedDemoPath);
                 }
