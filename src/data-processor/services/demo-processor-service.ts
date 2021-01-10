@@ -8,23 +8,23 @@ export class DemoProcessorService extends FileProcessorService {
     protected demoParser: DemoParser;
 
     constructor(app: App, dir: string) {
-        super(app, dir);
+        super(app, dir, ".sdfz");
 
-        this.demoParser = new DemoParser(this.app.config);
+        this.demoParser = new DemoParser();
     }
 
     protected async processFile(filePath: string) {
         const sdfz = await fs.readFile(filePath);
         const demoData = await this.demoParser.parseDemo(sdfz);
         const gameData = demoData.demoStream[0] as DemoModel.Packet.AbstractPacket<DemoModel.Packet.ID.GAMEDATA>;
+        const mapScriptName = demoData.script.gameSettings.mapname;
 
-        // const [ map ] = await this.app.db.mapModel.findOrCreate({
-        //     where: { name: demoData.script.gameSettings.mapname },
-        //     defaults: {
-        //         name: demoData.script.gameSettings.mapname,
-        //         checksum: gameData.data.mapChecksum
-        //     }
-        // });
+        const [ map ] = await this.app.db.mapModel.findOrCreate({
+            where: { scriptName: mapScriptName },
+            defaults: {
+                scriptName: mapScriptName
+            }
+        });
 
         const demo = await this.app.db.demoModel.create({
             gameId: demoData.header.gameId,
@@ -36,7 +36,7 @@ export class DemoProcessorService extends FileProcessorService {
             startPosType: demoData.script.gameSettings.startpostype
         });
 
-        //await demo.setMap(map);
+        await demo.setMap(map);
 
         return;
     }

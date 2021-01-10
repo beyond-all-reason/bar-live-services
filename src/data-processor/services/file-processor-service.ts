@@ -6,11 +6,13 @@ import { App } from "app";
 
 export abstract class FileProcessorService extends Service {
     protected dir: string;
+    protected fileExt: string;
 
-    constructor(app: App, dir: string) {
+    constructor(app: App, dir: string, fileExt: string) {
         super(app);
 
         this.dir = dir;
+        this.fileExt = fileExt;
     }
 
     public async init() {
@@ -56,7 +58,7 @@ export abstract class FileProcessorService extends Service {
 
     protected async getUnprocessedFile() : Promise<string | undefined> {
         const unprocessedPath = path.join(this.dir, "unprocessed");
-        const file = await fs.readdir(unprocessedPath);
-        return file[0];
+        const files = await fs.readdir(unprocessedPath);
+        return files.find(file => path.extname(file) === this.fileExt);
     }
 }

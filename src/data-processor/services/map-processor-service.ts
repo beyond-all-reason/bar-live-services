@@ -9,23 +9,23 @@ export class MapProcessorService extends FileProcessorService {
     protected mapParser: MapParser;
 
     constructor(app: App, dir: string) {
-        super(app, dir);
+        super(app, dir, ".sd7");
 
-        this.mapParser = new MapParser(this.app.config);
+        this.mapParser = new MapParser({ mipmapSize: 4 });
     }
 
     protected async processFile(filePath: string) {
         const mapData = await this.mapParser.parseMap(filePath);
 
-        const folder = await fs.mkdir(`${this.dir}/processed/${mapData.fileName}`, { recursive: true });
+        const destDir = `${this.dir}/processed/${mapData.fileName}`;
+        await fs.mkdir(destDir, { recursive: true });
 
-        await mapData.heightMap.toFile(`${folder}/height.png`);
-        await mapData.metalMap.toFile(`${folder}/metal.png`);
-        await mapData.typeMap.toFile(`${folder}/type.png`);
-        await mapData.miniMap.toFile(`${folder}/mini.png`);
-        await mapData.textureMap!.toFile(`${folder}/texture.png`);
+        await mapData.heightMap.toFile(`${destDir}/height.png`);
+        await mapData.metalMap.toFile(`${destDir}/metal.png`);
+        await mapData.typeMap.toFile(`${destDir}/type.png`);
+        await mapData.textureMap!.toFile(`${destDir}/texture.png`);
 
-        const map = await this.app.db.mapModel.create({
+        const newMap = {
             fileName: mapData.fileName,
             scriptName: mapData.scriptName,
             description: mapData.info.description,
@@ -51,8 +51,16 @@ export class MapProcessorService extends FileProcessorService {
             voidWater: mapData.info.voidWater,
             voidGround: mapData.info.voidGround,
             autoShowMetal: mapData.info.autoShowMetal,
-        });
+        };
 
-        return folder;
+        const storedMap = await this.app.db.mapModel.findOne({ where: { scriptName: mapData.scriptName } });
+        
+        if (storedMap) {
+            await storedMap.update(newMap);
+        } else {
+            await this.app.db.mapModel.create(newMap);
+        }
+
+        return destDir;
     }
 }
