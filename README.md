@@ -20,7 +20,6 @@ Serves a list of top players on the server, rated by their TrueSkill in various 
 
 ## Data
 ![DB Schema](./src/data-processor/db-schema.svg)
-<img src="./src/data-processor/db-schema.svg">
 
 ## Dependencies
 - [sdfz-demo-parser](https://www.npmjs.com/package/sdfz-demo-parser) - Parser for Spring demo files
