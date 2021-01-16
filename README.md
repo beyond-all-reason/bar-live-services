@@ -39,4 +39,4 @@ TODO
 
 `npm run data-processor` - Keep this running in the background
 
-`npm start`
+`npm run server`
