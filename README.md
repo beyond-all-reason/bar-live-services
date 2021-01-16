@@ -19,7 +19,6 @@ Serves player info pages, displaying various game data and statistics at **/play
 Serves a list of top players on the server, rated by their TrueSkill in various gametypes at **/leaderboards**.
 
 ## Data
-![DB Schema](./src/data-processor/db-schema.svg)
 ![DB Schema](https://raw.githubusercontent.com/Jazcash/bar-live-services/main/src/data-processor/db-schema.svg)
 
 ## Dependencies
