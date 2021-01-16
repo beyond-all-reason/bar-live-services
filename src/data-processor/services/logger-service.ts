@@ -1,4 +1,5 @@
 import { App } from "app";
+
 import { Service } from "./service";
 
 export interface LoggerConfig {

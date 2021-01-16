@@ -1,9 +1,8 @@
 import { Server } from "server";
-import Vue, { VueConstructor } from "vue";
+import Vue from "vue";
 import { createRenderer } from "vue-server-renderer";
+
 import config from "../../config.json";
-import { promises as fs } from "fs";
-import { Router } from "express";
 
 declare const __IS_DEV__: boolean;
 
@@ -27,9 +26,9 @@ declare const __IS_DEV__: boolean;
     //     // const vueIndex = new Vue(indexStr);
     //     // const html = await renderer.renderToString(vueIndex);
     //     // res.end(html);
-        
+
     // });
-    
+
     await server.start();
     // const template = await fs.readFile("./dist/client/bar.html", "utf-8");
 
@@ -50,7 +49,6 @@ declare const __IS_DEV__: boolean;
 })();
 
 import index from "views/index.vue";
-import { SpringLobbyProtocolClient } from "sluts";
 
 function test() {
     return Promise.resolve(
@@ -77,7 +75,7 @@ function test() {
 //     if (__IS_DEV__){
 //         home = await (await import("views/bar.vue")).default;
 //     } else {
-//        // home = 
+//        // home =
 //     }
 
 //     const app = new Vue({

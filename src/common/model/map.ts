@@ -1,4 +1,5 @@
-import { Model, Optional } from "sequelize";
+import { DemoCreationAttributes, DemoInstance } from "common/model/demo";
+import { HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, Model, Optional } from "sequelize";
 
 export interface Map {
     id: number;
@@ -34,4 +35,15 @@ export interface Map {
 
 export interface MapCreationAttributes extends Optional<Map, "id"> { }
 
-export interface MapInstance extends Model<Map, MapCreationAttributes>, Map { }
+export interface MapInstance extends Model<Map, MapCreationAttributes>, Map {
+    getDemos: HasManyGetAssociationsMixin<DemoInstance>;
+    setDemos: HasManySetAssociationsMixin<DemoInstance, DemoInstance["id"]>;
+    addDemos: HasManyAddAssociationsMixin<DemoInstance, DemoInstance["id"]>;
+    addDemo: HasManyAddAssociationMixin<DemoInstance, DemoInstance["id"]>;
+    createDemo: (demo: DemoCreationAttributes) => Promise<DemoInstance>;
+    removeDemo: HasManyRemoveAssociationMixin<DemoInstance, DemoInstance["id"]>;
+    removeDemos: HasManyRemoveAssociationsMixin<DemoInstance, DemoInstance["id"]>;
+    hasDemo: HasManyHasAssociationMixin<DemoInstance, DemoInstance["id"]>;
+    hasDemos: HasManyHasAssociationsMixin<DemoInstance, DemoInstance["id"]>;
+    countDemos: HasManyCountAssociationsMixin;
+}

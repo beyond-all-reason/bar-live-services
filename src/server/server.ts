@@ -1,10 +1,10 @@
-import webpackConfig from "../../webpack.config";
+import { router } from "controllers";
 import express from "express";
-import webpack, { Configuration } from "webpack";
+import webpack from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
-import { Player } from "common/model/battles/player";
-import { router } from "controllers";
+
+import webpackConfig from "../../webpack.config";
 
 export interface ServerConfig {
     port: number;
@@ -24,7 +24,7 @@ export class Server {
         //this.app.set("view engine", "ejs");
         //this.app.set("views", "dist/client");
 
-        if (this.config.isDev){
+        if (this.config.isDev) {
             const clientWebpackConfig = webpackConfig(this.config.isDev ? "dev" : "prod")[0];
             clientWebpackConfig.stats = "minimal";
             const compiler = webpack(clientWebpackConfig);

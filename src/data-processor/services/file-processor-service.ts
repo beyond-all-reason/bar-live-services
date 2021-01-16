@@ -1,8 +1,9 @@
-import { delay } from "utils/delay";
-import { Service } from "./service";
+import { App } from "app";
 import { promises as fs } from "fs";
 import * as path from "path";
-import { App } from "app";
+import { delay } from "utils/delay";
+
+import { Service } from "./service";
 
 export abstract class FileProcessorService extends Service {
     protected dir: string;
@@ -26,7 +27,7 @@ export abstract class FileProcessorService extends Service {
     public async processFiles() {
         const fileName = await this.getUnprocessedFile();
 
-        if (fileName){
+        if (fileName) {
             const unprocessedDemoPath = path.join(this.dir, "unprocessed", fileName);
             const processedDemoPath = path.join(this.dir, "processed", fileName);
             const erroredDemoPath = path.join(this.dir, "errored", fileName);
@@ -34,7 +35,7 @@ export abstract class FileProcessorService extends Service {
             try {
                 this.app.logger.info(`Processing file: ${fileName}`);
                 const outPath = await this.processFile(unprocessedDemoPath);
-                if (outPath){
+                if (outPath) {
                     await fs.rename(unprocessedDemoPath, path.join(outPath, fileName));
                 } else {
                     await fs.rename(unprocessedDemoPath, processedDemoPath);
@@ -42,7 +43,7 @@ export abstract class FileProcessorService extends Service {
             } catch (err) {
                 console.log(`Failed to process file: ${fileName}.`);
                 console.error(err);
-                
+
                 await fs.rename(unprocessedDemoPath, erroredDemoPath);
             }
         } else {

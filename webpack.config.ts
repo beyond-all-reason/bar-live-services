@@ -1,14 +1,13 @@
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import * as path from "path";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
+import { VueLoaderPlugin } from "vue-loader";
 import * as webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import webpackNodeExternals from "webpack-node-externals";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { VueLoaderPlugin } from "vue-loader";
-import VueSSRServerPlugin  from "vue-server-renderer/server-plugin";
 
 export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configuration & webpack.Configuration = (env) => {
     const isDev = env === "dev";
@@ -30,7 +29,7 @@ export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configurati
         resolve: {
             extensions: [".js", ".ts", ".tsx", ".vue"],
             alias: {
-                'vue$': 'vue/dist/vue.esm.js'
+                "vue$": "vue/dist/vue.esm.js"
             },
             plugins: [
                 new TsconfigPathsPlugin({
@@ -42,7 +41,7 @@ export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configurati
             rules: [
                 {
                     test: /\.vue$/,
-                    loader: 'vue-loader'
+                    loader: "vue-loader"
                 },
                 {
                     test: /\.tsx?$/,
@@ -65,7 +64,7 @@ export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configurati
                 },
                 {
                     test: /\.vue$/,
-                    loader: 'vue-loader'
+                    loader: "vue-loader"
                 }
             ]
         },
@@ -92,8 +91,8 @@ export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configurati
             }),
             isDev ? () => { } : new MiniCssExtractPlugin(),
         ]
-    }
-}
+    };
+};
 
 export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env) => {
     const isDev = env === "dev";
@@ -145,7 +144,7 @@ export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env
                 },
                 {
                     test: /\.vue$/,
-                    loader: 'vue-loader'
+                    loader: "vue-loader"
                 }
             ]
         },
@@ -159,8 +158,8 @@ export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env
             new VueLoaderPlugin(),
             //new VueSSRServerPlugin()
         ]
-    }
-}
+    };
+};
 
 export const dataProcessorConfig: (env: "dev" | "prod") => webpack.Configuration = (env) => {
     const isDev = env === "dev";
@@ -219,8 +218,8 @@ export const dataProcessorConfig: (env: "dev" | "prod") => webpack.Configuration
                 __IS_DEV__: JSON.stringify(isDev)
             })
         ]
-    }
-}
+    };
+};
 
 export default (env: "dev" | "prod") => {
     return [
@@ -228,4 +227,4 @@ export default (env: "dev" | "prod") => {
         serverConfig(env),
         dataProcessorConfig(env)
     ];
-}
+};

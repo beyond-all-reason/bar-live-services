@@ -1,9 +1,8 @@
 import { App } from "app";
-import path from "path";
 import { promises as fs } from "fs";
-import { DemoParser, DemoModel } from "sdfz-demo-parser";
-import { FileProcessorService } from "./file-processor-service";
 import { MapParser } from "spring-map-parser";
+
+import { FileProcessorService } from "./file-processor-service";
 
 export class MapProcessorService extends FileProcessorService {
     protected mapParser: MapParser;
@@ -54,7 +53,7 @@ export class MapProcessorService extends FileProcessorService {
         };
 
         const storedMap = await this.app.db.mapModel.findOne({ where: { scriptName: mapData.scriptName } });
-        
+
         if (storedMap) {
             await storedMap.update(newMap);
         } else {
