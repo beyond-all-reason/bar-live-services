@@ -37,6 +37,6 @@ TODO
 ## Installation and Usage
 `npm i`
 
-`npm run data-processor`
+`npm run data-processor` - Keep this running in the background
 
 `npm start`
