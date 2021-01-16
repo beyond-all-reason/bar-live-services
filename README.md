@@ -1,5 +1,5 @@
 # Beyond All Reason Live Services
-Provides various web services for the RTS game [Beyond All Reason](TODO).
+Provides various web services for the RTS game [Beyond All Reason](https://www.beyondallreason.info/).
 
 ## Services
 
