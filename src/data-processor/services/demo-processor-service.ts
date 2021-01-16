@@ -93,6 +93,16 @@ export class DemoProcessorService extends FileProcessorService {
                             }
                         });
 
+                        const [ alias ] = await user.getAliases({
+                            where: { alias: playerData.name }
+                        });
+
+                        if (!alias) {
+                            await user.createAlias({
+                                alias: playerData.name
+                            });
+                        }
+
                         await user.addPlayer(player);
                     }
                 }
@@ -100,18 +110,28 @@ export class DemoProcessorService extends FileProcessorService {
         }
 
         for (const spectatorData of demoData.script.spectators) {
-            // const spectator = await ({
-            //     playerId: playerData.id,
-            //     name: playerData.name,
-            //     teamId: teamData.id,
-            //     handicap: teamData.handicap,
-            //     faction: teamData.side,
-            //     countryCode: playerData.countryCode,
-            //     rgbColor: { r: teamData.rgbColor[0], g: teamData.rgbColor[1], b: teamData.rgbColor[2] },
-            //     rank: playerData.rank,
-            //     skillUncertainty: playerData.skillUncertainty,
-            //     skill: playerData.skill
-            // });
+            const spectator = await demo.createSpectator({
+                playerId: spectatorData.id,
+                name: spectatorData.name,
+                countryCode: spectatorData.countryCode,
+                rank: spectatorData.rank,
+                skillUncertainty: spectatorData.skillUncertainty,
+                skill: spectatorData.skill
+            });
+
+            const [ user ] = await this.app.db.userModel.findOrCreate({
+                where: { id: spectatorData.userId },
+                defaults: {
+                    id: spectatorData.userId,
+                    username: spectatorData.name,
+                    countryCode: spectatorData.countryCode,
+                    rank: spectatorData.rank,
+                    skill: spectatorData.skill,
+                    skillUncertainty: spectatorData.skillUncertainty
+                }
+            });
+
+            await user.addSpectator(spectator);
         }
 
         return;
