@@ -8,6 +8,7 @@ import { VueLoaderPlugin } from "vue-loader";
 import * as webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import webpackNodeExternals from "webpack-node-externals";
+import NodemonPlugin from "nodemon-webpack-plugin";
 
 export const clientConfig: (env: "dev" | "prod") => WebpackDevServer.Configuration & webpack.Configuration = (env) => {
     const isDev = env === "dev";
@@ -156,6 +157,7 @@ export const serverConfig: (env: "dev" | "prod") => webpack.Configuration = (env
                 __IS_DEV__: JSON.stringify(isDev)
             }),
             new VueLoaderPlugin(),
+            new NodemonPlugin()
             //new VueSSRServerPlugin()
         ]
     };

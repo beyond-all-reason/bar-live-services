@@ -12,7 +12,7 @@ declare const __IS_DEV__: boolean;
     const renderer = createRenderer();
 
     server.app.get("/test", (req, res) => {
-        res.send("test");
+        res.send("test fish");
     });
 
     server.app.get("/bob", (req, res) => {
