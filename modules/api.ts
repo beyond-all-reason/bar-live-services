@@ -30,12 +30,18 @@ class API {
 
         this.app = express();
         this.app.use(express.json());
+
+        this.replays();
+        this.players();
+        this.maps();
+        this.leaderboards();
+        this.battles();
     }
 
     protected replays() {
         this.app.get("/replays", async (req, res) => {
             const params = this.parseRequestOptions(req.query as { [key: string]: string });
-    
+
             const replays = await this.db.demo.findAll({
                 offset: params.page - 1,
                 limit: params.limit,
@@ -87,8 +93,8 @@ class API {
     
     protected parseRequestOptions(query: { [key: string]: string }) : Required<APIRequestOptions> {
         return {
-            page: parseInt(query.page) ?? defaultApiRequestOptions.page,
-            limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) ?? defaultApiRequestOptions.limit,
+            page: parseInt(query.page) || defaultApiRequestOptions.page,
+            limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit,
         }
     }
 }
