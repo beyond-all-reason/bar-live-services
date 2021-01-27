@@ -17,5 +17,12 @@ export const servicesConfig: ServicesConfig = {
         password: "xmlrpcPassword",
         leaderboards: ["Duel", "Team", "FFA"],
         pollInterval: 60000
+    },
+    bardb: {
+        dbHost: "localhost",
+        dbPort: 5432,
+        dbUsername: "postgres",
+        dbPassword: "pgpassword",
+        createSchemaDiagram: true
     }
 };
