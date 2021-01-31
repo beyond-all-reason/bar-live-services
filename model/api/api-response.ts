@@ -1,6 +1,6 @@
 import { AI } from "bar-db/dist/model/ai";
 import { AllyTeam } from "bar-db/dist/model/ally-team";
-import { Demo, DemoInstance } from "bar-db/dist/model/demo";
+import { Demo } from "bar-db/dist/model/demo";
 import { Map } from "bar-db/dist/model/map";
 import { Player } from "bar-db/dist/model/player";
 import { Spectator } from "bar-db/dist/model/spectator";

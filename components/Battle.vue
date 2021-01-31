@@ -43,38 +43,39 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Prop, Vue } from "nuxt-property-decorator";
 import { Battle } from "~/model/battle";
 
-export default Vue.extend({
-    props: {
-        battle: Object as () => Battle
-    },
-    computed: {
-        mapUrl () : string {
-            try {
-                return require(`~/assets/images/maps/${this.battle.map.replace(/\s|'/g, "_").toLowerCase()}.jpg`);
-            } catch(err) {
-                return require(`~/assets/images/maps/unknown.jpg`);
-            }
-        },
-        mapName () : string {
-            return this.battle.map.replace(/[_-]/g, " ");
-        },
-        playerCount () : number {
-            if (!this.battle.founder.status?.bot) {
-                return this.battle.players.length - this.battle.spectators;
-            }
-            return this.battle.players.length - (this.battle.spectators - 1);
-        },
-        spectatorCount () : number {
-            if (!this.battle.founder.status?.bot) {
-                return this.battle.spectators;
-            }
-            return this.battle.spectators - 1;
+@Component
+export default class BattleComponent extends Vue {
+    @Prop({ type: Object, required: true }) readonly battle!: Battle;
+
+    get mapUrl () : string {
+        try {
+            return require(`~/assets/images/maps/${this.battle.map.replace(/\s|'/g, "_").toLowerCase()}.jpg`);
+        } catch (err) {
+            return require("~/assets/images/maps/unknown.jpg");
         }
     }
-});
+
+    get mapName () : string {
+        return this.battle.map.replace(/[_-]/g, " ");
+    }
+
+    get playerCount () : number {
+        if (!this.battle.founder.status?.bot) {
+            return this.battle.players.length - this.battle.spectators;
+        }
+        return this.battle.players.length - (this.battle.spectators - 1);
+    }
+
+    get spectatorCount () : number {
+        if (!this.battle.founder.status?.bot) {
+            return this.battle.spectators;
+        }
+        return this.battle.spectators - 1;
+    }
+}
 </script>
 
 <style lang="scss" scoped>

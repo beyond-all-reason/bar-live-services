@@ -2,7 +2,9 @@
     <div class="wrapper">
         <Navigation />
         <div class="container">
-            <div v-if="this.$route.path !== '/'" class="page-title">{{ pageTitle }}</div>
+            <div v-if="this.$route.path !== '/'" class="page-title">
+                {{ pageTitle }}
+            </div>
             <Nuxt />
         </div>
     </div>

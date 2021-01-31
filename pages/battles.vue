@@ -8,19 +8,19 @@
 </template>
 
 <script lang="ts">
-import { Context } from '@nuxt/types/app';
-import { Vue, Component, Prop } from 'nuxt-property-decorator'
-import { SLDBModel } from 'sldbts';
+import { Context } from "@nuxt/types/app";
+import { Component, Vue } from "nuxt-property-decorator";
+
 import { Battle } from "~/model/battle";
 
 @Component({
-    head: { title: "BAR - Battles" },
+    head: { title: "BAR - Battles" }
 })
 export default class Page extends Vue {
     battles: Battle[] = [];
     pollInterval = 0;
-    
-    async asyncData({ store, $http, params }: Context): Promise<any> {
+
+    async asyncData ({ store, $http, params }: Context): Promise<any> {
         store.commit("setPageTitle", "Battles");
     }
 
@@ -28,13 +28,13 @@ export default class Page extends Vue {
         this.battles = await this.$http.$get("battles") as Battle[];
     }
 
-    mounted() {
+    mounted () {
         this.pollInterval = window.setInterval(async () => {
             this.$fetch();
         }, 3000);
     }
 
-    beforeDestroy() {
+    beforeDestroy () {
         window.clearInterval(this.pollInterval);
     }
 

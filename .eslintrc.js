@@ -13,13 +13,11 @@ module.exports = {
         'plugin:nuxt/recommended'
     ],
     plugins: [
-        "simple-import-sort",
         "unused-imports"
     ],
     rules: {
         "semi": ["error", "always"],
         "quotes": ["error", "double"],
-        "simple-import-sort/imports": "error",
         "unused-imports/no-unused-imports-ts": "error",
         "key-spacing": ["error", {
             "beforeColon": false,
@@ -34,6 +32,8 @@ module.exports = {
         "no-trailing-spaces": "error",
         "space-before-blocks": "error",
         "indent": ["error", 4],
-        "vue/html-indent": ["error", 4]
+        "vue/html-indent": ["error", 4],
+        "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
+        "require-await": "off"
     }
 }

@@ -1,34 +1,41 @@
 <template>
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
         <div class="map-container">
-            <div class="map" >
-                <img :src="mapTextureUrl"/>
-                <div class="boxes" v-if="replay.hostSettings.startpostype==='2'">
-                    <div class="box" v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox"></div>
+            <div class="map">
+                <img :src="mapTextureUrl">
+                <div v-if="replay.hostSettings.startpostype==='2'" class="boxes">
+                    <div v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox" class="box" />
                 </div>
             </div>
         </div>
         <div class="meta">
             <div class="flex-row flex-space-between">
-                <div class="title">{{ title }}</div>
-                <div class="date">{{ timeAgo }}</div>
+                <div class="title">
+                    {{ title }}
+                </div>
+                <div class="date">
+                    {{ timeAgo }}
+                </div>
             </div>
             <div class="flex-row">
-                <div class="map-name">{{ replay.Map.scriptName }}</div>
+                <div class="map-name">
+                    {{ replay.Map.scriptName }}
+                </div>
             </div>
         </div>
     </NuxtLink>
 </template>
 
 <script lang="ts">
-import { AllyTeam } from 'bar-db/dist/model/ally-team';
-import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import { AllyTeam } from "bar-db/dist/model/ally-team";
+import { Component, Prop } from "nuxt-property-decorator";
+
 import { AbstractReplay } from "~/mixins/AbstractReplay";
-import { ReplayResponse } from '~/model/api/api-response';
+import { ReplayResponse } from "~/model/api/api-response";
 
 @Component({
     directives: {
-        startBox(el, binding, vnode) {
+        startBox (el, binding, vnode) {
             const { top, bottom, left, right } = binding.value as AllyTeam["startBox"];
             const width = Math.abs(right - left);
             const height = Math.abs(top - bottom);

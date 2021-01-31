@@ -1,16 +1,30 @@
 <template>
     <div class="nav">
         <NuxtLink to="/" class="logo">
-            <img src="~/assets/images/logo.png"/>
-            <div class="alpha">Alpha</div>
+            <img src="~/assets/images/logo.png">
+            <div class="alpha">
+                Alpha
+            </div>
         </NuxtLink>
         <nav class="links" role="navigation">
-            <NuxtLink to="/">Home</NuxtLink>
-            <NuxtLink to="/maps">Maps</NuxtLink>
-            <NuxtLink to="/replays">Replays</NuxtLink>
-            <NuxtLink to="/battles">Battles</NuxtLink>
-            <NuxtLink to="/leaderboards">Leaderboards</NuxtLink>
-            <NuxtLink to="/players">Players</NuxtLink>
+            <NuxtLink to="/">
+                Home
+            </NuxtLink>
+            <NuxtLink to="/maps">
+                Maps
+            </NuxtLink>
+            <NuxtLink to="/replays">
+                Replays
+            </NuxtLink>
+            <NuxtLink to="/battles">
+                Battles
+            </NuxtLink>
+            <NuxtLink to="/leaderboards">
+                Leaderboards
+            </NuxtLink>
+            <NuxtLink to="/players">
+                Players
+            </NuxtLink>
         </nav>
     </div>
 </template>

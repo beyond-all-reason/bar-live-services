@@ -7,10 +7,11 @@
 </template>
 
 <script lang="ts">
-import { Demo } from 'bar-db/dist/model/demo';
-import { APIResponse } from '~/model/api/api-response';
-import { Context } from '@nuxt/types/app';
-import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import { Context } from "@nuxt/types/app";
+import { Demo } from "bar-db/dist/model/demo";
+import { Component, Vue } from "nuxt-property-decorator";
+
+import { APIResponse } from "~/model/api/api-response";
 
 @Component({
     head: { title: "BAR - Replays" }
@@ -18,7 +19,7 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 export default class Page extends Vue {
     replays: Demo[] = [];
 
-    async asyncData({ store, $http, params }: Context): Promise<any> {
+    async asyncData ({ store, $http }: Context): Promise<any> {
         store.commit("setPageTitle", "Replays");
 
         const { data: replays } = await $http.$get("replays") as APIResponse<Demo[]>;

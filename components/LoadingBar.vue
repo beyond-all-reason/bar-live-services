@@ -1,21 +1,21 @@
 <template>
     <div v-if="loading" class="loading-page">
-        <div class="loading"></div>
+        <div class="loading" />
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import { Component, Vue } from "nuxt-property-decorator";
 
 @Component
 export default class LoadingBar extends Vue {
     loading: boolean = false;
 
-    start() {
+    start () {
         this.loading = true;
     }
 
-    finish() {
+    finish () {
         this.loading = false;
     }
 }

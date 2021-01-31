@@ -12,7 +12,7 @@ export type Players = { [key: string]: Player };
 export class LobbyService extends Service {
     public config: LobbyServiceConfig;
     public lobbyClient: SpringLobbyProtocolClient;
-    
+
     protected battles: Battles = {};
     protected players: Players = {};
 

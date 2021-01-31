@@ -1,10 +1,10 @@
 <template>
     <div class="flex-row flex-wrap">
         <div class="map-container">
-            <div class="map" >
-                <img :src="mapTextureUrl"/>
-                <div class="boxes" v-if="replay.hostSettings.startpostype==='2'">
-                    <div class="box" v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox"></div>
+            <div class="map">
+                <img :src="mapTextureUrl">
+                <div v-if="replay.hostSettings.startpostype==='2'" class="boxes">
+                    <div v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox" class="box" />
                 </div>
             </div>
         </div>
@@ -22,12 +22,12 @@
 </template>
 
 <script lang="ts">
-import { Context } from '@nuxt/types';
-import { AllyTeam } from 'bar-db/dist/model/ally-team';
-import { delay } from 'jaz-ts-utils';
-import { Vue, Component, Prop } from 'nuxt-property-decorator'
-import { AbstractReplay } from '~/mixins/AbstractReplay';
-import { ReplayResponse } from '~/model/api/api-response';
+import { Context } from "@nuxt/types";
+import { AllyTeam } from "bar-db/dist/model/ally-team";
+import { Component } from "nuxt-property-decorator";
+
+import { AbstractReplay } from "~/mixins/AbstractReplay";
+import { ReplayResponse } from "~/model/api/api-response";
 import { replayTitle } from "~/utils/methods";
 
 @Component({
@@ -35,7 +35,7 @@ import { replayTitle } from "~/utils/methods";
         title: "BAR - Replay"
     },
     directives: {
-        startBox(el, binding, vnode) {
+        startBox (el, binding) {
             const { top, bottom, left, right } = binding.value as AllyTeam["startBox"];
             const width = Math.abs(right - left);
             const height = Math.abs(top - bottom);
@@ -47,7 +47,7 @@ import { replayTitle } from "~/utils/methods";
     }
 })
 export default class Replay extends AbstractReplay {
-    async asyncData({ store, $http, params }: Context): Promise<any> {
+    async asyncData ({ store, $http, params }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
         store.commit("setPageTitle", replayTitle(replay.AllyTeams));
         return { replay };

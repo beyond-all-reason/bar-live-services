@@ -38,7 +38,7 @@ export class LeaderboardService extends Service {
         });
     }
 
-    public async init () {
+    public init () {
         this.updateLeaderboards();
 
         return super.init();

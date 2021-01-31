@@ -1,11 +1,12 @@
 import { Module } from "@nuxt/types";
+import { Database } from "bar-db";
+import { DatabaseSchema } from "bar-db/dist/database";
 import express from "express";
+
+import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
-import { Database } from "bar-db";
 import { servicesConfig } from "../services-config";
-import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
-import { DatabaseSchema } from "bar-db/dist/database";
 import { ServicesConfig } from "~/services/services-config";
 import { APIResponse, ReplayResponse } from "~/model/api/api-response";
 
@@ -23,7 +24,7 @@ const apiModule: Module = async function () {
     });
 
     this.addServerMiddleware({ path: "/api", handler: api.app });
-}
+};
 
 class API {
     public config: ServicesConfig;
@@ -32,7 +33,7 @@ class API {
     public leaderboardService!: LeaderboardService;
     public lobbyService!: LobbyService;
 
-    constructor(servicesConfig: ServicesConfig) {
+    constructor (servicesConfig: ServicesConfig) {
         this.config = servicesConfig;
 
         this.app = express();
@@ -45,11 +46,9 @@ class API {
         this.maps();
         this.leaderboards();
         this.battles();
-
-        console.log("api setup");
     }
 
-    public async init() {
+    public async init () {
         const db = new Database(this.config.bardb);
         await db.init();
         this.db = db.schema;
@@ -58,7 +57,7 @@ class API {
         this.lobbyService = await new LobbyService(this.config.lobby).init();
     }
 
-    protected replays() {
+    protected replays () {
         this.app.get("/replays", async (req, res) => {
             const params = this.parseRequestOptions(req.query as { [key: string]: string });
 
@@ -68,7 +67,7 @@ class API {
                 include: [
                     { model: this.db.map },
                     { model: this.db.allyTeam, include: [this.db.player, this.db.ai] },
-                    { model: this.db.spectator },
+                    { model: this.db.spectator }
                 ]
             });
 
@@ -78,16 +77,16 @@ class API {
                 resultsPerPage: params.limit,
                 data: replays as unknown as ReplayResponse[]
             };
-    
+
             res.json(response);
         });
-    
+
         this.app.get("/replays/:replayId", async (req, res) => {
             const replay = await this.db.demo.findByPk(req.params.replayId, {
                 include: [
                     { model: this.db.map },
                     { model: this.db.allyTeam, include: [this.db.player, this.db.ai] },
-                    { model: this.db.spectator },
+                    { model: this.db.spectator }
                 ]
             });
 
@@ -99,44 +98,44 @@ class API {
             res.json(replay);
         });
     }
-    
-    protected players() {
+
+    protected players () {
         this.app.get("/players", async (req, res) => {
-            res.send(`players`);
+            res.send("players");
         });
-    
+
         this.app.get("/players/:playerId", async (req, res) => {
             res.send(`player: ${req.params.playerId}`);
         });
     }
-    
-    protected maps() {
+
+    protected maps () {
         this.app.get("/maps", async (req, res) => {
-            res.send(`maps`);
+            res.send("maps");
         });
-    
+
         this.app.get("/maps/:mapId", async (req, res) => {
             res.send(`map: ${req.params.mapId}`);
         });
     }
-    
-    protected leaderboards() {
+
+    protected leaderboards () {
         this.app.get("/leaderboards", async (req, res) => {
             res.json(this.leaderboardService.leaderboards);
         });
     }
-    
-    protected battles() {
+
+    protected battles () {
         this.app.get("/battles", async (req, res) => {
             res.json(this.lobbyService.getActiveBattles());
         });
     }
-    
-    protected parseRequestOptions(query: { [key: string]: string }) : Required<APIRequestOptions> {
+
+    protected parseRequestOptions (query: { [key: string]: string }) : Required<APIRequestOptions> {
         return {
             page: parseInt(query.page) || defaultApiRequestOptions.page,
-            limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit,
-        }
+            limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit
+        };
     }
 }
 
