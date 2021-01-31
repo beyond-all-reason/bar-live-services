@@ -10,11 +10,11 @@ export type Battles = { [key: number]: Battle<{ [username: string]: Player }> };
 export type Players = { [key: string]: Player };
 
 export class LobbyService extends Service {
+    public config: LobbyServiceConfig;
+    public lobbyClient: SpringLobbyProtocolClient;
+    
     protected battles: Battles = {};
     protected players: Players = {};
-
-    protected config: LobbyServiceConfig;
-    protected lobbyClient: SpringLobbyProtocolClient;
 
     constructor (config: LobbyServiceConfig) {
         super();
@@ -22,6 +22,12 @@ export class LobbyService extends Service {
         this.config = config;
 
         this.lobbyClient = new SpringLobbyProtocolClient(this.config);
+
+        process.on("SIGINT", async () => {
+            await this.lobbyClient.disconnect();
+
+            process.exit();
+        });
     }
 
     public async init () {

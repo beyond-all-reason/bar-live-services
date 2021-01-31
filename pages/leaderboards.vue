@@ -17,17 +17,19 @@
 </template>
 
 <script lang="ts">
-import { Context } from "@nuxt/types";
-import { SLDBModel } from "sldbts";
+import { Context } from '@nuxt/types/app';
+import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import { SLDBModel } from 'sldbts';
 
-export default {
-    asyncData (context: Context) {
-        context.store.commit("setPageTitle", "Leaderboards");
+@Component
+export default class Page extends Vue {
+    async asyncData({ store, $http, params }: Context): Promise<any> {
+        store.commit("setPageTitle", "Leaderboards");
 
-        const leaderboards = context.$config.leaderboards as SLDBModel.LeaderboardResult[];
+        const leaderboards = await $http.$get("leaderboards") as SLDBModel.LeaderboardResult[];
         return { leaderboards };
     }
-};
+}
 </script>
 
 <style lang="scss" scoped>

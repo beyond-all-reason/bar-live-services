@@ -5,5 +5,5 @@ import { LobbyServiceConfig } from "./lobby-service";
 export interface ServicesConfig {
     lobby: LobbyServiceConfig,
     leaderboards: LeaderboardServiceConfig
-    bardb: DatabaseConfig;
+    bardb: DatabaseConfig & { mapPath: string, demoPath: string };
 }

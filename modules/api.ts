@@ -4,58 +4,99 @@ import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { Database } from "bar-db";
 import { servicesConfig } from "../services-config";
-import { Data } from "ws";
 import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
 import { DatabaseSchema } from "bar-db/dist/database";
+import { ServicesConfig } from "~/services/services-config";
+import { APIResponse, ReplayResponse } from "~/model/api/api-response";
 
 const apiModule: Module = async function () {
-    //const leaderboardService = await new LeaderboardService(servicesConfig.leaderboards).init();
-    //const lobbyService = await new LobbyService(servicesConfig.lobby).init();
+    const api = new API(servicesConfig);
 
-    const db = new Database(servicesConfig.bardb);
+    await api.init();
 
-    await db.init();
+    this.nuxt.hook("close", async () => {
+        await api.lobbyService.lobbyClient.disconnect();
+    });
 
-    const api = new API(db.schema);
+    this.nuxt.hook("error", async () => {
+        await api.lobbyService.lobbyClient.disconnect();
+    });
 
     this.addServerMiddleware({ path: "/api", handler: api.app });
 }
 
 class API {
+    public config: ServicesConfig;
     public app: express.Express;
-    public db: DatabaseSchema;
+    public db!: DatabaseSchema;
+    public leaderboardService!: LeaderboardService;
+    public lobbyService!: LobbyService;
 
-    constructor(db: DatabaseSchema) {
-        this.db = db;
+    constructor(servicesConfig: ServicesConfig) {
+        this.config = servicesConfig;
 
         this.app = express();
         this.app.use(express.json());
+        this.app.use("/maps", express.static(servicesConfig.bardb.mapPath));
+        this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
 
         this.replays();
         this.players();
         this.maps();
         this.leaderboards();
         this.battles();
+
+        console.log("api setup");
+    }
+
+    public async init() {
+        const db = new Database(this.config.bardb);
+        await db.init();
+        this.db = db.schema;
+
+        this.leaderboardService = await new LeaderboardService(this.config.leaderboards).init();
+        this.lobbyService = await new LobbyService(this.config.lobby).init();
     }
 
     protected replays() {
         this.app.get("/replays", async (req, res) => {
             const params = this.parseRequestOptions(req.query as { [key: string]: string });
 
-            const replays = await this.db.demo.findAll({
+            const { count, rows: replays } = await this.db.demo.findAndCountAll({
                 offset: params.page - 1,
                 limit: params.limit,
-                attributes: {
-                    exclude: ["gameSettings", "mapSettings"],
-                },
-                include: this.db.allyTeam
+                include: [
+                    { model: this.db.map },
+                    { model: this.db.allyTeam, include: [this.db.player, this.db.ai] },
+                    { model: this.db.spectator },
+                ]
             });
+
+            const response: APIResponse<ReplayResponse[]> = {
+                totalResults: count,
+                page: params.page,
+                resultsPerPage: params.limit,
+                data: replays as unknown as ReplayResponse[]
+            };
     
-            res.json(replays);
+            res.json(response);
         });
     
         this.app.get("/replays/:replayId", async (req, res) => {
-            res.send(`replay: ${req.params.replayId}`);
+            const replay = await this.db.demo.findByPk(req.params.replayId, {
+                include: [
+                    { model: this.db.map },
+                    { model: this.db.allyTeam, include: [this.db.player, this.db.ai] },
+                    { model: this.db.spectator },
+                ]
+            });
+
+            if (replay === null) {
+                res.status(404).send("Sorry can't find that!");
+                return;
+            }
+
+            res.json(replay);
         });
     }
     
@@ -81,13 +122,13 @@ class API {
     
     protected leaderboards() {
         this.app.get("/leaderboards", async (req, res) => {
-            res.send(`leaderboards`);
+            res.json(this.leaderboardService.leaderboards);
         });
     }
     
     protected battles() {
         this.app.get("/battles", async (req, res) => {
-            res.send(`battles`);
+            res.json(this.lobbyService.getActiveBattles());
         });
     }
     

@@ -59,22 +59,19 @@ export default Vue.extend({
             }
         },
         mapName () : string {
-            const battle = this.battle as Battle;
-            return battle.map.replace(/[_-]/g, " ");
+            return this.battle.map.replace(/[_-]/g, " ");
         },
         playerCount () : number {
-            const battle = this.battle as Battle;
-            if (!battle.founder.status?.bot) {
-                return battle.players.length - battle.spectators;
+            if (!this.battle.founder.status?.bot) {
+                return this.battle.players.length - this.battle.spectators;
             }
-            return battle.players.length - (battle.spectators - 1);
+            return this.battle.players.length - (this.battle.spectators - 1);
         },
         spectatorCount () : number {
-            const battle = this.battle as Battle;
-            if (!battle.founder.status?.bot) {
-                return battle.spectators;
+            if (!this.battle.founder.status?.bot) {
+                return this.battle.spectators;
             }
-            return battle.spectators - 1;
+            return this.battle.spectators - 1;
         }
     }
 });
