@@ -8,7 +8,7 @@
         "start": "nuxt-ts start",
         "generate": "nuxt-ts generate",
         "lint": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
-        "test": "jest",
+        "test": "jest --passWithNoTests",
         "lobby-logs": "tail -f logs/lobby-bot.log"
     },
     "dependencies": {
