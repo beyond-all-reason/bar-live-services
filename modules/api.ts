@@ -11,6 +11,10 @@ import { ServicesConfig } from "~/services/services-config";
 import { APIResponse, ReplayResponse } from "~/model/api/api-response";
 
 const apiModule: Module = async function () {
+    if (!(this.options.dev || this.options._start)) {
+        return;
+    }
+
     const api = new API(servicesConfig);
 
     await api.init();
