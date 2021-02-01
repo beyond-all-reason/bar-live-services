@@ -1,8 +1,8 @@
+import * as fs from "fs";
 import { Module } from "@nuxt/types";
 import { Database } from "bar-db";
 import { DatabaseSchema } from "bar-db/dist/database";
 import express from "express";
-import * as fs from "fs";
 
 import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
 import { LeaderboardService } from "../services/leaderboard-service";
