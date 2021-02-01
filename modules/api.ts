@@ -2,20 +2,28 @@ import { Module } from "@nuxt/types";
 import { Database } from "bar-db";
 import { DatabaseSchema } from "bar-db/dist/database";
 import express from "express";
+import * as fs from "fs";
 
 import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
-import { servicesConfig } from "../services-config";
-import { ServicesConfig } from "~/services/services-config";
-import { APIResponse, ReplayResponse } from "~/model/api/api-response";
+import { APIResponse, ReplayResponse } from "../model/api/api-response";
+import Config from "../config-example.json";
+
+export type ServicesConfig = typeof Config;
 
 const apiModule: Module = async function () {
     if (!(this.options.dev || this.options._start)) {
         return;
     }
 
-    const api = new API(servicesConfig);
+    if (!fs.existsSync("config.json")) {
+        throw new Error("You must provide a config.json file, check config-example.json");
+    }
+
+    const config = JSON.parse(fs.readFileSync("config.json", { encoding: "utf8" }));
+
+    const api = new API(config);
 
     await api.init();
 

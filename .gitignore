@@ -90,3 +90,4 @@ sw.*
 *.swp
 /services-config.ts
 /working-files
+/config.json

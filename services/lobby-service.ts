@@ -1,5 +1,6 @@
 import { SpringLobbyProtocolClient, SpringLobbyProtocolClientConfig } from "sluts";
 
+import { createFileLogger } from "../utils/logger";
 import { Battle } from "../model/battle";
 import { Player } from "../model/player";
 import { Service } from "../services/service";
@@ -19,7 +20,7 @@ export class LobbyService extends Service {
     constructor (config: LobbyServiceConfig) {
         super();
 
-        this.config = config;
+        this.config = { ...config, logger: createFileLogger("lobby-bot") };
 
         this.lobbyClient = new SpringLobbyProtocolClient(this.config);
 
