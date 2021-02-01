@@ -1,4 +1,6 @@
-module.exports = {
+import type { Config } from '@jest/types';
+
+const config: Config.InitialOptions = {
     moduleNameMapper: {
         "^@/(.*)$": "<rootDir>/$1",
         "^~/(.*)$": "<rootDir>/$1",
@@ -15,9 +17,14 @@ module.exports = {
         "^.+\\.js$": "babel-jest",
         ".*\\.(vue)$": "vue-jest"
     },
-    collectCoverage: true,
+    collectCoverage: false,
     collectCoverageFrom: [
         "<rootDir>/components/**/*.vue",
         "<rootDir>/pages/**/*.vue"
+    ],
+    testPathIgnorePatterns: [
+        ".nuxt"
     ]
-}
+};
+
+export default config;
