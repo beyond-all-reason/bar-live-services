@@ -4,7 +4,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
     env: {
-        baseUrl: process.env.BASE_URL || "http://localhost:3000"
+        baseUrl: process.env.BASE_URL || "http://localhost:3000/api"
     },
     watch: ["modules"],
     components: true,
@@ -36,7 +36,7 @@ const nuxtConfig: NuxtConfig = {
         "~/modules/api"
     ],
     http: {
-        baseURL: process.env.BASE_URL || 'http://localhost:3000'
+        baseURL: process.env.BASE_URL || 'http://localhost:3000/api'
     }
 }
 
