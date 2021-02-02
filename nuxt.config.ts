@@ -1,9 +1,10 @@
 import { NuxtConfig } from "@nuxt/types";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const nuxtConfig: NuxtConfig = {
     watch: ["modules"],
     components: true,
-    //loading: { color: '#333333',height: '5px', throttle: 0 },
     loading: '~/components/LoadingBar.vue',
     head: {
         title: "BAR",
@@ -32,7 +33,7 @@ const nuxtConfig: NuxtConfig = {
         "~/modules/api"
     ],
     http: {
-        baseURL: 'http://localhost:3000/api'
+        baseURL: isProd ? "https://localhost/api" : "http://localhost:3000/api"
     }
 }
 
