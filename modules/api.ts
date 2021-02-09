@@ -38,7 +38,7 @@ const apiModule: Module = async function () {
     this.addServerMiddleware({ path: "/api", handler: api.app });
 };
 
-class API {
+export class API {
     public config: ServicesConfig;
     public app: express.Express;
     public db!: DatabaseSchema;
@@ -50,6 +50,7 @@ class API {
 
         this.app = express();
         this.app.use(express.json());
+        this.app.set("json spaces", 4); // TODO only for development
         this.app.use("/maps", express.static(servicesConfig.bardb.mapPath));
         this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
 
@@ -71,22 +72,31 @@ class API {
 
     protected replays () {
         this.app.get("/replays", async (req, res) => {
-            const params = this.parseRequestOptions(req.query as { [key: string]: string });
+            const query = this.parseRequestOptions(req.query as { [key: string]: string });
 
             const { count, rows: replays } = await this.db.demo.findAndCountAll({
-                offset: params.page - 1,
-                limit: params.limit,
+                offset: (query.page - 1) * query.limit,
+                limit: query.limit,
+                order: [["startTime", "DESC"]],
+                attributes: ["id", "startTime", "durationMs", "hostSettings"],
                 include: [
-                    { model: this.db.map },
-                    { model: this.db.allyTeam, include: [this.db.player, this.db.ai] },
-                    { model: this.db.spectator }
+                    { model: this.db.map, attributes: ["fileName"] },
+                    {
+                        model: this.db.allyTeam,
+                        attributes: ["allyTeamId"],
+                        include: [
+                            { model: this.db.player, attributes: ["userId", "playerId", "name"] },
+                            { model: this.db.ai, attributes: ["shortName"] }
+                        ]
+                    },
+                    { model: this.db.spectator, attributes: ["userId", "playerId", "name"] }
                 ]
             });
 
             const response: APIResponse<ReplayResponse[]> = {
                 totalResults: count,
-                page: params.page,
-                resultsPerPage: params.limit,
+                page: query.page,
+                resultsPerPage: query.limit,
                 data: replays as unknown as ReplayResponse[]
             };
 
@@ -103,7 +113,7 @@ class API {
             });
 
             if (replay === null) {
-                res.status(404).send("Sorry can't find that!");
+                res.status(404).send("Replay not found");
                 return;
             }
 

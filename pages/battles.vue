@@ -1,9 +1,14 @@
 <template>
-    <div v-if="battles && !battles.length" class="empty">
-        No active battles 😞
-    </div>
-    <div v-else class="battles">
-        <Battle v-for="(battle, index) in battles" :key="index" :battle="battle" />
+    <div>
+        <h1 class="page-title">
+            Battles
+        </h1>
+        <div v-if="battles && !battles.length" class="empty">
+            No active battles 😞
+        </div>
+        <div v-else class="battles">
+            <Battle v-for="(battle, index) in battles" :key="index" :battle="battle" />
+        </div>
     </div>
 </template>
 
@@ -20,12 +25,17 @@ export default class Page extends Vue {
     battles: Battle[] = [];
     pollInterval = 0;
 
-    async asyncData ({ store, $http, params }: Context): Promise<any> {
-        store.commit("setPageTitle", "Battles");
+    async asyncData ({ $http }: Context): Promise<any> {
+        const battles = await $http.$get("battles") as Battle[];
+        return { battles };
     }
 
     async fetch () {
-        this.battles = await this.$http.$get("battles") as Battle[];
+        try {
+            this.battles = await this.$http.$get("battles") as Battle[];
+        } catch (err) {
+
+        }
     }
 
     mounted () {

@@ -1,6 +1,8 @@
 <template>
     <div>
-        Player
+        <h1 class="page-title">
+            Bob
+        </h1>
     </div>
 </template>
 

@@ -1,6 +1,8 @@
 <template>
     <div>
-        Maps
+        <h1 class="page-title">
+            Maps
+        </h1>
     </div>
 </template>
 
@@ -11,7 +13,7 @@ import { Component, Vue } from "nuxt-property-decorator";
 @Component
 export default class Page extends Vue {
     async asyncData ({ store, $http, params }: Context): Promise<any> {
-        store.commit("setPageTitle", "Maps");
+
     }
 }
 </script>

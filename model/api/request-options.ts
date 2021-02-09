@@ -7,5 +7,5 @@ export interface APIRequestOptions {
 
 export const defaultApiRequestOptions: Optionals<APIRequestOptions> = {
     page: 1,
-    limit: 50
+    limit: 20
 };

@@ -3,8 +3,8 @@
         <div class="map-container">
             <div class="map">
                 <img :src="mapTextureUrl">
-                <div v-if="replay.hostSettings.startpostype==='2'" class="boxes">
-                    <div v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox" class="box" />
+                <div class="map-name">
+                    {{ mapName }}
                 </div>
             </div>
         </div>
@@ -17,35 +17,17 @@
                     {{ timeAgo }}
                 </div>
             </div>
-            <div class="flex-row">
-                <div class="map-name">
-                    {{ replay.Map.scriptName }}
-                </div>
-            </div>
         </div>
     </NuxtLink>
 </template>
 
 <script lang="ts">
-import { AllyTeam } from "bar-db/dist/model/ally-team";
 import { Component, Prop } from "nuxt-property-decorator";
 
 import { AbstractReplay } from "~/mixins/AbstractReplay";
 import { ReplayResponse } from "~/model/api/api-response";
 
-@Component({
-    directives: {
-        startBox (el, binding, vnode) {
-            const { top, bottom, left, right } = binding.value as AllyTeam["startBox"];
-            const width = Math.abs(right - left);
-            const height = Math.abs(top - bottom);
-            el.style.top = `${top * 100}%`;
-            el.style.left = `${left * 100}%`;
-            el.style.width = `${width * 100}%`;
-            el.style.height = `${height * 100}%`;
-        }
-    }
-})
+@Component
 export default class ReplayPreview extends AbstractReplay {
     @Prop({ type: Object, required: true }) readonly replay!: ReplayResponse;
 }
@@ -53,14 +35,58 @@ export default class ReplayPreview extends AbstractReplay {
 
 <style lang="scss" scoped>
 .replay-preview {
+    position: relative;
     width: 250px;
-    margin: 10px;
+    margin: 15px;
     display: flex;
     flex-direction: column;
-    background: #000;
-    border: 1px solid #222;
+    background: #090909;
+}
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.map {
+    position: relative;
+    object-fit: contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    img {
+        max-height: 100%;
+        max-width: 100%;
+    }
+    img {
+        transition: transform .2s ease-in-out;
+        .replay-preview:hover & {
+            transform: scale(1.1);
+        }
+    }
+    &:after {
+        position: absolute;
+        content: "";
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+}
+.map-name {
+    position: absolute;
+    width: 80%;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 2px 2px rgba(0, 0, 0, 0.5);
 }
 .meta {
     padding: 10px;
+    border-bottom: 1px solid #000;
 }
 </style>

@@ -1,18 +1,12 @@
 * { box-sizing: border-box; }
 
-html, body {
-    margin: 0;
-}
-
 html {
-    margin: 0;
     font-family: 'Poppins', sans-serif;
-    color: #eee;
+    color: #fff;
 }
 
 body {
     background: linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,0,0,.84)),url("~assets/images/background.jpg");
-    overflow-y: scroll;
 }
 
 a {

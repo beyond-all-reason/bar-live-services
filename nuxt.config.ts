@@ -6,9 +6,14 @@ const nuxtConfig: NuxtConfig = {
     env: {
         baseUrl: process.env.BASE_URL || "http://localhost:3000/api"
     },
+    vue: {
+        config: {
+            productionTip: false
+        } as any
+    },
     watch: ["modules"],
     components: true,
-    loading: '~/components/LoadingBar.vue',
+    //loading: '~/components/LoadingBar.vue',
     head: {
         title: "BAR",
         meta: [
@@ -25,10 +30,19 @@ const nuxtConfig: NuxtConfig = {
     css: [
         '~/assets/scss/main.scss'
     ],
+    vuetify: {
+        customVariables: ['~/assets/scss/variables.scss'],
+        treeShake: true
+    },
+    transition: {
+        name: "slide-transition",
+        mode: "out-in"
+    },
     buildModules: [
         "@nuxt/typescript-build",
         "@nuxt/image",
-        "@nuxtjs/moment"
+        "@nuxtjs/moment",
+        "@nuxtjs/vuetify"
     ],
     modules: [
         "@nuxtjs/pwa",

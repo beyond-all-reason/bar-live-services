@@ -1,75 +1,178 @@
 <template>
-    <div class="flex-row flex-wrap">
-        <div class="map-container">
-            <div class="map">
-                <img :src="mapTextureUrl">
-                <div v-if="replay.hostSettings.startpostype==='2'" class="boxes">
-                    <div v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox" class="box" />
-                </div>
+    <div>
+        <h1 class="page-title">
+            {{ title }}
+        </h1>
+        <div class="replay-container">
+            <div class="map-container">
+                <Map :replay="replay" />
             </div>
-        </div>
-        <div class="info">
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Duration</td>
-                        <td>{{ $moment.duration(replay.durationMs).humanize() }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="info">
+                <div class="download">
+                    <a :href="`/api/replays/${replay.fileName}`">Download</a>
+                </div>
+                <table class="meta">
+                    <tbody>
+                        <tr>
+                            <td>Map</td>
+                            <td>{{ mapName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Duration</td>
+                            <td>{{ $moment.duration(replay.durationMs).humanize() }}</td>
+                        </tr>
+                        <tr>
+                            <td>Date</td>
+                            <td>{{ $moment(replay.startTime).format("dddd, MMMM Do YYYY") }}</td>
+                        </tr>
+                        <tr>
+                            <td>Time</td>
+                            <td>{{ $moment(replay.startTime).format("h:mm:ss A") }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="players">
+                    <tbody v-for="(AllyTeam, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex">
+                        <tr>
+                            <td class="team-heading" colspan="100%">
+                                Team {{ AllyTeam.allyTeamId + 1 }} {{ AllyTeam.winningTeam ? "🏆" : "" }}
+                            </td>
+                        </tr>
+                        <tr v-for="(Player, index) in AllyTeam.Players" :key="`player-`+index">
+                            <td><img :src="factionImage(Player.faction)"></td>
+                            <td><img :src="countryImage(Player.countryCode)"></td>
+                            <td><img :src="rankImage(Player.rank)"></td>
+                            <td :class="`trueskill uncertainty-${Player.skillUncertainty}`">
+                                {{ Player.skill }}
+                            </td>
+                            <td v-setPlayerColor="Player.rgbColor">
+                                {{ Player.name }}
+                            </td>
+                        </tr>
+                        <tr v-for="(AI, index) in AllyTeam.AIs" :key="`ai-`+index">
+                            <td><img :src="factionImage(AI.faction)"></td>
+                            <td />
+                            <td />
+                            <td />
+                            <td v-setPlayerColor="AI.rgbColor">
+                                {{ AI.name }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Context } from "@nuxt/types";
-import { AllyTeam } from "bar-db/dist/model/ally-team";
 import { Component } from "nuxt-property-decorator";
 
 import { AbstractReplay } from "~/mixins/AbstractReplay";
 import { ReplayResponse } from "~/model/api/api-response";
-import { replayTitle } from "~/utils/methods";
 
 @Component({
     head: {
         title: "BAR - Replay"
     },
     directives: {
-        startBox (el, binding) {
-            const { top, bottom, left, right } = binding.value as AllyTeam["startBox"];
-            const width = Math.abs(right - left);
-            const height = Math.abs(top - bottom);
-            el.style.top = `${top * 100}%`;
-            el.style.left = `${left * 100}%`;
-            el.style.width = `${width * 100}%`;
-            el.style.height = `${height * 100}%`;
+        setPlayerColor (el, binding) {
+            const { r, g, b } = binding.value as { r: number, g: number, b: number };
+            const lightness = 0.299 * r + 0.587 * g + 0.114 * b; // https://stackoverflow.com/a/596243/1864403
+            el.style.color = `rgba(${r * 100}%, ${g * 100}%, ${b * 100}%, 1)`;
+            el.style.textShadow = lightness < 0.1 ? "0 0 3px #fff" : "1px 1px #000";
         }
     }
 })
 export default class Replay extends AbstractReplay {
     async asyncData ({ store, $http, params }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
-        store.commit("setPageTitle", replayTitle(replay.AllyTeams));
         return { replay };
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.replay-container {
+    display: flex;
+    flex-direction: row;
+    text-shadow: 1px 1px #000;
+    @media screen and (orientation: portrait) {
+        flex-wrap: wrap;
+    }
+}
 .map-container {
-    width: 70%;
+    position: relative;
+    width: 60%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     @media screen and (orientation: portrait) {
         width: 100%;
     }
 }
 .info {
-    background: red;
     flex-grow: 1;
     margin-left: 20px;
     @media screen and (orientation: portrait) {
         width: 100%;
         margin-left: 0;
         margin-top: 20px;
+    }
+    .meta {
+        margin-bottom: 10px;
+        td:first-child {
+            font-weight: bold;
+        }
+    }
+}
+table {
+    td:first-child {
+        padding-right: 5px;
+    }
+    td:not(:nth-child(1)) {
+        padding: 0 5px;
+    }
+    td:last-child {
+        width: 100%;
+    }
+    td img {
+        display: block;
+        height: 16px;
+    }
+}
+.players {
+    margin-bottom: 10px;
+}
+hr {
+    margin: 16px 0;
+}
+.download {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.team-heading {
+    font-weight: bold;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 3px;
+}
+.trueskill {
+    &:after {
+        content: "TS";
+        font-size: 10px;
+        font-weight: 300;
+        color: #bbb;
+        vertical-align: super;
+        margin-left: 2px;
+    }
+    &.uncertainty {
+        &-null { color: rgb(255, 255, 255); }
+        &-1 { color: rgb(255, 200, 200); }
+        &-2 { color: rgb(255, 150, 150); }
+        &-3 { color: rgb(255, 100, 100); }
     }
 }
 </style>

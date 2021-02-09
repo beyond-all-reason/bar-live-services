@@ -1,33 +1,32 @@
 <template>
     <div class="nav">
-        <NuxtLink to="/" class="logo">
-            <img src="~/assets/images/logo.png">
-            <div class="alpha">
-                Alpha
-            </div>
-        </NuxtLink>
         <nav class="links" role="navigation">
-            <NuxtLink to="/">
-                Home
-            </NuxtLink>
-            <NuxtLink to="/maps">
-                Maps
-            </NuxtLink>
             <NuxtLink to="/replays">
                 Replays
             </NuxtLink>
+            <!-- <NuxtLink to="/maps">
+                Maps
+            </NuxtLink>
+            <NuxtLink to="/players">
+                Players
+            </NuxtLink> -->
             <NuxtLink to="/battles">
                 Battles
             </NuxtLink>
             <NuxtLink to="/leaderboards">
                 Leaderboards
             </NuxtLink>
-            <NuxtLink to="/players">
-                Players
-            </NuxtLink>
         </nav>
     </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from "nuxt-property-decorator";
+
+@Component
+export default class Navigation extends Vue {
+}
+</script>
 
 <style lang="scss" scoped>
 .nav{
@@ -50,26 +49,6 @@
         background-position: top center;
     }
 }
-.logo {
-    display: flex;
-    align-items: center;
-    height: 50px;
-    &:hover img {
-        opacity: 1;
-        filter: brightness(130%);
-    }
-    img {
-        transition: all .2s ease;
-        will-change: filter;
-        filter: brightness(100%);
-        max-height: 100%;
-        opacity: 0.9;
-    }
-    .alpha {
-        text-transform: uppercase;
-        align-self: flex-start;
-    }
-}
 .links {
     display: flex;
     justify-content: center;
@@ -83,6 +62,9 @@
         font-size: 17px;
         letter-spacing: -1px;
         &:hover, .selected {
+            color: #fff;
+        }
+        &.nuxt-link-active {
             color: #fff;
         }
     }

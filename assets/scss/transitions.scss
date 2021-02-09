@@ -1,0 +1,9 @@
+.slide-transition-enter-active,
+.slide-transition-leave-active {
+    transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+}
+.slide-transition-enter,
+.slide-transition-leave-to {
+    opacity: 0;
+    transform: translateY(15px);
+}

@@ -1,29 +1,49 @@
 <template>
-    <div class="container">
+    <div>
+        <h1 class="page-title">
+            Replays
+        </h1>
         <div class="replays">
             <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" />
         </div>
+        <v-pagination
+            v-model="page"
+            dark
+            :length="pageCount"
+            :total-visible="10"
+            :test="page"
+            @input="changePage"
+        />
     </div>
 </template>
 
 <script lang="ts">
-import { Context } from "@nuxt/types/app";
 import { Demo } from "bar-db/dist/model/demo";
 import { Component, Vue } from "nuxt-property-decorator";
 
 import { APIResponse } from "~/model/api/api-response";
 
 @Component({
-    head: { title: "BAR - Replays" }
+    head: { title: "BAR - Replays" },
+    watch: {
+        "$route.query": "$fetch"
+    }
 })
 export default class Page extends Vue {
     replays: Demo[] = [];
+    page: number = 1;
+    pageCount: number = 0;
 
-    async asyncData ({ store, $http }: Context): Promise<any> {
-        store.commit("setPageTitle", "Replays");
+    async fetch (): Promise<any> {
+        const searchParams = new URLSearchParams(this.$route.query as {});
+        const response = await this.$http.$get("replays", { searchParams }) as APIResponse<Demo[]>;
+        this.replays = response.data;
+        this.page = response.page;
+        this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
+    }
 
-        const { data: replays } = await $http.$get("replays") as APIResponse<Demo[]>;
-        return { replays };
+    async changePage (page: number) {
+        this.$router.push({ path: this.$route.path, query: { page: page.toString() } });
     }
 }
 </script>
@@ -33,6 +53,5 @@ export default class Page extends Vue {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    //align-items: center;
 }
 </style>

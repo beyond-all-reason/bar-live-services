@@ -1,6 +1,8 @@
 <template>
     <div>
-        Map
+        <h1 class="page-title">
+            Map name
+        </h1>
     </div>
 </template>
 

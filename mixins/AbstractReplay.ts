@@ -1,7 +1,6 @@
 import { Component, Vue } from "nuxt-property-decorator";
 
 import { AllyTeamResponse, ReplayResponse } from "~/model/api/api-response";
-
 @Component
 export class AbstractReplay extends Vue {
     replay!: ReplayResponse;
@@ -10,7 +9,7 @@ export class AbstractReplay extends Vue {
         if (this.replay.Map.fileName) {
             return `/api/maps/${this.replay.Map.fileName}/texture.png`;
         }
-        return require("assets/images/minimapNotFound1.png");
+        return require("assets/images/default-minimap.png");
     }
 
     get title (): string {
@@ -19,6 +18,10 @@ export class AbstractReplay extends Vue {
 
     get timeAgo (): string {
         return this.$moment(this.replay.startTime).fromNow();
+    }
+
+    get mapName (): string {
+        return this.replay.hostSettings.mapname.replace(/_/g, " ");
     }
 
     getTitle (allyTeams: AllyTeamResponse[]) : string {
@@ -31,5 +34,18 @@ export class AbstractReplay extends Vue {
             return `${teamALength} vs ${teamBLength}`;
         }
         return "Unknown";
+    }
+
+    factionImage (factionStr: string) {
+        const faction = /arm/i.test(factionStr) ? "armada" : "cortex";
+        return require(`assets/images/${faction}_default.png`);
+    }
+
+    countryImage (countryCode: string) {
+        return require(`../node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
+    }
+
+    rankImage (rank: number) {
+        return require(`assets/images/ranks/${rank + 1}.svg`);
     }
 }
