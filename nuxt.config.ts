@@ -9,11 +9,6 @@ const nuxtConfig: NuxtConfig = {
     env: {
         baseUrl: process.env.BASE_URL || "http://localhost:3000/api"
     },
-    vue: {
-        config: {
-            productionTip: false
-        } as any
-    },
     watch: ["modules"],
     components: true,
     //loading: '~/components/LoadingBar.vue',
