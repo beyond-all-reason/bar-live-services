@@ -50,7 +50,9 @@ export class API {
 
         this.app = express();
         this.app.use(express.json());
-        this.app.set("json spaces", 4); // TODO only for development
+        if (process.env.NODE_ENV !== "production") {
+            this.app.set("json spaces", 4);
+        }
         this.app.use("/maps", express.static(servicesConfig.bardb.mapPath));
         this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
 
