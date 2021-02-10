@@ -9,9 +9,17 @@ const nuxtConfig: NuxtConfig = {
     env: {
         baseUrl: process.env.BASE_URL || "http://localhost:3000/api"
     },
-    watch: ["modules"],
+    //watch: ["modules"],
     components: true,
     //loading: '~/components/LoadingBar.vue',
+    router: {
+        extendRoutes(routes, resolve) {
+            routes.push({
+                path: "",
+                redirect: "/replays"
+            })
+        }
+    },
     head: {
         title: "BAR",
         meta: [

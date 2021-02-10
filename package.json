@@ -10,8 +10,7 @@
         "lint": "./node_modules/.bin/eslint --ext .ts,.vue --ignore-path .gitignore .",
         "lint-fix": "./node_modules/.bin/eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
         "test": "./node_modules/.bin/jest --passWithNoTests",
-        "lobby-logs": "tail -f logs/lobby-bot.log",
-        "temp": "nodemon --watch '**/*' --exec 'ts-node' working-files/api-test.ts"
+        "lobby-logs": "tail -f logs/lobby-bot.log"
     },
     "dependencies": {
         "@nuxt/http": "^0.6.2",
@@ -24,7 +23,7 @@
         "bar-db": "^1.5.0",
         "core-js": "^3.6.5",
         "flag-icon-css": "^3.5.0",
-        "jaz-ts-utils": "",
+        "jaz-ts-utils": "^0.3.1",
         "nuxt": "^2.14.6",
         "nuxt-property-decorator": "^2.9.1",
         "sequelize": "^6.5.0",

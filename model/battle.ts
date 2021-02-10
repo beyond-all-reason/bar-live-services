@@ -10,6 +10,7 @@ export interface Battle<PlayersType extends { [username: string]: Player } | Pla
     locked: boolean;
     rank: number;
     map: string;
+    mapFileName?: string;
     mapHash: number;
     title: string;
     game: string;

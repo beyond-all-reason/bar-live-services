@@ -11,7 +11,6 @@
             dark
             :length="pageCount"
             :total-visible="10"
-            :test="page"
             @input="changePage"
         />
     </div>

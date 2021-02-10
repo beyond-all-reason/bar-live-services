@@ -9,6 +9,7 @@ import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
+import { Battle } from "~/model/battle";
 
 export type ServicesConfig = typeof Config;
 
@@ -69,22 +70,23 @@ export class API {
         this.db = db.schema;
 
         this.leaderboardService = await new LeaderboardService(this.config.leaderboards).init();
-        this.lobbyService = await new LobbyService(this.config.lobby).init();
+        this.lobbyService = await new LobbyService(this.config.lobby, db).init();
     }
 
     protected replays () {
         this.app.get("/replays", async (req, res) => {
             const query = this.parseRequestOptions(req.query as { [key: string]: string });
 
-            const { count, rows: replays } = await this.db.demo.findAndCountAll({
+            const result = await this.db.demo.findAndCountAll({
                 offset: (query.page - 1) * query.limit,
                 limit: query.limit,
                 order: [["startTime", "DESC"]],
                 attributes: ["id", "startTime", "durationMs", "hostSettings"],
+                distinct: true,
                 include: [
                     { model: this.db.map, attributes: ["fileName"] },
                     {
-                        model: this.db.allyTeam,
+                        model: this.db.allyTeam, // TODO: only include total player counts instead of objects
                         attributes: ["allyTeamId"],
                         include: [
                             { model: this.db.player, attributes: ["userId", "playerId", "name"] },
@@ -96,10 +98,10 @@ export class API {
             });
 
             const response: APIResponse<ReplayResponse[]> = {
-                totalResults: count,
+                totalResults: result.count,
                 page: query.page,
                 resultsPerPage: query.limit,
-                data: replays as unknown as ReplayResponse[]
+                data: result.rows as unknown as ReplayResponse[]
             };
 
             res.json(response);
@@ -151,7 +153,7 @@ export class API {
 
     protected battles () {
         this.app.get("/battles", async (req, res) => {
-            res.json(this.lobbyService.getActiveBattles());
+            res.json(this.lobbyService.activeBattles);
         });
     }
 
@@ -160,6 +162,10 @@ export class API {
             page: parseInt(query.page) || defaultApiRequestOptions.page,
             limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit
         };
+    }
+
+    protected paginate() {
+        
     }
 }
 

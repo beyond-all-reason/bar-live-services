@@ -160,6 +160,7 @@ hr {
     padding-bottom: 3px;
 }
 .trueskill {
+    display: flex;
     &:after {
         content: "TS";
         font-size: 10px;

@@ -47,24 +47,6 @@ export default class Page extends Vue {
     beforeDestroy () {
         window.clearInterval(this.pollInterval);
     }
-
-    // mounted () {
-    //     const ws = new WebSocket("ws://localhost:3001");
-    //     ws.onopen = event => console.log("Connected to WebSocket");
-    //     ws.onmessage = (event) => {
-    //         let battles = JSON.parse(event.data) as Battle[];
-    //         const passwordedOrLocked: Battle[] = [];
-    //         battles.forEach((battle, i) => {
-    //             if (battle.passworded || battle.locked) {
-    //                 const battle = battles.splice(i, 1)[0];
-    //                 passwordedOrLocked.unshift(battle);
-    //             }
-    //         });
-    //         battles = battles.sort((a, b) => b.players.length - a.players.length);
-    //         battles.push(...passwordedOrLocked);
-    //         this.battles = battles;
-    //     };
-    // },
 }
 </script>
 

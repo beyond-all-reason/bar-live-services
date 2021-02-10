@@ -5,9 +5,23 @@ import { AllyTeamResponse, ReplayResponse } from "~/model/api/api-response";
 export class AbstractReplay extends Vue {
     replay!: ReplayResponse;
 
-    get mapTextureUrl (): string {
+    get highQualityMapTextureUrl (): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture.png`;
+            return `/api/maps/${this.replay.Map.fileName}/texture-hq.png`;
+        }
+        return require("assets/images/default-minimap.png");
+    }
+
+    get lowQualityMapTextureUrl(): string {
+        if (this.replay.Map.fileName) {
+            return `/api/maps/${this.replay.Map.fileName}/texture-lq.jpg`;
+        }
+        return require("assets/images/default-minimap.png");
+    }
+
+    get mapThumbnailUrl(): string {
+        if (this.replay.Map.fileName) {
+            return `/api/maps/${this.replay.Map.fileName}/texture-thumb.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }

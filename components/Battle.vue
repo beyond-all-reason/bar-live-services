@@ -26,13 +26,12 @@
         </div>
         <div class="players">
             <div v-for="(player, index) in battle.players" :key="index" class="player">
-                <div class="flag">
-                    <img v-if="player.country !== '??'" :src="require(`~/assets/images/flags/${player.country.toLowerCase()}.png`)" alt="">
-                    <img v-else src="~/assets/images/flags/unknown.png">
+                <div v-if="player.country !== '??'" class="flag">
+                    <img :src="countryImage(player.country.toLowerCase())" alt="">
                 </div>
                 <div class="rank">
-                    <img v-if="player.status" :src="require(`~/assets/images/ranks/${player.status.rank + 1}.png`)">
-                    <img v-else src="~/assets/images/ranks/1.png">
+                    <img v-if="player.status" :src="require(`~/assets/images/ranks/${player.status.rank + 1}.svg`)">
+                    <img v-else src="~/assets/images/ranks/1.svg">
                 </div>
                 <div class="username">
                     {{ player.username }}
@@ -51,11 +50,10 @@ export default class BattleComponent extends Vue {
     @Prop({ type: Object, required: true }) readonly battle!: Battle;
 
     get mapUrl () : string {
-        try {
-            return require(`~/assets/images/maps/${this.battle.map.replace(/\s|'/g, "_").toLowerCase()}.jpg`);
-        } catch (err) {
-            return require("~/assets/images/maps/unknown.jpg");
+        if (this.battle.mapFileName) {
+            return `/api/maps/${this.battle.mapFileName}/texture.png`;
         }
+        return require("assets/images/default-minimap.png");
     }
 
     get mapName () : string {
@@ -74,6 +72,10 @@ export default class BattleComponent extends Vue {
             return this.battle.spectators;
         }
         return this.battle.spectators - 1;
+    }
+
+    countryImage (countryCode: string) {
+        return require(`../node_modules/flag-icon-css/flags/4x3/${countryCode}.svg`);
     }
 }
 </script>
@@ -105,7 +107,6 @@ export default class BattleComponent extends Vue {
     left: 0;
     background-position: center;
     background-size: cover;
-    //background-image: var(--bg);
     z-index: -1;
     border-bottom: 4px solid rgba(0, 0, 0, 0.3);
     &:before {
@@ -176,7 +177,7 @@ export default class BattleComponent extends Vue {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 20px 4px 4px 5px;
+    margin: 12px 4px 4px 5px;
     justify-content: left;
     align-items: flex-start;
 }
@@ -185,13 +186,17 @@ export default class BattleComponent extends Vue {
     display: flex;
     align-items: center;
     margin: 2px;
-    padding: 2px 6px;
+    padding: 4px 6px;
     border-radius: 3px;
     & > div {
         margin: 0 2px;
     }
 }
 .flag{
+    display: flex;
+    img {
+        height: 12px;
+    }
 }
 .username{
     font-size: 13px;
