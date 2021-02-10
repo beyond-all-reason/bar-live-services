@@ -9,7 +9,6 @@ import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
-import { Battle } from "~/model/battle";
 
 export type ServicesConfig = typeof Config;
 
@@ -164,8 +163,8 @@ export class API {
         };
     }
 
-    protected paginate() {
-        
+    protected paginate () {
+
     }
 }
 

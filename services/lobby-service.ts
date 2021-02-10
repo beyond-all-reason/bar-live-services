@@ -1,11 +1,11 @@
 import { SpringLobbyProtocolClient, SpringLobbyProtocolClientConfig } from "sluts";
 
+import { Signal } from "jaz-ts-utils";
+import { Database } from "bar-db";
 import { createFileLogger } from "../utils/logger";
 import { Battle } from "../model/battle";
 import { Player } from "../model/player";
 import { Service } from "../services/service";
-import { Signal } from "jaz-ts-utils";
-import { Database } from "bar-db";
 
 export interface LobbyServiceConfig extends SpringLobbyProtocolClientConfig {}
 
@@ -133,7 +133,7 @@ export class LobbyService extends Service {
         return super.init();
     }
 
-    protected updateActiveBattles() {
+    protected updateActiveBattles () {
         const allBattles: Battle[] = Object.values(this.battles).map((battle) => {
             const playersObj = battle.players;
             const playersArr = Object.values(playersObj);
@@ -154,7 +154,7 @@ export class LobbyService extends Service {
                 where: { scriptName: battle.map },
                 attributes: ["fileName"]
             });
-            
+
             battle.mapFileName = map?.fileName;
         });
         activeBattles = activeBattles.sort((a, b) => b.players.length - a.players.length);

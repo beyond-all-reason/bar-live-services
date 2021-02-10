@@ -1,7 +1,9 @@
 <template>
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
-        <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}"></div>
-        <div class="map-name">{{ mapName }}</div>
+        <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
+        <div class="map-name">
+            {{ mapName }}
+        </div>
         <div class="meta">
             <div class="flex-row flex-space-between">
                 <div class="title">

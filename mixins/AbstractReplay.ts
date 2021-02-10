@@ -12,14 +12,14 @@ export class AbstractReplay extends Vue {
         return require("assets/images/default-minimap.png");
     }
 
-    get lowQualityMapTextureUrl(): string {
+    get lowQualityMapTextureUrl (): string {
         if (this.replay.Map.fileName) {
             return `/api/maps/${this.replay.Map.fileName}/texture-lq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
 
-    get mapThumbnailUrl(): string {
+    get mapThumbnailUrl (): string {
         if (this.replay.Map.fileName) {
             return `/api/maps/${this.replay.Map.fileName}/texture-thumb.jpg`;
         }
