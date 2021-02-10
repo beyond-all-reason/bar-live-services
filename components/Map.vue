@@ -4,8 +4,8 @@
         <div v-if="replay.hostSettings.startpostype==='2'" class="boxes">
             <div v-for="(AllyTeam, index) in replay.AllyTeams" :key="index" v-startBox="AllyTeam.startBox" class="box" />
         </div>
-        <div v-if="replay.Map.width && playersAndAi[0].startPos" class="start-positions">
-            <div v-for="(PlayerOrAI, index) in playersAndAi" :key="index" v-startPos="[PlayerOrAI.startPos, mapWidthElmos, mapHeightElmos]" v-setPlayerColor="PlayerOrAI.rgbColor" class="start-pos">
+        <div v-if="replay.Map.width" class="start-positions">
+            <div v-for="(PlayerOrAI, index) in playersAndAi.filter(p => p.startPos)" :key="index" v-startPos="[PlayerOrAI.startPos, mapWidthElmos, mapHeightElmos]" v-setPlayerColor="PlayerOrAI.rgbColor" class="start-pos">
                 <div class="start-pos-tooltip">
                     <span>{{ PlayerOrAI.name }}</span>
                 </div>
