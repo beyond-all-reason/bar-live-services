@@ -61,7 +61,7 @@ export default class MapComponent extends Vue {
 
     get mapTextureUrl (): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture.png`;
+            return `/api/maps/${this.replay.Map.fileName}/texture-hq.png`;
         }
         return require("assets/images/default-minimap.png");
     }
