@@ -20,7 +20,7 @@
         "@nuxtjs/pwa": "^3.0.2",
         "@types/socket.io": "^2.1.12",
         "@types/ws": "^7.4.0",
-        "bar-db": "^1.5.0",
+        "bar-db": "^1.6.2",
         "core-js": "^3.6.5",
         "flag-icon-css": "^3.5.0",
         "jaz-ts-utils": "^0.3.1",

@@ -75,6 +75,7 @@ export default class ReplayPreview extends AbstractReplay {
     font-weight: 600;
     color: #fff;
     text-shadow: 2px 2px #000;
+    line-height: 30px;
 }
 .meta {
     position: absolute;
