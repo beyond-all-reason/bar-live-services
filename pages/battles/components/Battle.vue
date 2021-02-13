@@ -75,7 +75,7 @@ export default class BattleComponent extends Vue {
     }
 
     countryImage (countryCode: string) {
-        return require(`../node_modules/flag-icon-css/flags/4x3/${countryCode}.svg`);
+        return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode}.svg`);
     }
 }
 </script>
@@ -98,6 +98,7 @@ export default class BattleComponent extends Vue {
     padding: 0 5px 10px 5px;
     color: #fff;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+    image-rendering: pixelated;
 }
 .background {
     position: absolute;

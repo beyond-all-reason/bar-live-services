@@ -64,7 +64,7 @@ export class API {
     }
 
     public async init () {
-        const db = new Database(this.config.bardb);
+        const db = new Database({ ...this.config.bardb, syncModel: false });
         await db.init();
         this.db = db.schema;
 

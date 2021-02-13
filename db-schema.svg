@@ -23,7 +23,7 @@
 <polygon fill="none" stroke="#000000" points="0,-700.5447 0,-722.5447 126,-722.5447 126,-700.5447 0,-700.5447"/>
 <text text-anchor="start" x="5" y="-708.5447" font-family="Times,serif" font-size="10.00" fill="#000000">fileName: STRING</text>
 <polygon fill="none" stroke="#000000" points="0,-678.5447 0,-700.5447 126,-700.5447 126,-678.5447 0,-678.5447"/>
-<text text-anchor="start" x="5" y="-686.5447" font-family="Times,serif" font-size="10.00" fill="#000000">description: STRING</text>
+<text text-anchor="start" x="5" y="-686.5447" font-family="Times,serif" font-size="10.00" fill="#000000">description: TEXT</text>
 <polygon fill="none" stroke="#000000" points="0,-656.5447 0,-678.5447 126,-678.5447 126,-656.5447 0,-656.5447"/>
 <text text-anchor="start" x="5" y="-664.5447" font-family="Times,serif" font-size="10.00" fill="#000000">mapHardness: NUMBER</text>
 <polygon fill="none" stroke="#000000" points="0,-634.5447 0,-656.5447 126,-656.5447 126,-634.5447 0,-634.5447"/>
@@ -76,43 +76,47 @@
 <!-- Demo -->
 <g id="node2" class="node">
 <title>Demo</title>
-<polygon fill="#add8e6" stroke="transparent" points="819.7828,-392.9306 819.7828,-414.9306 939.7828,-414.9306 939.7828,-392.9306 819.7828,-392.9306"/>
-<polygon fill="none" stroke="#000000" points="819.7828,-392.9306 819.7828,-414.9306 939.7828,-414.9306 939.7828,-392.9306 819.7828,-392.9306"/>
-<text text-anchor="start" x="867.5643" y="-401.9306" font-family="Times,serif" font-weight="bold" font-size="10.00" fill="#000000">Demo</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-370.9306 819.7828,-392.9306 939.7828,-392.9306 939.7828,-370.9306 819.7828,-370.9306"/>
-<text text-anchor="start" x="824.7828" y="-379.9306" font-family="Times,serif" text-decoration="underline" font-size="10.00" fill="#000000">id</text>
-<text text-anchor="start" x="832.5618" y="-379.9306" font-family="Times,serif" font-size="10.00" fill="#000000">: STRING</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-348.9306 819.7828,-370.9306 939.7828,-370.9306 939.7828,-348.9306 819.7828,-348.9306"/>
-<text text-anchor="start" x="824.7828" y="-356.9306" font-family="Times,serif" font-size="10.00" fill="#000000">fileName: STRING</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-326.9306 819.7828,-348.9306 939.7828,-348.9306 939.7828,-326.9306 819.7828,-326.9306"/>
-<text text-anchor="start" x="824.7828" y="-334.9306" font-family="Times,serif" font-size="10.00" fill="#000000">engineVersion: STRING</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-304.9306 819.7828,-326.9306 939.7828,-326.9306 939.7828,-304.9306 819.7828,-304.9306"/>
-<text text-anchor="start" x="824.7828" y="-312.9306" font-family="Times,serif" font-size="10.00" fill="#000000">gameVersion: STRING</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-282.9306 819.7828,-304.9306 939.7828,-304.9306 939.7828,-282.9306 819.7828,-282.9306"/>
-<text text-anchor="start" x="824.7828" y="-290.9306" font-family="Times,serif" font-size="10.00" fill="#000000">startTime: DATE</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-260.9306 819.7828,-282.9306 939.7828,-282.9306 939.7828,-260.9306 819.7828,-260.9306"/>
-<text text-anchor="start" x="824.7828" y="-268.9306" font-family="Times,serif" font-size="10.00" fill="#000000">durationMs: NUMBER</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-238.9306 819.7828,-260.9306 939.7828,-260.9306 939.7828,-238.9306 819.7828,-238.9306"/>
-<text text-anchor="start" x="824.6513" y="-246.9306" font-family="Times,serif" font-size="10.00" fill="#000000">fullDurationMs: NUMBER</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-216.9306 819.7828,-238.9306 939.7828,-238.9306 939.7828,-216.9306 819.7828,-216.9306"/>
-<text text-anchor="start" x="824.7828" y="-224.9306" font-family="Times,serif" font-size="10.00" fill="#000000">hostSettings: JSON</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-194.9306 819.7828,-216.9306 939.7828,-216.9306 939.7828,-194.9306 819.7828,-194.9306"/>
-<text text-anchor="start" x="824.7828" y="-202.9306" font-family="Times,serif" font-size="10.00" fill="#000000">gameSettings: JSON</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-172.9306 819.7828,-194.9306 939.7828,-194.9306 939.7828,-172.9306 819.7828,-172.9306"/>
-<text text-anchor="start" x="824.7828" y="-180.9306" font-family="Times,serif" font-size="10.00" fill="#000000">mapSettings: JSON</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-150.9306 819.7828,-172.9306 939.7828,-172.9306 939.7828,-150.9306 819.7828,-150.9306"/>
-<text text-anchor="start" x="824.7828" y="-158.9306" font-family="Times,serif" font-size="10.00" fill="#000000">createdAt: DATE</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-128.9306 819.7828,-150.9306 939.7828,-150.9306 939.7828,-128.9306 819.7828,-128.9306"/>
-<text text-anchor="start" x="824.7828" y="-136.9306" font-family="Times,serif" font-size="10.00" fill="#000000">updatedAt: DATE</text>
-<polygon fill="none" stroke="#000000" points="819.7828,-106.9306 819.7828,-128.9306 939.7828,-128.9306 939.7828,-106.9306 819.7828,-106.9306"/>
-<text text-anchor="start" x="824.7828" y="-115.9306" font-family="Times,serif" font-style="italic" text-decoration="underline" font-size="10.00" fill="#000000">mapId</text>
-<text text-anchor="start" x="850.3298" y="-115.9306" font-family="Times,serif" font-size="10.00" fill="#000000">: NUMBER</text>
+<polygon fill="#add8e6" stroke="transparent" points="805.7828,-414.9306 805.7828,-436.9306 953.7828,-436.9306 953.7828,-414.9306 805.7828,-414.9306"/>
+<polygon fill="none" stroke="#000000" points="805.7828,-414.9306 805.7828,-436.9306 953.7828,-436.9306 953.7828,-414.9306 805.7828,-414.9306"/>
+<text text-anchor="start" x="867.5643" y="-423.9306" font-family="Times,serif" font-weight="bold" font-size="10.00" fill="#000000">Demo</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-392.9306 805.7828,-414.9306 953.7828,-414.9306 953.7828,-392.9306 805.7828,-392.9306"/>
+<text text-anchor="start" x="810.7828" y="-401.9306" font-family="Times,serif" text-decoration="underline" font-size="10.00" fill="#000000">id</text>
+<text text-anchor="start" x="818.5618" y="-401.9306" font-family="Times,serif" font-size="10.00" fill="#000000">: STRING</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-370.9306 805.7828,-392.9306 953.7828,-392.9306 953.7828,-370.9306 805.7828,-370.9306"/>
+<text text-anchor="start" x="810.7828" y="-378.9306" font-family="Times,serif" font-size="10.00" fill="#000000">fileName: STRING</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-348.9306 805.7828,-370.9306 953.7828,-370.9306 953.7828,-348.9306 805.7828,-348.9306"/>
+<text text-anchor="start" x="810.7828" y="-356.9306" font-family="Times,serif" font-size="10.00" fill="#000000">engineVersion: STRING</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-326.9306 805.7828,-348.9306 953.7828,-348.9306 953.7828,-326.9306 805.7828,-326.9306"/>
+<text text-anchor="start" x="810.7828" y="-334.9306" font-family="Times,serif" font-size="10.00" fill="#000000">gameVersion: STRING</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-304.9306 805.7828,-326.9306 953.7828,-326.9306 953.7828,-304.9306 805.7828,-304.9306"/>
+<text text-anchor="start" x="810.7828" y="-312.9306" font-family="Times,serif" font-size="10.00" fill="#000000">startTime: DATE</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-282.9306 805.7828,-304.9306 953.7828,-304.9306 953.7828,-282.9306 805.7828,-282.9306"/>
+<text text-anchor="start" x="810.7828" y="-290.9306" font-family="Times,serif" font-size="10.00" fill="#000000">durationMs: NUMBER</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-260.9306 805.7828,-282.9306 953.7828,-282.9306 953.7828,-260.9306 805.7828,-260.9306"/>
+<text text-anchor="start" x="810.7828" y="-268.9306" font-family="Times,serif" font-size="10.00" fill="#000000">fullDurationMs: NUMBER</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-238.9306 805.7828,-260.9306 953.7828,-260.9306 953.7828,-238.9306 805.7828,-238.9306"/>
+<text text-anchor="start" x="810.7828" y="-246.9306" font-family="Times,serif" font-size="10.00" fill="#000000">hostSettings: JSON</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-216.9306 805.7828,-238.9306 953.7828,-238.9306 953.7828,-216.9306 805.7828,-216.9306"/>
+<text text-anchor="start" x="810.7828" y="-224.9306" font-family="Times,serif" font-size="10.00" fill="#000000">gameSettings: JSON</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-194.9306 805.7828,-216.9306 953.7828,-216.9306 953.7828,-194.9306 805.7828,-194.9306"/>
+<text text-anchor="start" x="810.7828" y="-202.9306" font-family="Times,serif" font-size="10.00" fill="#000000">mapSettings: JSON</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-172.9306 805.7828,-194.9306 953.7828,-194.9306 953.7828,-172.9306 805.7828,-172.9306"/>
+<text text-anchor="start" x="810.4973" y="-180.9306" font-family="Times,serif" font-size="10.00" fill="#000000">gameEndedNormally: BOOLEAN</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-150.9306 805.7828,-172.9306 953.7828,-172.9306 953.7828,-150.9306 805.7828,-150.9306"/>
+<text text-anchor="start" x="810.7828" y="-158.9306" font-family="Times,serif" font-size="10.00" fill="#000000">chatlog: JSON</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-128.9306 805.7828,-150.9306 953.7828,-150.9306 953.7828,-128.9306 805.7828,-128.9306"/>
+<text text-anchor="start" x="810.7828" y="-136.9306" font-family="Times,serif" font-size="10.00" fill="#000000">createdAt: DATE</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-106.9306 805.7828,-128.9306 953.7828,-128.9306 953.7828,-106.9306 805.7828,-106.9306"/>
+<text text-anchor="start" x="810.7828" y="-114.9306" font-family="Times,serif" font-size="10.00" fill="#000000">updatedAt: DATE</text>
+<polygon fill="none" stroke="#000000" points="805.7828,-84.9306 805.7828,-106.9306 953.7828,-106.9306 953.7828,-84.9306 805.7828,-84.9306"/>
+<text text-anchor="start" x="810.7828" y="-93.9306" font-family="Times,serif" font-style="italic" text-decoration="underline" font-size="10.00" fill="#000000">mapId</text>
+<text text-anchor="start" x="836.3298" y="-93.9306" font-family="Times,serif" font-size="10.00" fill="#000000">: NUMBER</text>
 </g>
 <!-- Demo&#45;&gt;Map -->
 <g id="edge1" class="edge">
 <title>Demo&#45;&gt;Map</title>
-<path fill="none" stroke="#000000" stroke-width=".75" d="M813.8935,-277.7594C659.8207,-317.111 277.6234,-414.7279 126.222,-453.3972"/>
-<polygon fill="#000000" stroke="#000000" stroke-width=".75" points="813.9095,-277.7554 820.391,-278.8865 816.8161,-277.0129 819.7228,-276.2705 819.7228,-276.2705 819.7228,-276.2705 816.8161,-277.0129 819.0547,-273.6545 813.9095,-277.7554 813.9095,-277.7554"/>
+<path fill="none" stroke="#000000" stroke-width=".75" d="M799.3323,-281.4784C636.9294,-322.9577 272.9148,-415.9305 126.1379,-453.4187"/>
+<polygon fill="#000000" stroke="#000000" stroke-width=".75" points="799.6829,-281.389 806.1644,-282.5201 802.5896,-280.6465 805.4962,-279.9041 805.4962,-279.9041 805.4962,-279.9041 802.5896,-280.6465 804.8281,-277.2881 799.6829,-281.389 799.6829,-281.389"/>
 </g>
 <!-- AllyTeam -->
 <g id="node3" class="node">
@@ -140,7 +144,7 @@
 <!-- AllyTeam&#45;&gt;Demo -->
 <g id="edge2" class="edge">
 <title>AllyTeam&#45;&gt;Demo</title>
-<path fill="none" stroke="#000000" stroke-width=".75" d="M879.7828,-583.9245C879.7828,-534.1538 879.7828,-471.8107 879.7828,-415.2051"/>
+<path fill="none" stroke="#000000" stroke-width=".75" d="M879.7828,-583.8701C879.7828,-540.4616 879.7828,-487.4982 879.7828,-437.1206"/>
 <polygon fill="#000000" stroke="#000000" stroke-width=".75" points="879.7829,-583.9305 877.0828,-589.9304 879.7829,-586.9305 879.7828,-589.9305 879.7828,-589.9305 879.7828,-589.9305 879.7829,-586.9305 882.4828,-589.9305 879.7829,-583.9305 879.7829,-583.9305"/>
 </g>
 <!-- Player -->
@@ -256,7 +260,7 @@
 <!-- Spectator&#45;&gt;Demo -->
 <g id="edge5" class="edge">
 <title>Spectator&#45;&gt;Demo</title>
-<path fill="none" stroke="#000000" stroke-width=".75" d="M1209.6568,-153.7481C1134.1961,-178.2667 1012.5949,-217.7774 940.0081,-241.3622"/>
+<path fill="none" stroke="#000000" stroke-width=".75" d="M1209.581,-153.7727C1138.724,-176.7955 1027.2458,-213.017 953.8303,-236.8711"/>
 <polygon fill="#000000" stroke="#000000" stroke-width=".75" points="1209.7525,-153.717 1216.2933,-154.4307 1212.6057,-152.7899 1215.4589,-151.8629 1215.4589,-151.8629 1215.4589,-151.8629 1212.6057,-152.7899 1214.6245,-149.295 1209.7525,-153.717 1209.7525,-153.717"/>
 </g>
 <!-- Spectator&#45;&gt;User -->

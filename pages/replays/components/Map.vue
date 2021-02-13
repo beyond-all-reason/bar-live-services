@@ -61,7 +61,7 @@ export default class MapComponent extends Vue {
 
     get mapTextureUrl (): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture-hq.png`;
+            return `/api/maps/${this.replay.Map.fileName}/texture-mq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
@@ -88,6 +88,7 @@ export default class MapComponent extends Vue {
     img {
         max-height: 100%;
         max-width: 100%;
+        image-rendering: pixelated;
     }
 }
 .boxes {

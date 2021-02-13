@@ -4,6 +4,7 @@ import { AllyTeamResponse, ReplayResponse } from "~/model/api/api-response";
 @Component
 export class AbstractReplay extends Vue {
     replay!: ReplayResponse;
+    playerColors!: { [playerId: number]: { r: number, g: number, b: number } };
 
     get highQualityMapTextureUrl (): string {
         if (this.replay.Map.fileName) {
@@ -56,7 +57,7 @@ export class AbstractReplay extends Vue {
     }
 
     countryImage (countryCode: string) {
-        return require(`../node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
+        return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
     }
 
     rankImage (rank: number) {

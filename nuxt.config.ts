@@ -10,8 +10,14 @@ const nuxtConfig: NuxtConfig = {
         baseUrl: process.env.BASE_URL || "http://localhost:3000/api"
     },
     //watch: ["modules"],
-    components: true,
+    components: [
+        "~/components",
+        { path: "~/pages", pattern: "*/components/**" }
+    ],
     //loading: '~/components/LoadingBar.vue',
+    ignore: [
+        "pages/*/components/*"
+    ],
     router: {
         extendRoutes(routes, resolve) {
             routes.push({

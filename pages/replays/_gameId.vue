@@ -4,10 +4,11 @@
             {{ title }}
         </h1>
         <div class="replay-container">
-            <div class="map-container">
+            <div class="left-col">
                 <Map :replay="replay" />
+                <ChatLog v-if="replay.chatlog.length" :chatlog="replay.chatlog.filter(msg => msg.playerId !== 255)" :player-colors="playerColors" />
             </div>
-            <div class="info">
+            <div class="right-col">
                 <div class="download">
                     <a :href="`/api/replays/${replay.fileName}`">Download</a>
                 </div>
@@ -28,6 +29,18 @@
                         <tr>
                             <td>Time</td>
                             <td>{{ $moment(replay.startTime).format("h:mm:ss A") }}</td>
+                        </tr>
+                        <tr>
+                            <td>Engine</td>
+                            <td>{{ replay.engineVersion }}</td>
+                        </tr>
+                        <tr>
+                            <td>Game</td>
+                            <td>{{ replay.gameVersion }}</td>
+                        </tr>
+                        <tr>
+                            <td>Ended Normally</td>
+                            <td>{{ replay.gameEndedNormally ? "Yes" : "No" }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -60,6 +73,66 @@
                         </tr>
                     </tbody>
                 </table>
+                <table class="players">
+                    <tbody>
+                        <tr>
+                            <td class="team-heading" colspan="100%">
+                                Spectators
+                            </td>
+                        </tr>
+                        <tr v-for="(Spectator, specIndex) in replay.Spectators" :key="`spec-`+specIndex">
+                            <td><img :src="countryImage(Spectator.countryCode)"></td>
+                            <td><img :src="rankImage(Spectator.rank)"></td>
+                            <td :class="`trueskill uncertainty-${Spectator.skillUncertainty}`">
+                                {{ Spectator.skill }}
+                            </td>
+                            <td>{{ Spectator.name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="options">
+                    <v-expansion-panels dark>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Host Settings</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <div v-for="(value, name) in replay.hostSettings" :key="`host-setting-${name}`" class="setting">
+                                    <div class="setting-key">
+                                        {{ name }}
+                                    </div>
+                                    <div class="setting-value">
+                                        {{ value }}
+                                    </div>
+                                </div>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Game Settings</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <div v-for="(value, name) in replay.gameSettings" :key="`game-setting-${name}`" class="setting">
+                                    <div class="setting-key">
+                                        {{ name }}
+                                    </div>
+                                    <div class="setting-value">
+                                        {{ value }}
+                                    </div>
+                                </div>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Map Settings</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <div v-for="(value, name) in replay.mapSettings" :key="`map-setting-${name}`" class="setting">
+                                    <div class="setting-key">
+                                        {{ name }}
+                                    </div>
+                                    <div class="setting-value">
+                                        {{ value }}
+                                    </div>
+                                </div>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </div>
             </div>
         </div>
     </div>
@@ -88,7 +161,13 @@ import { ReplayResponse } from "~/model/api/api-response";
 export default class Replay extends AbstractReplay {
     async asyncData ({ store, $http, params }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
-        return { replay };
+        const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
+        for (const allyTeam of replay.AllyTeams) {
+            for (const player of allyTeam.Players) {
+                playerColors[player.playerId] = { r: player.rgbColor.r, g: player.rgbColor.g, b: player.rgbColor.b };
+            }
+        }
+        return { replay, playerColors };
     }
 }
 </script>
@@ -102,19 +181,22 @@ export default class Replay extends AbstractReplay {
         flex-wrap: wrap;
     }
 }
-.map-container {
+.left-col {
     position: relative;
-    width: 60%;
+    width: 55%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     @media screen and (orientation: portrait) {
         width: 100%;
     }
 }
-.info {
-    flex-grow: 1;
+.right-col {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
     margin-left: 20px;
     @media screen and (orientation: portrait) {
         width: 100%;
@@ -125,6 +207,7 @@ export default class Replay extends AbstractReplay {
         margin-bottom: 10px;
         td:first-child {
             font-weight: bold;
+            line-height: 20px;
         }
     }
 }
@@ -161,6 +244,7 @@ hr {
 }
 .trueskill {
     display: flex;
+    justify-content: flex-end;
     &:after {
         content: "TS";
         font-size: 10px;
@@ -174,6 +258,28 @@ hr {
         &-1 { color: rgb(255, 200, 200); }
         &-2 { color: rgb(255, 150, 150); }
         &-3 { color: rgb(255, 100, 100); }
+    }
+}
+.setting {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2px 0;
+    font-size: 13px;
+    &:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.03);
+    }
+    &-key {
+        width: 50%;
+        word-break: break-all;
+        display: flex;
+        align-items: center;
+    }
+    &-value {
+        width: 50%;
+        padding-left: 10px;
+        display: flex;
+        align-items: center;
     }
 }
 </style>
