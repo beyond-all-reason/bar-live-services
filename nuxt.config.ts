@@ -27,11 +27,11 @@ const nuxtConfig: NuxtConfig = {
         }
     },
     head: {
-        title: "BAR",
+        title: "BAR Live Services",
         meta: [
             { charset: "utf-8" },
             { name: "viewport", content: "width=device-width, initial-scale=1" },
-            { hid: "description", name: "description", content: "" }
+            { hid: "description", name: "description", content: "Live data for the RTS game Beyond All Reason" }
         ],
         link: [
             { rel: "icon", type: "image/png", href: "/favicon.png" },

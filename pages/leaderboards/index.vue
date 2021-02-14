@@ -38,7 +38,9 @@ import { Context } from "@nuxt/types/app";
 import { Component, Vue } from "nuxt-property-decorator";
 import { SLDBModel } from "sldbts";
 
-@Component
+@Component({
+    head: { title: "BAR - Leaderboards" }
+})
 export default class Page extends Vue {
     async asyncData ({ store, $http, params }: Context): Promise<any> {
         const leaderboards = await $http.$get("leaderboards") as SLDBModel.LeaderboardResult[];
