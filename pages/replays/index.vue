@@ -4,7 +4,7 @@
             Replays
         </h1>
         <div class="filters">
-            <v-chip-group v-model="filters" multiple @change="changeFilters">
+            <v-chip-group v-model="filters" column multiple @change="changeFilters">
                 <v-chip label :ripple="false" value="duel">
                     Duel
                 </v-chip>
@@ -21,6 +21,9 @@
                     Ended Normally
                 </v-chip>
             </v-chip-group>
+        </div>
+        <div class="total-results">
+            Found {{ totalResults }} replays in {{ timeTaken }}ms.
         </div>
         <div class="replays">
             <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" />
@@ -44,19 +47,23 @@ import { ReplayFilters, defaultReplayFilters, ReplaySorts } from "~/model/api/re
     }
 })
 export default class Page extends Vue {
-    replays: Demo[] = [];
-    page: number = 1;
-    pageCount: number = 0;
+    totalResults = 0;
+    page = 1;
+    pageCount = 0;
     filters: (keyof typeof defaultReplayFilters)[] = [];
+    replays: Demo[] = [];
+    timeTaken = 0;
 
     async fetch (): Promise<any> {
+        const beforeTime = Date.now();
         const searchParams = new URLSearchParams(this.$route.query as {});
         const response = await this.$http.$get("replays", { searchParams }) as APIResponse<Demo[], ReplayFilters, ReplaySorts>;
-        this.replays = response.data;
+        this.timeTaken = Date.now() - beforeTime;
+        this.totalResults = response.totalResults;
         this.page = response.page;
         this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
-        const filters = Object.keys(response.filters).filter(key => response.filters[key] === true);
-        this.filters = filters;
+        this.filters = Object.keys(response.filters).filter(key => response.filters[key] === true);
+        this.replays = response.data;
     }
 
     async changePage (page: number) {
@@ -83,10 +90,16 @@ export default class Page extends Vue {
 .filters {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .replays {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+}
+.total-results {
+    font-size: 11px;
+    margin-top: 5px;
+    text-align: center;
 }
 </style>

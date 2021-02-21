@@ -6,8 +6,13 @@
         <div v-if="battles && !battles.length" class="empty">
             No active battles 😞
         </div>
-        <div v-else class="battles">
-            <Battle v-for="(battle, index) in battles" :key="index" :battle="battle" />
+        <div v-else>
+            <div class="players-online">
+                There are currently <span class="player-count">{{ numOfPlayers }}</span> players in active battles.
+            </div>
+            <div class="battles">
+                <Battle v-for="(battle, index) in battles" :key="index" :battle="battle" />
+            </div>
         </div>
     </div>
 </template>
@@ -24,6 +29,7 @@ import { Battle } from "~/model/battle";
 export default class Page extends Vue {
     battles: Battle[] = [];
     pollInterval = 0;
+    numOfPlayers = 0;
 
     async asyncData ({ $http }: Context): Promise<any> {
         const battles = await $http.$get("battles") as Battle[];
@@ -33,6 +39,7 @@ export default class Page extends Vue {
     async fetch () {
         try {
             this.battles = await this.$http.$get("battles") as Battle[];
+            this.numOfPlayers = this.battles.reduce((total, battle) => total + battle.players.length, 0);
         } catch (err) {
 
         }
@@ -56,6 +63,13 @@ export default class Page extends Vue {
     font-size: 4vw;
     font-weight: 200;
     text-align: center;
+}
+.players-online {
+    margin-bottom: 5px;
+    text-align: center;
+    .player-count {
+        font-weight: 600;
+    }
 }
 .battles {
     display: flex;

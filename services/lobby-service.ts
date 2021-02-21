@@ -9,7 +9,7 @@ import { Service } from "../services/service";
 
 export interface LobbyServiceConfig extends SpringLobbyProtocolClientConfig {}
 
-export type Battles = { [key: number]: Battle<{ [username: string]: Player }> };
+export type Battles = { [battleId: number]: Battle<{ [username: string]: Player }> };
 export type Players = { [key: string]: Player };
 
 export class LobbyService extends Service {
@@ -142,14 +142,9 @@ export class LobbyService extends Service {
                 players: playersArr
             };
         });
-        let activeBattles = allBattles.filter(battle => battle.players.length > 0);
-        const passwordedOrLocked: Battle[] = [];
-        activeBattles.forEach(async (battle, i) => {
-            if (battle.passworded || battle.locked) {
-                const battle = activeBattles.splice(i, 1)[0];
-                passwordedOrLocked.unshift(battle);
-            }
 
+        let activeBattles = allBattles.filter(battle => battle.players.length > 0);
+        activeBattles.forEach(async (battle, i) => {
             const map = await this.db.schema.map.findOne({
                 where: { scriptName: battle.map },
                 attributes: ["fileName"]
@@ -157,7 +152,16 @@ export class LobbyService extends Service {
 
             battle.mapFileName = map?.fileName;
         });
+
         activeBattles = activeBattles.sort((a, b) => b.players.length - a.players.length);
+
+        const passwordedOrLocked: Battle[] = [];
+        activeBattles.forEach((battle, i) => {
+            if (battle.passworded || battle.locked) {
+                const battle = activeBattles.splice(i, 1)[0];
+                passwordedOrLocked.unshift(battle);
+            }
+        });
         activeBattles.push(...passwordedOrLocked);
 
         this.activeBattles = activeBattles;

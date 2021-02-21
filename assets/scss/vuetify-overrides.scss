@@ -1,3 +1,12 @@
+.v-slide-group__content {
+    justify-content: center !important;
+}
+
+.v-pagination__item--active {
+    background: #eee !important;
+    color: #000 !important;
+}
+
 .v-application.theme--dark .v-chip, .v-application .theme--dark.v-chip{
     &--active {
         background: rgba(255, 255, 255, 0.9);
