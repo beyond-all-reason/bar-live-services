@@ -3,8 +3,8 @@ export default {
         dark: true,
         themes: {
             dark: {
-                primary: '#fff'
-            },
+                primary: "#fff"
+            }
         }
     }
-}
+};

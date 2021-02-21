@@ -4,12 +4,22 @@
             Replays
         </h1>
         <div class="filters">
-            <v-chip-group multiple @change="changeFilters" v-model="filters">
-                <v-chip label :ripple="false" value="duel">Duel</v-chip>
-                <v-chip label :ripple="false" value="team">Team</v-chip>
-                <v-chip label :ripple="false" value="ffa">FFA</v-chip>
-                <v-chip label :ripple="false" value="bots">Bots</v-chip>
-                <v-chip label :ripple="false" value="endedNormally">Ended Normally</v-chip>
+            <v-chip-group v-model="filters" multiple @change="changeFilters">
+                <v-chip label :ripple="false" value="duel">
+                    Duel
+                </v-chip>
+                <v-chip label :ripple="false" value="team">
+                    Team
+                </v-chip>
+                <v-chip label :ripple="false" value="ffa">
+                    FFA
+                </v-chip>
+                <v-chip label :ripple="false" value="bots">
+                    Bots
+                </v-chip>
+                <v-chip label :ripple="false" value="endedNormally">
+                    Ended Normally
+                </v-chip>
             </v-chip-group>
         </div>
         <div class="replays">
@@ -22,7 +32,7 @@
 <script lang="ts">
 import { Demo } from "bar-db/dist/model/demo";
 import _ from "lodash";
-import { Component, Vue, Prop } from "nuxt-property-decorator";
+import { Component, Vue } from "nuxt-property-decorator";
 
 import { APIResponse } from "~/model/api/api-response";
 import { ReplayFilters, defaultReplayFilters, ReplaySorts } from "~/model/api/replays";
@@ -45,7 +55,7 @@ export default class Page extends Vue {
         this.replays = response.data;
         this.page = response.page;
         this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
-        const filters = Object.keys(response.filters).filter((key) => response.filters[key] == true);
+        const filters = Object.keys(response.filters).filter(key => response.filters[key] === true);
         this.filters = filters;
     }
 
@@ -53,14 +63,14 @@ export default class Page extends Vue {
         this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
     }
 
-    changeFilters() {
+    changeFilters () {
         const currentQuery = _.clone(this.$route.query);
         const query: { [key: string]: string } = {};
         for (const filterKey in defaultReplayFilters) {
             delete currentQuery[filterKey];
             if (this.filters.includes(filterKey) && defaultReplayFilters[filterKey] === false) {
                 query[filterKey] = "true";
-            } else if(!this.filters.includes(filterKey) && defaultReplayFilters[filterKey] === true) {
+            } else if (!this.filters.includes(filterKey) && defaultReplayFilters[filterKey] === true) {
                 query[filterKey] = "false";
             }
         }

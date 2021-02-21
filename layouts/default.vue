@@ -29,7 +29,7 @@ export default Vue.extend({
 //     align-items: center;
 // }
 .app {
-    
+
 }
 .page-title {
     margin: 10px 0;

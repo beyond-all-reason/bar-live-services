@@ -163,7 +163,7 @@ export default class Replay extends AbstractReplay {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
         for (const allyTeam of replay.AllyTeams) {
-            allyTeam.Players = allyTeam.Players.sort((a, b) => Number(b.skill.replace("~", "")) - Number(a.skill.replace("~", "")))
+            allyTeam.Players = allyTeam.Players.sort((a, b) => Number(b.skill.replace("~", "")) - Number(a.skill.replace("~", "")));
             for (const player of allyTeam.Players) {
                 playerColors[player.playerId] = { r: player.rgbColor.r, g: player.rgbColor.g, b: player.rgbColor.b };
             }

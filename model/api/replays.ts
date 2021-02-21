@@ -1,4 +1,3 @@
-import { Optionals } from "jaz-ts-utils";
 import { Filters, PaginatedRequest, Sort, SortType } from "~/model/api/paginated-request";
 
 export interface ReplayRequest extends PaginatedRequest<ReplayFilters, ReplaySorts> {
@@ -26,4 +25,4 @@ export interface ReplaySorts extends Sort {
 
 export const defaultReplaySorts: Readonly<ReplaySorts> = {
     startTime: "desc"
-}
+};

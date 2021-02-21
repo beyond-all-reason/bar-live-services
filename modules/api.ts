@@ -6,12 +6,12 @@ import express from "express";
 import _ from "lodash";
 import { Writeable } from "jaz-ts-utils";
 
-import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
+import { Op, OrderItem } from "sequelize";
+import { defaultApiRequestOptions } from "../model/api/request-options";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
-import { Op, OrderItem, Sequelize } from "sequelize";
 import { defaultReplayFilters, defaultReplaySorts, ReplayRequest } from "../model/api/replays";
 
 export type ServicesConfig = typeof Config;
@@ -203,7 +203,7 @@ export class API {
         return {
             page: parseInt(query.page) || defaultApiRequestOptions.page,
             limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit,
-            filters: filters,
+            filters,
             sort: sorts
         };
     }

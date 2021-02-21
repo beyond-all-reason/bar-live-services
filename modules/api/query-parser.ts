@@ -1,3 +1,3 @@
-export function queryParser() {
+export function queryParser () {
 
 }

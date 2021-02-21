@@ -6,13 +6,23 @@
         </div> -->
         <div class="meta">
             <div class="times">
-                <div class="duration"><v-icon>mdi-clock-time-eight-outline</v-icon>{{ duration }}</div>
-                <div class="start-time"><v-icon>mdi-calendar-range</v-icon>{{ timeAgo }}</div>
+                <div class="duration">
+                    <v-icon>mdi-clock-time-eight-outline</v-icon>{{ duration }}
+                </div>
+                <div class="start-time">
+                    <v-icon>mdi-calendar-range</v-icon>{{ timeAgo }}
+                </div>
             </div>
             <div class="replay-title flex-col flex-center flex-top">
-                <div class="type">{{ title }}</div>
-                <div class="on">on</div>
-                <div class="map-name">{{ mapName }}</div>
+                <div class="type">
+                    {{ title }}
+                </div>
+                <div class="on">
+                    on
+                </div>
+                <div class="map-name">
+                    {{ mapName }}
+                </div>
             </div>
         </div>
     </NuxtLink>
@@ -72,7 +82,7 @@ export default class ReplayPreview extends AbstractReplay {
     }
 }
 .replay-title {
-    
+
 }
 .type, .map-name {
     font-size: 28px;
