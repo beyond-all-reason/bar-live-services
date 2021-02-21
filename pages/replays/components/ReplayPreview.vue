@@ -53,7 +53,7 @@ export default class ReplayPreview extends AbstractReplay {
     border-radius: 3px;
     &:hover {
         .map {
-            filter: brightness(100%);
+            filter: brightness(120%);
             border-bottom: 1px solid rgba(0, 0, 0, 0.3);
         }
     }
@@ -66,7 +66,7 @@ export default class ReplayPreview extends AbstractReplay {
     left: 0;
     background-size: cover;
     background-position: center center;
-    filter: brightness(90%);
+    filter: brightness(100%);
     transition: filter .2s;
     border-bottom: 4px solid rgba(0, 0, 0, 0.3);
     z-index: -1;
