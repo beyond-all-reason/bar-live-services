@@ -81,9 +81,6 @@ export default class ReplayPreview extends AbstractReplay {
         background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.0) 100%);
     }
 }
-.replay-title {
-
-}
 .type, .map-name {
     font-size: 28px;
     font-weight: 600;
