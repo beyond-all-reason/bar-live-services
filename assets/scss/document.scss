@@ -1,15 +1,8 @@
-* { box-sizing: border-box; }
-
-html {
-    font-family: 'Poppins', sans-serif;
-    color: #fff;
-}
-
 body {
     background: linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,0,0,.84)),url("~assets/images/background.jpg");
 }
 
-a {
+a, .v-application a {
     text-decoration: none;
     color: #b4b4b4;
     transition: color .2s ease;

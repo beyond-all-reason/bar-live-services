@@ -27,7 +27,7 @@ import { DemoModel } from "sdfz-demo-parser";
             if (binding.value === undefined) { return; }
             const { r, g, b } = binding.value as { r: number, g: number, b: number };
             const lightness = 0.299 * r + 0.587 * g + 0.114 * b; // https://stackoverflow.com/a/596243/1864403
-            el.style.color = `rgba(${r * 100}%, ${g * 100}%, ${b * 100}%, 1)`;
+            el.style.color = `rgba(${r}, ${g}, ${b}, 1)`;
             el.style.textShadow = lightness < 0.1 ? "0 0 3px #fff" : "1px 1px #000";
         }
     }
@@ -89,7 +89,7 @@ export default class ChatLog extends Vue {
 }
 .type {
     &-ally { color: rgb(172, 226, 172); }
-    &-spec { color: rgb(228, 228, 159); }
+    &-spec { color: rgb(255, 244, 146); }
     &-global { color: white; }
 }
 </style>

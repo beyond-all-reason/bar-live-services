@@ -6,7 +6,7 @@
                 <img v-if="battle.founder.status.ingame" src="~/assets/images/ingame.png">
                 <img v-else src="~/assets/images/battle.png">
             </div>
-            <div class="title">
+            <div class="battle-title">
                 {{ battle.title }}
             </div>
             <div v-if="battle.locked || battle.passworded" class="lock">
@@ -92,13 +92,10 @@ export default class BattleComponent extends Vue {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-position: center;
-    background-size: cover;
-    border-radius: 4px;
+    border-radius: 3px;
     padding: 0 5px 10px 5px;
     color: #fff;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
-    image-rendering: pixelated;
 }
 .background {
     position: absolute;
@@ -110,6 +107,7 @@ export default class BattleComponent extends Vue {
     background-size: cover;
     z-index: -1;
     border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+    image-rendering: pixelated;
     &:before {
         position: absolute;
         width: calc(100% - 2px);
@@ -138,7 +136,7 @@ export default class BattleComponent extends Vue {
         max-height: 32px;
     }
 }
-.title{
+.battle-title{
     text-align: left;
 }
 .map{

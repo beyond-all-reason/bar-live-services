@@ -4,7 +4,6 @@ import { AllyTeamResponse, ReplayResponse } from "~/model/api/api-response";
 @Component
 export class AbstractReplay extends Vue {
     replay!: ReplayResponse;
-    playerColors!: { [playerId: number]: { r: number, g: number, b: number } };
 
     get highQualityMapTextureUrl (): string {
         if (this.replay.Map.fileName) {
@@ -35,6 +34,10 @@ export class AbstractReplay extends Vue {
         return this.$moment(this.replay.startTime).fromNow();
     }
 
+    get duration (): string {
+        return this.$moment.duration(this.replay.durationMs).humanize();
+    }
+
     get mapName (): string {
         return this.replay.hostSettings.mapname.replace(/_/g, " ");
     }
@@ -57,6 +60,9 @@ export class AbstractReplay extends Vue {
     }
 
     countryImage (countryCode: string) {
+        if (countryCode === "??") {
+            return "";
+        }
         return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
     }
 

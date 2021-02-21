@@ -27,6 +27,7 @@
         "createSchemaDiagram": false,
         "mapPath": "C:/Users/tim/Repos/bar-db/maps/unprocessed",
         "demoPath": "C:/Users/tim/Repos/bar-db/demos/unprocessed",
-        "verbose": true
+        "verbose": true,
+        "logSQL": false
     }
 }

@@ -3,12 +3,16 @@ import { Module } from "@nuxt/types";
 import { Database } from "bar-db";
 import { DatabaseSchema } from "bar-db/dist/database";
 import express from "express";
+import _ from "lodash";
+import { Writeable } from "jaz-ts-utils";
 
 import { APIRequestOptions, defaultApiRequestOptions } from "../model/api/request-options";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
+import { Op, OrderItem, Sequelize } from "sequelize";
+import { defaultReplayFilters, defaultReplaySorts, ReplayRequest } from "../model/api/replays";
 
 export type ServicesConfig = typeof Config;
 
@@ -74,12 +78,21 @@ export class API {
 
     protected replays () {
         this.app.get("/replays", async (req, res) => {
-            const query = this.parseRequestOptions(req.query as { [key: string]: string });
+            const query = this.parseReplaysRequestQuery(req.query as { [key: string]: string });
+
+            const order = Object.entries(query.sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
+
+            const presets: string[] = [];
+            for (const preset of ["duel", "team", "ffa"]) {
+                if (query.filters[preset]) {
+                    presets.push(preset);
+                }
+            }
 
             const result = await this.db.demo.findAndCountAll({
                 offset: (query.page - 1) * query.limit,
                 limit: query.limit,
-                order: [["startTime", "DESC"]],
+                order,
                 attributes: ["id", "startTime", "durationMs", "hostSettings"],
                 distinct: true,
                 include: [
@@ -93,13 +106,22 @@ export class API {
                         ]
                     },
                     { model: this.db.spectator, attributes: ["userId", "playerId", "name"] }
-                ]
+                ],
+                where: {
+                    hasBots: query.filters.bots,
+                    gameEndedNormally: query.filters.endedNormally,
+                    preset: {
+                        [Op.or]: presets
+                    }
+                }
             });
 
             const response: APIResponse<ReplayResponse[]> = {
                 totalResults: result.count,
                 page: query.page,
                 resultsPerPage: query.limit,
+                filters: query.filters,
+                sorts: query.sort,
                 data: result.rows as unknown as ReplayResponse[]
             };
 
@@ -110,7 +132,12 @@ export class API {
             const replay = await this.db.demo.findByPk(req.params.replayId, {
                 include: [
                     { model: this.db.map },
-                    { model: this.db.allyTeam, include: [this.db.player, this.db.ai] },
+                    {
+                        model: this.db.allyTeam,
+                        include: [this.db.player, this.db.ai],
+                        separate: true,
+                        order: [["allyTeamId", "ASC"]]
+                    },
                     { model: this.db.spectator }
                 ]
             });
@@ -156,15 +183,29 @@ export class API {
         });
     }
 
-    protected parseRequestOptions (query: { [key: string]: string }) : Required<APIRequestOptions> {
+    protected parseReplaysRequestQuery (query: { [key: string]: string }) : Required<ReplayRequest> {
+        const filters: Writeable<typeof defaultReplayFilters> = _.clone(defaultReplayFilters);
+        for (const key in query) {
+            const val = query[key];
+            if (key in filters) {
+                filters[key] = val === "true";
+            }
+        }
+
+        const sorts: Writeable<typeof defaultReplaySorts> = _.clone(defaultReplaySorts);
+        for (const key in query) {
+            const val = query[key];
+            if (key in sorts) {
+                sorts[key] = val === "asc" ? "asc" : "desc";
+            }
+        }
+
         return {
             page: parseInt(query.page) || defaultApiRequestOptions.page,
-            limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit
+            limit: Math.min(parseInt(query.limit), defaultApiRequestOptions.limit) || defaultApiRequestOptions.limit,
+            filters: filters,
+            sort: sorts
         };
-    }
-
-    protected paginate () {
-
     }
 }
 

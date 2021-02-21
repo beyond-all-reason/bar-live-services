@@ -31,7 +31,11 @@ const nuxtConfig: NuxtConfig = {
         meta: [
             { charset: "utf-8" },
             { name: "viewport", content: "width=device-width, initial-scale=1" },
-            { hid: "description", name: "description", content: "Live data for the RTS game Beyond All Reason" }
+            { hid: "description", name: "description", content: "Live data for the RTS game Beyond All Reason" },
+            { name: "robots", content: "noindex" },
+            { hid: "og:title", name: "og:title", property: "og:title", content: "BAR Live Services" },
+            { hid: "og:site_name", name: "og:site_name", property: "og:site_name", content: "BAR Live Services" },
+            { hid: "og:description", name: "og:description", property: "og:description", content: "Live, dynamic data such as replays, leaderboards and live battles for the RTS game Beyond All Reason" },
         ],
         link: [
             { rel: "icon", type: "image/png", href: "/favicon.png" },
@@ -44,7 +48,8 @@ const nuxtConfig: NuxtConfig = {
     ],
     vuetify: {
         customVariables: ['~/assets/scss/variables.scss'],
-        treeShake: true
+        treeShake: true,
+        optionsPath: "./vuetify.options.ts"
     },
     transition: {
         name: "slide-transition",

@@ -1,17 +1,18 @@
 <template>
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
         <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
-        <div class="map-name">
+        <!-- <div class="map-name">
             {{ mapName }}
-        </div>
+        </div> -->
         <div class="meta">
-            <div class="flex-row flex-space-between">
-                <div class="title">
-                    {{ title }}
-                </div>
-                <div class="date">
-                    {{ timeAgo }}
-                </div>
+            <div class="times">
+                <div class="duration"><v-icon>mdi-clock-time-eight-outline</v-icon>{{ duration }}</div>
+                <div class="start-time"><v-icon>mdi-calendar-range</v-icon>{{ timeAgo }}</div>
+            </div>
+            <div class="replay-title flex-col flex-center flex-top">
+                <div class="type">{{ title }}</div>
+                <div class="on">on</div>
+                <div class="map-name">{{ mapName }}</div>
             </div>
         </div>
     </NuxtLink>
@@ -33,57 +34,84 @@ export default class ReplayPreview extends AbstractReplay {
 .replay-preview {
     position: relative;
     width: 250px;
-    height: 250px;
+    height: 247px;
     margin: 15px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     overflow: hidden;
-    &:after {
-        position: absolute;
-        content: "";
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-    &:hover .map {
-        transform: scale(1.1);
+    border-radius: 3px;
+    &:hover {
+        .map {
+            filter: brightness(100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        }
     }
 }
 .map {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-size: cover;
-    background-position: center center;
-    transform: scale(1);
-    transition: transform .2s;
-}
-.map-name {
     position: absolute;
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    text-align: center;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center center;
+    filter: brightness(90%);
+    transition: filter .2s;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    &:before {
+        position: absolute;
+        width: calc(100% - 2px);
+        height: 100%;
+        top: 1px;
+        left: 1px;
+        content: "";
+        z-index: -1;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.0) 100%);
+    }
+}
+.replay-title {
+    
+}
+.type, .map-name {
     font-size: 28px;
     font-weight: 600;
     color: #fff;
     text-shadow: 2px 2px #000;
-    line-height: 30px;
+    line-height: 32px;
+    text-align: center;
+    word-break: break-word;
+}
+.on {
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #ddd;
 }
 .meta {
     position: absolute;
-    bottom: 0;
     width: 100%;
+    height: 100%;
     padding: 10px;
     color: #fff;
     text-shadow: 1px 1px #000;
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8))
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+}
+.times {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: auto;
+    & > div {
+        display: flex;
+    }
+}
+.v-icon.v-icon {
+    font-size: 13px;
+    margin-right: 3px;
 }
 </style>

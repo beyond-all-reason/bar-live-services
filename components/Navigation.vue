@@ -32,7 +32,7 @@ export default class Navigation extends Vue {
 .nav{
     position: relative;
     background: #000;
-    height: 90px;
+    min-height: 90px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -52,6 +52,7 @@ export default class Navigation extends Vue {
 .links {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     margin: 0 auto;
     a{
         color: #b4b4b4;

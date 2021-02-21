@@ -4,11 +4,14 @@ import { Demo } from "bar-db/dist/model/demo";
 import { Map } from "bar-db/dist/model/map";
 import { Player } from "bar-db/dist/model/player";
 import { Spectator } from "bar-db/dist/model/spectator";
+import { Filters, Sort } from "~/model/api/paginated-request";
 
-export interface APIResponse<T extends any> {
+export interface APIResponse<T extends any, F extends Filters = {}, S extends Sort = {}> {
     totalResults: number;
     resultsPerPage: number;
     page: number;
+    filters: F;
+    sorts: S;
     data: T;
 }
 

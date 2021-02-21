@@ -1,0 +1,13 @@
+.v-application.theme--dark .v-chip, .v-application .theme--dark.v-chip{
+    &--active {
+        background: rgba(255, 255, 255, 0.9);
+        color: #000;
+    }
+    &:not(.v-chip--active) {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.4);
+    }
+    &:before {
+        all: initial;
+    }
+}

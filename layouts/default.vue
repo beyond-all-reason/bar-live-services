@@ -1,10 +1,12 @@
 <template>
-    <div class="wrapper">
+    <v-app style="background: none">
         <Navigation />
-        <div class="container">
-            <Nuxt />
-        </div>
-    </div>
+        <v-main>
+            <v-container>
+                <Nuxt />
+            </v-container>
+        </v-main>
+    </v-app>
 </template>
 
 <script lang="ts">
@@ -19,23 +21,23 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.container {
-    width: 100%;
-    max-width: 1440px;
-    padding: 1em;
-    display: flex;
-    flex-direction: column;
+@import "~/assets/scss/main.scss";
+// .wrapper {
+//     width: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+// }
+.app {
+    
 }
 .page-title {
     margin: 10px 0;
     font-size: 68px;
     font-weight: 700;
     text-align: center;
+}
+.v-toolbar__content {
+    padding: 0;
 }
 </style>
