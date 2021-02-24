@@ -11,6 +11,7 @@
             <div class="right-col">
                 <div class="download">
                     <a :href="`/api/replays/${replay.fileName}`">Download</a>
+                    <!-- <a class="api" target="_blank" :href="`/api/replays/${replay.id}`"><v-icon>mdi-code-braces</v-icon></a> -->
                 </div>
                 <table class="meta">
                     <tbody>
@@ -237,6 +238,19 @@ hr {
 .download {
     margin-bottom: 10px;
     font-weight: bold;
+    display: flex;
+    .api {
+        margin-left: auto;
+        cursor: pointer;
+        &:hover .v-icon {
+            color: #fff;
+        }
+        .v-icon{
+            all: initial;
+            cursor: pointer;
+            color: #b4b4b4;
+        }
+    }
 }
 .team-heading {
     font-weight: bold;

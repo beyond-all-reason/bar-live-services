@@ -9,7 +9,7 @@ export interface PaginatedRequest<F extends Filters = {}, S extends Sort = {}> {
 
 export const defaultPaginatedRequest: Optionals<PaginatedRequest> = {
     page: 1,
-    limit: 20,
+    limit: 24,
     filters: {},
     sort: {}
 };

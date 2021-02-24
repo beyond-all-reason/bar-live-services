@@ -51,10 +51,19 @@ export default class ReplayPreview extends AbstractReplay {
     align-items: center;
     overflow: hidden;
     border-radius: 3px;
+    &:before {
+        position: absolute;
+        width: calc(100% - 2px);
+        height: 100%;
+        top: 1px;
+        left: 1px;
+        content: "";
+        background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.0) 100%);
+    }
     &:hover {
         .map {
             filter: brightness(120%);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
         }
     }
 }
@@ -67,19 +76,11 @@ export default class ReplayPreview extends AbstractReplay {
     background-size: cover;
     background-position: center center;
     filter: brightness(100%);
-    transition: filter .2s;
+    transform: scale(1);
+    transition: all .2s;
     border-bottom: 4px solid rgba(0, 0, 0, 0.3);
     z-index: -1;
-    &:before {
-        position: absolute;
-        width: calc(100% - 2px);
-        height: 100%;
-        top: 1px;
-        left: 1px;
-        content: "";
-        z-index: -1;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.0) 100%);
-    }
+
 }
 .type, .map-name {
     font-size: 28px;
