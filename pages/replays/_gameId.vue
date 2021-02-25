@@ -9,8 +9,8 @@
                 <!-- <ChatLog v-if="replay.chatlog.length" :chatlog="replay.chatlog.filter(msg => msg.playerId !== 255)" :player-colors="playerColors" /> -->
             </div>
             <div class="right-col">
-                <div class="download">
-                    <a :href="`/api/replays/${replay.fileName}`">Download</a>
+                <div class="dl-links">
+                    <a class="download" :href="`/api/replays/${replay.fileName}`">Download</a>
                     <!-- <a class="api" target="_blank" :href="`/api/replays/${replay.id}`"><v-icon>mdi-code-braces</v-icon></a> -->
                 </div>
                 <table class="meta">
@@ -96,7 +96,7 @@
                         <v-expansion-panel>
                             <v-expansion-panel-header>Host Settings</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <div v-for="(value, name) in replay.hostSettings" :key="`host-setting-${name}`" class="setting">
+                                <div v-for="(value, name) in hostSettings" :key="`host-setting-${name}`" class="setting">
                                     <div class="setting-key">
                                         {{ name }}
                                     </div>
@@ -109,7 +109,7 @@
                         <v-expansion-panel>
                             <v-expansion-panel-header>Game Settings</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <div v-for="(value, name) in replay.gameSettings" :key="`game-setting-${name}`" class="setting">
+                                <div v-for="(value, name) in gameSettings" :key="`game-setting-${name}`" class="setting">
                                     <div class="setting-key">
                                         {{ name }}
                                     </div>
@@ -122,7 +122,7 @@
                         <v-expansion-panel>
                             <v-expansion-panel-header>Map Settings</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <div v-for="(value, name) in replay.mapSettings" :key="`map-setting-${name}`" class="setting">
+                                <div v-for="(value, name) in mapSettings" :key="`map-setting-${name}`" class="setting">
                                     <div class="setting-key">
                                         {{ name }}
                                     </div>
@@ -171,6 +171,18 @@ export default class Replay extends AbstractReplay {
         }
         replay.Spectators = replay.Spectators.sort((a, b) => Number(b.skill.replace("~", "")) - Number(a.skill.replace("~", "")));
         return { replay, playerColors };
+    }
+
+    get hostSettings() : { [key: string]: string; } {
+        return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
+    }
+
+    get gameSettings() : { [key: string]: string; } {
+        return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
+    }
+
+    get mapSettings() : { [key: string]: string; } {
+        return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
     }
 }
 </script>
@@ -235,10 +247,21 @@ table {
 hr {
     margin: 16px 0;
 }
+.dl-links {
+    margin-bottom: 15px;
+}
 .download {
-    margin-bottom: 10px;
-    font-weight: bold;
-    display: flex;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #fdc04c;
+    transition: .2s;
+    color: #000;
+    font-size: 16px;
+    text-shadow: none;
+    &:hover {
+        background: white;
+        color: #000;
+    }
     .api {
         margin-left: auto;
         cursor: pointer;
