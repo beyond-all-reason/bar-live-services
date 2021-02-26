@@ -173,15 +173,15 @@ export default class Replay extends AbstractReplay {
         return { replay, playerColors };
     }
 
-    get hostSettings() : { [key: string]: string; } {
+    get hostSettings () : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
     }
 
-    get gameSettings() : { [key: string]: string; } {
+    get gameSettings () : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
     }
 
-    get mapSettings() : { [key: string]: string; } {
+    get mapSettings () : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
     }
 }

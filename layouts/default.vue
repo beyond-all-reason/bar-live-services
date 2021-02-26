@@ -1,5 +1,5 @@
 <template>
-    <v-app id="vApp" style="background: none" :class="`${this.$vuetify.breakpoint.name} ${this.inIframe ? 'in-iframe' : ''}`">
+    <v-app id="vApp" style="background: none" :class="`${this.$vuetify.breakpoint.name} ${inIframe ? 'iframe' : ''}`">
         <Navigation v-if="!inIframe" />
         <v-main>
             <v-container>
@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "nuxt-property-decorator";
+import "iframe-resizer/js/iframeResizer.contentWindow";
 
 @Component
 export default class DefaultLayout extends Vue {
@@ -18,8 +19,12 @@ export default class DefaultLayout extends Vue {
         return this.$store.state.pageTitle;
     }
 
-    get inIframe() {
-        return window.self !== window.top ? "in-iframe" : "";
+    get inIframe () {
+        // if (process.browser) {
+        //     return window.self !== window.top;
+        // }
+        // return false;
+        return true;
     }
 }
 </script>
@@ -32,7 +37,7 @@ export default class DefaultLayout extends Vue {
     font-size: 68px;
     font-weight: 700;
     text-align: center;
-    .in-iframe & {
+    .iframe & {
         display: none;
     }
 }
