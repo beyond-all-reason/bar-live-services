@@ -1,6 +1,6 @@
 <template>
-    <v-app style="background: none">
-        <Navigation />
+    <v-app id="vApp" style="background: none" :class="`${this.$vuetify.breakpoint.name} ${this.inIframe ? 'in-iframe' : ''}`">
+        <Navigation v-if="!inIframe" />
         <v-main>
             <v-container>
                 <Nuxt />
@@ -10,32 +10,31 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-    computed: {
-        pageTitle () {
-            return this.$store.state.pageTitle;
-        }
+import { Component, Vue } from "nuxt-property-decorator";
+
+@Component
+export default class DefaultLayout extends Vue {
+    get pageTitle () {
+        return this.$store.state.pageTitle;
     }
-});
+
+    get inIframe() {
+        return window.self !== window.top ? "in-iframe" : "";
+    }
+}
 </script>
 
 <style lang="scss">
 @import "~/assets/scss/main.scss";
-// .wrapper {
-//     width: 100%;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-// }
-.app {
 
-}
 .page-title {
     margin: 10px 0;
     font-size: 68px;
     font-weight: 700;
     text-align: center;
+    .in-iframe & {
+        display: none;
+    }
 }
 .v-toolbar__content {
     padding: 0;

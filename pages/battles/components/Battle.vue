@@ -82,13 +82,7 @@ export default class BattleComponent extends Vue {
 
 <style lang="scss" scoped>
 .battle {
-    @media screen and (max-width: 900px) {
-        width: 100%;
-        margin: 10px 0;
-    }
     position: relative;
-    width: calc(50% - 20px);
-    margin: 10px;
     display: flex;
     flex-direction: column;
     overflow: hidden;

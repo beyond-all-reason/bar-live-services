@@ -72,8 +72,14 @@ export default class Page extends Vue {
     }
 }
 .battles {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    // display: flex;
+    // flex-direction: row;
+    // flex-wrap: wrap;
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(4, 1fr);
+    .lg & { grid-template-columns: repeat(3, 1fr); }
+    .md & { grid-template-columns: repeat(2, 1fr); }
+    .sm &, .xs & { grid-template-columns: repeat(1, 1fr); }
 }
 </style>
