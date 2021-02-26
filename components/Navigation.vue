@@ -37,6 +37,9 @@ export default class Navigation extends Vue {
     display: flex;
     align-items: center;
     padding: 10px 40px;
+    .iframe & {
+        display: none;
+    }
     &:after {
         content: "";
         position: absolute;

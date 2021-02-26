@@ -248,6 +248,7 @@ hr {
     margin: 16px 0;
 }
 .dl-links {
+    margin-top: 8px;
     margin-bottom: 15px;
 }
 .download {

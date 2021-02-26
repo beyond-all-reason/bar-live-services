@@ -1,6 +1,6 @@
 <template>
     <v-app id="vApp" style="background: none" :class="`${this.$vuetify.breakpoint.name} ${inIframe ? 'iframe' : ''}`">
-        <Navigation v-if="!inIframe" />
+        <Navigation />
         <v-main>
             <v-container>
                 <Nuxt />
