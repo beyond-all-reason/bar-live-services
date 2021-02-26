@@ -119,20 +119,19 @@ export default class MapComponent extends Vue {
     &-tooltip {
         position: absolute;
         transform: translateX(-50%);
-        left: 3px;
-        bottom: 11px;
+        left: 5px;
+        bottom: 13px;
         font-size: 14px;
-        .left & {
-            bottom: -6px;
-            left: 14px;
+        .left &, .right & {
+            bottom: -4px;
             transform: none;
         }
+        .left & {
+            left: 16px;
+        }
         .right & {
-            bottom: -6px;
-            right: 14px;
+            right: 16px;
             left: initial;
-            transform: none;
-            flex-direction: row-reverse;
         }
     }
 }
