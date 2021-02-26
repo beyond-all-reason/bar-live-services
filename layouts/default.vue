@@ -20,11 +20,10 @@ export default class DefaultLayout extends Vue {
     }
 
     get inIframe () {
-        // if (process.browser) {
-        //     return window.self !== window.top;
-        // }
-        // return false;
-        return true;
+        if (process.browser) {
+            return window.self !== window.top;
+        }
+        return false;
     }
 }
 </script>
