@@ -6,3 +6,7 @@ a, .v-application a {
         color: #fff;
     }
 }
+
+.v-application--wrap {
+    min-height: unset !important;
+}
