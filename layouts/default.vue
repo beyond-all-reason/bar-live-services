@@ -1,5 +1,5 @@
 <template>
-    <v-app id="vApp" style="background: none" :class="`${this.$vuetify.breakpoint.name} ${inIframe ? 'iframe' : ''}`">
+    <v-app id="vApp" :class="`${this.$vuetify.breakpoint.name} ${inIframe ? 'iframe' : ''}`">
         <Navigation />
         <v-main>
             <v-container>
@@ -31,6 +31,12 @@ export default class DefaultLayout extends Vue {
 <style lang="scss">
 @import "~/assets/scss/main.scss";
 
+.theme--dark.v-application {
+    background: linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,0,0,.84)),url("~assets/images/background.jpg") !important;
+    &.iframe {
+        background: transparent !important;
+    }
+}
 .page-title {
     margin: 10px 0;
     font-size: 68px;

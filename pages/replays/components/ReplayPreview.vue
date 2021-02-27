@@ -59,6 +59,7 @@ export default class ReplayPreview extends AbstractReplay {
         left: 1px;
         content: "";
         background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.0) 100%);
+        z-index: 1;
     }
     &:hover {
         .map {
@@ -79,8 +80,6 @@ export default class ReplayPreview extends AbstractReplay {
     transform: scale(1);
     transition: all .2s;
     border-bottom: 4px solid rgba(0, 0, 0, 0.3);
-    z-index: -1;
-
 }
 .type, .map-name {
     font-size: 28px;
@@ -108,6 +107,7 @@ export default class ReplayPreview extends AbstractReplay {
     justify-content: center;
     align-items: center;
     font-size: 13px;
+    z-index: 2;
 }
 .times {
     width: 100%;
