@@ -192,7 +192,7 @@ export default class Replay extends AbstractReplay {
     display: flex;
     flex-direction: row;
     text-shadow: 1px 1px #000;
-    @media screen and (orientation: portrait) {
+    @media screen and (max-width: 600px) {
         flex-wrap: wrap;
     }
 }
@@ -204,7 +204,7 @@ export default class Replay extends AbstractReplay {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    @media screen and (orientation: portrait) {
+    @media screen and (max-width: 600px) {
         width: 100%;
     }
 }
@@ -213,7 +213,7 @@ export default class Replay extends AbstractReplay {
     flex-direction: column;
     width: 45%;
     margin-left: 20px;
-    @media screen and (orientation: portrait) {
+    @media screen and (max-width: 600px) {
         width: 100%;
         margin-left: 0;
         margin-top: 20px;
