@@ -99,9 +99,9 @@ export default class BattleComponent extends Vue {
     left: 0;
     background-position: center;
     background-size: cover;
-    z-index: -1;
     border-bottom: 4px solid rgba(0, 0, 0, 0.3);
     image-rendering: pixelated;
+    z-index: 0;
     &:before {
         position: absolute;
         width: calc(100% - 2px);
@@ -121,6 +121,7 @@ export default class BattleComponent extends Vue {
     margin-top: 1px;
     padding: 4px;
     font-size: 16px;
+    z-index: 1;
 }
 .ingame{
     display: flex;
@@ -173,6 +174,7 @@ export default class BattleComponent extends Vue {
     margin: 12px 4px 4px 5px;
     justify-content: left;
     align-items: flex-start;
+    z-index: 1;
 }
 .player{
     background: rgba(0, 0, 0, 0.59);

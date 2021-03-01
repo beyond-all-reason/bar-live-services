@@ -74,8 +74,12 @@ export default class Page extends Vue {
 .battles {
     display: grid;
     grid-gap: 1em;
-    grid-template-columns: repeat(3, 1fr);
-    .lg &, .md & { grid-template-columns: repeat(2, 1fr); }
-    .sm &, .xs & { grid-template-columns: repeat(1, 1fr); }
+    grid-template-columns: repeat(1, 1fr);
+    @media (min-width: 700px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 1900px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 </style>
