@@ -11,7 +11,7 @@ export const getters: GetterTree<RootState, RootState> = {
 };
 
 export const mutations: MutationTree<RootState> = {
-    setEmbedded: (state, isEmbedded: boolean) => state.embedded = isEmbedded
+    setEmbedded: (state, isEmbedded: boolean) => { state.embedded = isEmbedded; }
 };
 
 export const actions: ActionTree<RootState, RootState> = {

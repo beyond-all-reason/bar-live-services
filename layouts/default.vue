@@ -15,9 +15,9 @@ import "iframe-resizer/js/iframeResizer.contentWindow";
 
 @Component
 export default class DefaultLayout extends Vue {
-    fetchOnServer() { return false; }
+    fetchOnServer () { return false; }
 
-    async fetch() {
+    async fetch () {
         if (process.browser) {
             this.$store.commit("setEmbedded", window.self !== window.top);
         }
