@@ -1,6 +1,6 @@
 <template>
-    <v-app id="vApp" :class="`${this.$vuetify.breakpoint.name} ${inIframe ? 'iframe' : ''}`">
-        <Navigation />
+    <v-app id="vApp" :class="`${this.$vuetify.breakpoint.name} ${!this.$store.state.embedded ? 'not-embedded' : 'embedded'}`">
+        <Navigation v-show="!this.$store.state.embedded" />
         <v-main>
             <v-container>
                 <Nuxt />
@@ -15,15 +15,12 @@ import "iframe-resizer/js/iframeResizer.contentWindow";
 
 @Component
 export default class DefaultLayout extends Vue {
-    get pageTitle () {
-        return this.$store.state.pageTitle;
-    }
+    fetchOnServer() { return false; }
 
-    get inIframe () {
+    async fetch() {
         if (process.browser) {
-            return window.self !== window.top;
+            this.$store.commit("setEmbedded", window.self !== window.top);
         }
-        return false;
     }
 }
 </script>
@@ -32,9 +29,9 @@ export default class DefaultLayout extends Vue {
 @import "~/assets/scss/main.scss";
 
 .theme--dark.v-application {
-    background: linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,0,0,.84)),url("~assets/images/background.jpg") !important;
-    &.iframe {
-        background: transparent !important;
+    background: transparent !important;
+    &.not-embedded {
+        background: linear-gradient(180deg,rgba(0,0,0,.84),rgba(0,0,0,.84)),url("~assets/images/background.jpg") !important;
     }
 }
 .page-title {
@@ -42,8 +39,9 @@ export default class DefaultLayout extends Vue {
     font-size: 68px;
     font-weight: 700;
     text-align: center;
-    .iframe & {
-        display: none;
+    display: none;
+    .not-embedded & {
+        display: block;
     }
 }
 .v-toolbar__content {
