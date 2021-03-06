@@ -1,5 +1,5 @@
 import { SpringLobbyProtocolClient, SpringLobbyProtocolClientConfig } from "sluts";
-
+import * as net from "net";
 import { Signal } from "jaz-ts-utils";
 import { Database } from "bar-db";
 import { createFileLogger } from "../utils/logger";
@@ -165,5 +165,14 @@ export class LobbyService extends Service {
         activeBattles.push(...passwordedOrLocked);
 
         this.activeBattles = activeBattles;
+    }
+
+    protected getSpadsInfo(ip: string, port: number) {
+        return new Promise(resolve => {
+            const socket = new net.Socket();
+            socket.on("connect", () => {
+                socket.write("getGameStatus");
+            });
+        });
     }
 }

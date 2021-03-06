@@ -7,6 +7,6 @@ a, .v-application a {
     }
 }
 
-.v-application--wrap {
+.v-application:not(.not-embedded) .v-application--wrap {
     min-height: unset !important;
 }
