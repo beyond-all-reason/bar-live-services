@@ -13,17 +13,9 @@
 import { Component, Vue } from "nuxt-property-decorator";
 import "iframe-resizer/js/iframeResizer.contentWindow";
 
-if (process.browser && window) {
-    (window as any).iFrameResizer = {
-        onReady: function() {
-            console.log("iframe loaded?");
-        }
-    }
-}
-
 @Component({
     watch: {
-        $route(route) {
+        $route (route) {
             (window as any).parentIFrame.sendMessage({
                 params: route.params,
                 query: route.query
