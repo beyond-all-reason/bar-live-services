@@ -13,7 +13,24 @@
 import { Component, Vue } from "nuxt-property-decorator";
 import "iframe-resizer/js/iframeResizer.contentWindow";
 
-@Component
+if (process.browser && window) {
+    (window as any).iFrameResizer = {
+        onReady: function() {
+            console.log("iframe loaded?");
+        }
+    }
+}
+
+@Component({
+    watch: {
+        $route(route) {
+            (window as any).parentIFrame.sendMessage({
+                params: route.params,
+                query: route.query
+            });
+        }
+    }
+})
 export default class DefaultLayout extends Vue {
     fetchOnServer () { return false; }
 
