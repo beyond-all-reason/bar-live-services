@@ -16,10 +16,12 @@ import "iframe-resizer/js/iframeResizer.contentWindow";
 @Component({
     watch: {
         $route (route) {
-            (window as any).parentIFrame.sendMessage({
-                params: route.params,
-                query: route.query
-            });
+            if ((window as any).parentIFrame && (window as any).parentIFrame.sendMessage) {
+                (window as any).parentIFrame.sendMessage({
+                    params: route.params,
+                    query: route.query
+                });
+            }
         }
     }
 })

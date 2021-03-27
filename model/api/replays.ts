@@ -9,6 +9,7 @@ export interface ReplayFilters extends Filters {
     ffa: boolean;
     bots: boolean;
     endedNormally: boolean;
+    reported: boolean | undefined;
 }
 
 export const defaultReplayFilters: Readonly<ReplayFilters> = {
@@ -16,7 +17,8 @@ export const defaultReplayFilters: Readonly<ReplayFilters> = {
     team: true,
     ffa: true,
     bots: false,
-    endedNormally: true
+    endedNormally: true,
+    reported: undefined
 };
 
 export interface ReplaySorts extends Sort {

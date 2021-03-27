@@ -14,7 +14,7 @@ export const defaultPaginatedRequest: Optionals<PaginatedRequest> = {
     sort: {}
 };
 
-export type Filters = { [key: string]: boolean; };
+export type Filters = { [key: string]: boolean | undefined; };
 
 export type Sort = { [key: string]: "asc" | "desc" };
 

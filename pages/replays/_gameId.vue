@@ -174,11 +174,11 @@ export default class Replay extends AbstractReplay {
     }
 
     get hostSettings () : { [key: string]: string; } {
-        return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
+        return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
     }
 
     get gameSettings () : { [key: string]: string; } {
-        return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
+        return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
     }
 
     get mapSettings () : { [key: string]: string; } {

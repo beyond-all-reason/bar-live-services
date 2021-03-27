@@ -89,6 +89,11 @@ export class API {
                 }
             }
 
+            const optionalFilters: any = {};
+            if (query.filters.reported !== undefined) {
+                optionalFilters.reported = query.filters.reported;
+            }
+
             const result = await this.db.demo.findAndCountAll({
                 offset: (query.page - 1) * query.limit,
                 limit: query.limit,
@@ -112,7 +117,8 @@ export class API {
                     gameEndedNormally: query.filters.endedNormally,
                     preset: {
                         [Op.or]: presets
-                    }
+                    },
+                    ...optionalFilters
                 }
             });
 
