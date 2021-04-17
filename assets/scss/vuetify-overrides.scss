@@ -20,3 +20,21 @@
         all: initial;
     }
 }
+
+.v-slider {
+    margin-top: -13px !important;
+    min-height: 47px !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+.v-slider__thumb-label.primary {
+    background-color: transparent !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    top: 0  !important;
+    transform: translateX(-50%) !important;
+    margin-bottom: 7px  !important;
+    > * {
+        transform: none !important;
+    }
+}

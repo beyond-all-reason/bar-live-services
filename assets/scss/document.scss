@@ -10,3 +10,7 @@ a, .v-application a {
 .v-application:not(.not-embedded) .v-application--wrap {
     min-height: unset !important;
 }
+
+[v-cloak] {
+    display: none !important;
+}
