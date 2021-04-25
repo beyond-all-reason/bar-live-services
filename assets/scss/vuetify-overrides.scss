@@ -38,3 +38,61 @@
         transform: none !important;
     }
 }
+
+.text-filter {
+    .v-text-field__details{
+        display: none !important;
+    }
+    input[type=text] {
+        width: 80px !important;
+    }
+    .v-text-field > .v-input__control > .v-input__slot:before {
+        border-width: 0 !important;
+    }
+}
+.v-list-item__avatar {
+    width: initial !important;
+    min-width: initial !important;
+    max-width: 16px !important;
+    height: 12px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border-radius: 0 !important;
+}
+.v-list-item__content {
+    padding: 0 !important;
+}
+.v-list-item {
+    min-height: 30px !important;
+}
+
+.date-filter {
+    .v-text-field__details {
+        display: none !important;
+    }
+    .v-input__slot {
+        margin-bottom: 0 !important;
+    }
+    .v-text-field > .v-input__control > .v-input__slot:before {
+        border-width: 0 !important;
+    }
+    .v-label {
+        display: none !important;
+    }
+    .v-text-field {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 3px !important;
+    }
+}
+
+.v-menu__content .v-date-picker-table .v-btn.v-btn--active {
+    color: #111 !important;
+    &:before {
+        opacity: 0 !important;
+    }
+}
+
+.v-text-field.v-input--is-focused > .v-input__control > .v-input__slot:after {
+    display: none !important;
+}

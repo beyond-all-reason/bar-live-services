@@ -1,6 +1,6 @@
 import { Optionals } from "jaz-ts-utils";
 
-export interface PaginatedRequest<F extends Filters = {}, S extends Sort = {}> {
+export interface PaginatedRequest<F extends any = {}, S extends Sort = {}> {
     page?: number;
     limit?: number;
     filters?: F;
@@ -14,8 +14,10 @@ export const defaultPaginatedRequest: Optionals<PaginatedRequest> = {
     sort: {}
 };
 
-export type Filters = { [key: string]: boolean | undefined; };
-
-export type Sort = { [key: string]: "asc" | "desc" };
+export type FilterType = string | string[] | number | number[] | boolean | null | undefined;
+//export type Filters = { [key: string]: FilterType };
+//type PartialRecord<K extends string, T> = { [P in K]?: T; };
+//export type PartialFilter<K extends string> = { [P in K]?: FilterType; };
 
 export type SortType = "asc" | "desc";
+export type Sort = Record<string, SortType>;

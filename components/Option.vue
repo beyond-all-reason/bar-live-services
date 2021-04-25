@@ -11,7 +11,7 @@ import OptionsComponent from "~/components/Options.vue";
 @Component
 export default class OptionComponent extends Vue {
     @Prop({ required: true }) readonly value!: any;
-    @Prop({ type: String, required: false, default: "#fff" }) readonly bgColor!: string;
+    @Prop({ type: String, required: false, default: "#eee" }) readonly bgColor!: string;
     @Prop({ type: String, required: false, default: "#000" }) readonly textColor!: string;
 
     optionSelected() {

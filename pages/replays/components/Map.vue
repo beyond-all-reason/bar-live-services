@@ -116,6 +116,7 @@ export default class MapComponent extends Vue {
     border-radius: 14px;
     border: 1px solid hsl(0deg 0% 0% / 53%);
     box-shadow: 1px 1px rgb(0 0 0 / 43%);
+    transform: translateX(-6px);
     &-tooltip {
         position: absolute;
         transform: translateX(-50%);

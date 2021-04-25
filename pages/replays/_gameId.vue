@@ -159,7 +159,7 @@ import { ReplayResponse } from "~/model/api/api-response";
         }
     }
 })
-export default class Replay extends AbstractReplay {
+export default class ReplayPage extends AbstractReplay {
     async asyncData ({ store, $http, params }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};

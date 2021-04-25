@@ -13,20 +13,26 @@
             <Options v-model="filters.hasBots">
                 <template v-slot:title>Has Bots <v-icon>mdi-robot</v-icon></template>
                 <Option :value="false" bgColor="#b83e3e" textColor="#fff"><v-icon color="#b13b3b">mdi-close-thick</v-icon></Option>
-                <Option :value="null"><v-icon>mdi-minus-thick</v-icon></Option>
+                <Option :value="undefined"><v-icon>mdi-minus-thick</v-icon></Option>
                 <Option :value="true" bgColor="#70a232" textColor="#fff"><v-icon color="#91b64d">mdi-check-bold</v-icon></Option>
             </Options>
             <Options v-model="filters.endedNormally">
                 <template v-slot:title>Ended Normally <v-icon>mdi-checkbox-marked-circle</v-icon></template>
                 <Option :value="false" bgColor="#b83e3e" textColor="#fff"><v-icon color="#b13b3b">mdi-close-thick</v-icon></Option>
-                <Option :value="null"><v-icon>mdi-minus-thick</v-icon></Option>
+                <Option :value="undefined"><v-icon>mdi-minus-thick</v-icon></Option>
                 <Option :value="true" bgColor="#70a232" textColor="#fff"><v-icon color="#91b64d">mdi-check-bold</v-icon></Option>
             </Options>
-            <div class="flex-col tsRange">
-                <label>TrueSkill Range</label>
-                <v-range-slider v-model="filters.tsRange" :min="0" :max="50" thumb-label="always" tick-size="1" hide-details="true"></v-range-slider>
+            <DateFilter v-model="filters.dateRange" />
+            <div class="flex-col range">
+                <label>Duration in minutes</label>
+                <v-range-slider :value="this.filters.durationRangeMins" :min="0" :max="120" thumb-label="always" tick-size="1" hide-details="true" @change="updateDuration"></v-range-slider>
             </div>
-            <TextFilter/>
+            <div class="flex-col range">
+                <label>TrueSkill Range</label>
+                <v-range-slider :value="this.filters.tsRange" :min="0" :max="50" thumb-label="always" tick-size="1" hide-details="true" @change="updateTsRange"></v-range-slider>
+            </div>
+            <PlayerFilter v-model="filters.players" />
+            <MapFilter v-model="filters.maps" />
         </div>
         <div class="total-results">
             Found {{ totalResults }} replays in {{ timeTaken }}ms.
@@ -40,40 +46,31 @@
 
 <script lang="ts">
 import { Demo } from "bar-db/dist/model/demo";
-import _ from "lodash";
 import { Component, Vue } from "nuxt-property-decorator";
 
 import { APIResponse } from "~/model/api/api-response";
 import { ReplayFilters, defaultReplayFilters, ReplaySorts } from "~/model/api/replays";
-
-export type NullableBoolean = boolean | null;
-
-export interface Filters {
-    preset: Array<"duel" | "team" | "ffa">;
-    hasBots: NullableBoolean;
-    endedNormally: NullableBoolean;
-    tsRange: [number, number];
-}
+import { parseReplayFilters } from "~/modules/api/replays";
 
 @Component({
     head: { title: "BAR - Replays" },
     watch: {
         "$route.query": "$fetch",
-        //"hasBots": "changeFilters"
+        filters: {
+            handler: function(this: ReplaysPage) {
+                this.updateFilters();
+            },
+            deep: true
+        }
     }
 })
-export default class Page extends Vue {
+export default class ReplaysPage extends Vue {
     totalResults = 0;
     page = 1;
     pageCount = 0;
     replays: Demo[] = [];
     timeTaken = 0;
-    filters: Filters = {
-        preset: ["duel", "team", "ffa"],
-        hasBots: null,
-        endedNormally: true,
-        tsRange: [0, 50]
-    }
+    filters: Partial<ReplayFilters> = defaultReplayFilters;
 
     async fetch (): Promise<any> {
         const beforeTime = Date.now();
@@ -91,24 +88,49 @@ export default class Page extends Vue {
         this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
     }
 
-    changeFilters () {
-        const currentQuery = _.clone(this.$route.query);
-        const query: { [key: string]: string | undefined } = {
-            test: undefined,
-            fish: "ok"
-        };
-        console.log(query);
+    updateFilters() {
+        const query: { [key: string]: string } = {};
+        for (const [key, val] of Object.entries(this.filters)) {
+            const isDefaultVal = JSON.stringify((defaultReplayFilters as any)[key]) === JSON.stringify(val);
 
-        // const query: { [key: string]: string } = {};
-        // for (const filterKey in defaultReplayFilters) {
-        //     delete currentQuery[filterKey];
-        //     if (this.filters.includes(filterKey) && defaultReplayFilters[filterKey] === false) {
-        //         query[filterKey] = "true";
-        //     } else if (!this.filters.includes(filterKey) && defaultReplayFilters[filterKey] === true) {
-        //         query[filterKey] = "false";
-        //     }
-        // }
-        // this.$router.push({ path: this.$route.path, query: { ...currentQuery, ...query } });
+            if (isDefaultVal) {
+                continue;
+            }
+
+            if (val === null) {
+                query[key] = "null";
+            } else if (val === undefined || (Array.isArray(val) && val.length === 0)) {
+                query[key] = "any";
+            } else {
+                query[key] = encodeURI(String(val));
+            }
+        }
+        this.$router.push({ query });
+    }
+
+    beforeMount() {
+        const query = this.$route.query as { [key: string]: string };
+        this.filters = parseReplayFilters(query, this.filters);
+    }
+
+    isDefaultFilter(key: string) : key is keyof typeof defaultReplayFilters {
+        return (key in defaultReplayFilters);
+    }
+
+    updateDuration(durationRangeMins: [number, number]) {
+        if (JSON.stringify(this.filters.durationRangeMins) === JSON.stringify(durationRangeMins)) {
+            return;
+        }
+        this.filters.durationRangeMins = durationRangeMins;
+        this.updateFilters();
+    }
+
+    updateTsRange(tsRange: [number, number]) {
+        if (JSON.stringify(this.filters.tsRange) === JSON.stringify(tsRange)) {
+            return;
+        }
+        this.filters.tsRange = tsRange;
+        this.updateFilters();
     }
 }
 </script>
@@ -133,7 +155,7 @@ export default class Page extends Vue {
     margin-top: 8px;
     text-align: center;
 }
-.tsRange {
+.range {
     width: 200px;
     border: 1px solid #4a4a4a;
     border-radius: 3px;

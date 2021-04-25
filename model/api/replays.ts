@@ -1,24 +1,29 @@
-import { Filters, PaginatedRequest, Sort, SortType } from "~/model/api/paginated-request";
+import { PaginatedRequest, Sort, SortType } from "~/model/api/paginated-request";
+import { parseStringArray, parseBoolean, parseNumberArray } from "../../model/api/query-parser";
 
-export interface ReplayRequest extends PaginatedRequest<ReplayFilters, ReplaySorts> {
+export interface ReplayRequest extends PaginatedRequest<Partial<ReplayFilters>, ReplaySorts> {
 }
 
-export interface ReplayFilters extends Filters {
-    duel: boolean;
-    team: boolean;
-    ffa: boolean;
-    bots: boolean;
+export interface ReplayFilters {
+    preset: Array<"duel" | "team" | "ffa"> | null;
     endedNormally: boolean;
-    reported: boolean | undefined;
+    hasBots: boolean | null;
+    tsRange: [number, number];
+    reported: boolean | null;
+    players: string[];
+    maps: string[];
+    dateRange: string[];
+    durationRangeMins: number[];
 }
 
-export const defaultReplayFilters: Readonly<ReplayFilters> = {
-    duel: true,
-    team: true,
-    ffa: true,
-    bots: false,
+export const defaultReplayFilters: Partial<Readonly<ReplayFilters>> = {
+    preset: ["duel", "team", "ffa"],
     endedNormally: true,
-    reported: undefined
+    tsRange: [0, 50],
+    durationRangeMins: [0, 120],
+    players: [],
+    maps: [],
+    dateRange: [],
 };
 
 export interface ReplaySorts extends Sort {
