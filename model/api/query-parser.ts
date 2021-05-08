@@ -1,9 +1,9 @@
 export function parseString(str: string) : string {
-    return str;
+    return decodeURI(str);
 }
 
 export function parseStringArray(str: string) : string[] {
-    return str.split(",");
+    return str.split(",").map(s => parseString(s));
 }
 
 export function parseNumber(str: string) : number {
@@ -16,4 +16,8 @@ export function parseNumberArray(str: string) : number[] {
 
 export function parseBoolean(str: string) : boolean {
     return str === "true";
+}
+
+export function parseDate(str: string) : Date {
+    return new Date(str);
 }

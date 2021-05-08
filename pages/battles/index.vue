@@ -31,12 +31,12 @@ export default class Page extends Vue {
     pollInterval = 0;
     numOfPlayers = 0;
 
-    async asyncData ({ $http }: Context): Promise<any> {
+    async asyncData({ $http }: Context): Promise<any> {
         const battles = await $http.$get("battles") as Battle[];
         return { battles };
     }
 
-    async fetch () {
+    async fetch() {
         try {
             this.battles = await this.$http.$get("battles") as Battle[];
             this.numOfPlayers = this.battles.reduce((total, battle) => total + battle.players.length, 0);
@@ -45,13 +45,13 @@ export default class Page extends Vue {
         }
     }
 
-    mounted () {
-        this.pollInterval = window.setInterval(async () => {
+    mounted() {
+        this.pollInterval = window.setInterval(async() => {
             this.$fetch();
         }, 3000);
     }
 
-    beforeDestroy () {
+    beforeDestroy() {
         window.clearInterval(this.pollInterval);
     }
 }

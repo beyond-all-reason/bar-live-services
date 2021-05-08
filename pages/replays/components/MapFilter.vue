@@ -4,10 +4,22 @@
             Maps
         </div>
         <div class="input">
-            <v-autocomplete ref="vAutocomplete" v-model="selectedItems" :items="items" item-text="scriptName" item-value="scriptName" auto-select-firstchips clearable deletable-chips multiple dense @change="clear">
+            <v-autocomplete
+                ref="vAutocomplete"
+                v-model="selectedItems"
+                :items="items"
+                item-text="scriptName"
+                item-value="scriptName"
+                auto-select-firstchips
+                clearable
+                deletable-chips
+                multiple
+                dense
+                @change="clear"
+            >
                 <template v-slot:item="data">
                     <v-list-item-content>
-                        <v-list-item-title v-html="data.item.scriptName"></v-list-item-title>
+                        <v-list-item-title v-text="data.item.scriptName" />
                     </v-list-item-content>
                 </template>
             </v-autocomplete>
@@ -16,9 +28,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "nuxt-property-decorator";
+import { Component, Vue } from "nuxt-property-decorator";
 
-@Component({ fetchOnServer: false})
+@Component({ fetchOnServer: false })
 export default class MapFilterComponent extends Vue {
     items: any[] = [];
     selectedItems: string[] = [];

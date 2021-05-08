@@ -42,7 +42,7 @@ import { SLDBModel } from "sldbts";
     head: { title: "BAR - Leaderboards" }
 })
 export default class Page extends Vue {
-    async asyncData ({ store, $http, params }: Context): Promise<any> {
+    async asyncData({ store, $http, params }: Context): Promise<any> {
         const leaderboards = await $http.$get("leaderboards") as SLDBModel.LeaderboardResult[];
         return { leaderboards };
     }

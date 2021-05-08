@@ -22,7 +22,7 @@ export class LobbyService extends Service {
     public activeBattles: Battle<Player[]>[] = [];
     public db: Database;
 
-    constructor (config: LobbyServiceConfig, db: Database) {
+    constructor(config: LobbyServiceConfig, db: Database) {
         super();
 
         this.config = { ...config, logger: createFileLogger("lobby-bot") };
@@ -31,7 +31,7 @@ export class LobbyService extends Service {
 
         this.lobbyClient = new SpringLobbyProtocolClient(this.config);
 
-        process.on("SIGINT", async () => {
+        process.on("SIGINT", async() => {
             await this.lobbyClient.disconnect();
 
             process.exit();
@@ -40,7 +40,7 @@ export class LobbyService extends Service {
         this.onBattleUpdate.add(() => this.updateActiveBattles());
     }
 
-    public async init () {
+    public async init() {
         this.lobbyClient.onResponse("ADDUSER").add((data) => {
             this.players[data.userName] = {
                 username: data.userName,
@@ -133,7 +133,7 @@ export class LobbyService extends Service {
         return super.init();
     }
 
-    protected updateActiveBattles () {
+    protected updateActiveBattles() {
         const allBattles: Battle[] = Object.values(this.battles).map((battle) => {
             const playersObj = battle.players;
             const playersArr = Object.values(playersObj);
@@ -144,7 +144,7 @@ export class LobbyService extends Service {
         });
 
         let activeBattles = allBattles.filter(battle => battle.players.length > 0);
-        activeBattles.forEach(async (battle, i) => {
+        activeBattles.forEach(async(battle, i) => {
             const map = await this.db.schema.map.findOne({
                 where: { scriptName: battle.map },
                 attributes: ["fileName"]
@@ -167,7 +167,7 @@ export class LobbyService extends Service {
         this.activeBattles = activeBattles;
     }
 
-    protected getSpadsInfo (ip: string, port: number) {
+    protected getSpadsInfo(ip: string, port: number) {
         return new Promise((resolve) => {
             const socket = new net.Socket();
             socket.on("connect", () => {

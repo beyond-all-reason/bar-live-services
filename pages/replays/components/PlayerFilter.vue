@@ -4,13 +4,25 @@
             Players
         </div>
         <div class="input">
-            <v-autocomplete ref="vAutocomplete" v-model="selectedItems" :items="items" item-text="username" item-value="username" auto-select-firstchips clearable deletable-chips multiple dense @change="clear">
+            <v-autocomplete
+                ref="vAutocomplete"
+                v-model="selectedItems"
+                :items="items"
+                item-text="username"
+                item-value="username"
+                auto-select-firstchips
+                clearable
+                deletable-chips
+                multiple
+                dense
+                @change="clear"
+            >
                 <template v-slot:item="data">
                     <v-list-item-avatar>
                         <img :src="countryImage(data.item.countryCode)">
                     </v-list-item-avatar>
                     <v-list-item-content>
-                        <v-list-item-title v-html="data.item.username"></v-list-item-title>
+                        <v-list-item-title v-text="data.item.username" />
                     </v-list-item-content>
                 </template>
             </v-autocomplete>
@@ -19,9 +31,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "nuxt-property-decorator";
+import { Component, Vue } from "nuxt-property-decorator";
 
-@Component({ fetchOnServer: false})
+@Component({ fetchOnServer: false })
 export default class PlayerFilter extends Vue {
     items: any[] = [];
     selectedItems: string[] = [];
@@ -31,7 +43,7 @@ export default class PlayerFilter extends Vue {
         this.items = players;
     }
 
-    countryImage (countryCode: string) {
+    countryImage(countryCode: string) {
         if (countryCode === "??") {
             return "";
         }

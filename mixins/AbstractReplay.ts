@@ -5,44 +5,44 @@ import { AllyTeamResponse, ReplayResponse } from "~/model/api/api-response";
 export class AbstractReplay extends Vue {
     replay!: ReplayResponse;
 
-    get highQualityMapTextureUrl (): string {
+    get highQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
             return `/api/maps/${this.replay.Map.fileName}/texture-hq.png`;
         }
         return require("assets/images/default-minimap.png");
     }
 
-    get lowQualityMapTextureUrl (): string {
+    get lowQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
             return `/api/maps/${this.replay.Map.fileName}/texture-lq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
 
-    get mapThumbnailUrl (): string {
+    get mapThumbnailUrl(): string {
         if (this.replay.Map.fileName) {
             return `/api/maps/${this.replay.Map.fileName}/texture-thumb.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
 
-    get title (): string {
+    get title(): string {
         return this.getTitle(this.replay.AllyTeams);
     }
 
-    get timeAgo (): string {
+    get timeAgo(): string {
         return this.$moment(this.replay.startTime).fromNow();
     }
 
-    get duration (): string {
+    get duration(): string {
         return this.$moment.duration(this.replay.durationMs).humanize();
     }
 
-    get mapName (): string {
-        return this.replay.hostSettings.mapname.replace(/_/g, " ");
+    get mapName(): string {
+        return this.replay.Map.scriptName!.replace(/_/g, " ");
     }
 
-    getTitle (allyTeams: AllyTeamResponse[]) : string {
+    getTitle(allyTeams: AllyTeamResponse[]) : string {
         if (allyTeams.length > 2) {
             const numOfTeams = allyTeams.length;
             return `${numOfTeams} Way FFA`;
@@ -54,19 +54,19 @@ export class AbstractReplay extends Vue {
         return "Unknown";
     }
 
-    factionImage (factionStr: string) {
+    factionImage(factionStr: string) {
         const faction = /arm/i.test(factionStr) ? "armada" : "cortex";
         return require(`assets/images/${faction}_default.png`);
     }
 
-    countryImage (countryCode: string) {
+    countryImage(countryCode: string) {
         if (countryCode === "??") {
             return "";
         }
         return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
     }
 
-    rankImage (rank: number) {
+    rankImage(rank: number) {
         return require(`assets/images/ranks/${rank + 1}.svg`);
     }
 }

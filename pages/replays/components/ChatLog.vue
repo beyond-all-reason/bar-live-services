@@ -23,7 +23,7 @@ import { DemoModel } from "sdfz-demo-parser";
 
 @Component({
     directives: {
-        setPlayerColor (el, binding) {
+        setPlayerColor(el, binding) {
             if (binding.value === undefined) { return; }
             const { r, g, b } = binding.value as { r: number, g: number, b: number };
             const lightness = 0.299 * r + 0.587 * g + 0.114 * b; // https://stackoverflow.com/a/596243/1864403
@@ -36,11 +36,11 @@ export default class ChatLog extends Vue {
     @Prop({ type: Array, required: true }) readonly chatlog!: DemoModel.ChatMessage[];
     @Prop({ type: Object, required: true }) readonly playerColors!: { [playerId: number]: { r: number, g: number, b: number } };
 
-    gameTimeString (gameTime: number) {
+    gameTimeString(gameTime: number) {
         return this.$moment.utc(this.$moment.duration(gameTime, "seconds").asMilliseconds()).format("mm:ss");
     }
 
-    playerColorString (playerId: number) {
+    playerColorString(playerId: number) {
         const color = this.playerColors[playerId];
         if (color === undefined) { return "#fff"; }
         return `rgba(${color.r}, ${color.g}, ${color.b}, 1)`;

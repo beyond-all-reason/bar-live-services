@@ -2,23 +2,20 @@ import * as fs from "fs";
 import { Module } from "@nuxt/types";
 import { Database } from "bar-db";
 import { Demo } from "bar-db/dist/model/demo";
-import { DatabaseSchema } from "bar-db/dist/database";
+import { Player } from "bar-db/dist/model/player";
+import { Map } from "bar-db/dist/model/map";
 import express from "express";
-import _, { filter } from "lodash";
-import { Writeable } from "jaz-ts-utils";
-import { AndOperator, Op, OrderItem, OrOperator, WhereAttributeHash } from "sequelize";
+import { AndOperator, Op, OrderItem, OrOperator, Sequelize, WhereAttributeHash } from "sequelize";
 
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
-import { defaultReplaySorts, ReplayFilters, ReplayRequest } from "../model/api/replays";
-import { defaultPaginatedRequest } from "../model/api/paginated-request";
-import { parseReplayFilters } from "../modules/api/replays";
+import { parseReplaysRequestQuery } from "../modules/api/replays";
 
 export type ServicesConfig = typeof Config;
 
-const apiModule: Module = async function () {
+const apiModule: Module = async function() {
     if (!(this.options.dev || this.options._start)) {
         return;
     }
@@ -33,11 +30,11 @@ const apiModule: Module = async function () {
 
     await api.init();
 
-    this.nuxt.hook("close", async () => {
+    this.nuxt.hook("close", async() => {
         await api.lobbyService.lobbyClient.disconnect();
     });
 
-    this.nuxt.hook("error", async () => {
+    this.nuxt.hook("error", async() => {
         await api.lobbyService.lobbyClient.disconnect();
     });
 
@@ -51,7 +48,7 @@ export class API {
     public leaderboardService!: LeaderboardService;
     public lobbyService!: LobbyService;
 
-    constructor (servicesConfig: ServicesConfig) {
+    constructor(servicesConfig: ServicesConfig) {
         this.config = servicesConfig;
 
         this.app = express();
@@ -63,6 +60,7 @@ export class API {
         this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
 
         this.replays();
+        this.replay();
         this.players();
         this.maps();
         this.leaderboards();
@@ -72,8 +70,8 @@ export class API {
         this.cachedMaps();
     }
 
-    public async init () {
-        this.barDb = new Database({ ...this.config.bardb, syncModel: false, initMemoryStore: false });
+    public async init() {
+        this.barDb = new Database({ ...this.config.bardb, syncModel: false, initMemoryStore: false, logSQL: false });
 
         await this.barDb.init();
 
@@ -81,60 +79,105 @@ export class API {
         this.lobbyService = await new LobbyService(this.config.lobby, this.barDb).init();
     }
 
-    protected replays () {
-        this.app.get("/replays", async (req, res) => {
-            const { filters, sort, limit, page } = this.parseReplaysRequestQuery(req.query as { [key: string]: string });
+    protected replays() {
+        this.app.get("/replays", async(req, res) => {
+            const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
+
+            // console.log("filters", filters);
+
+            const demoWhere: WhereAttributeHash<Demo> | AndOperator<Demo> | OrOperator<Demo> = {};
+            const playerWhere: WhereAttributeHash<Player> | AndOperator<Player> | OrOperator<Player> = {};
+            const mapWhere: WhereAttributeHash<Map> | AndOperator<Map> | OrOperator<Map> = {};
+
+            filters.preset !== undefined && (demoWhere.preset = filters.preset);
+            filters.hasBots !== undefined && (demoWhere.hasBots = filters.hasBots);
+            filters.endedNormally !== undefined && (demoWhere.gameEndedNormally = filters.endedNormally);
+            filters.reported !== undefined && (demoWhere.reported = filters.reported);
+            filters.durationRangeMins !== undefined && (demoWhere.durationMs = { [Op.between]: filters.durationRangeMins.map(ms => ms * 1000 * 60) });
+            filters.maps !== undefined && (mapWhere.scriptName = { [Op.or]: filters.maps });
+            if (filters.dateRange !== undefined) {
+                const dates = filters.dateRange.map(str => new Date(str)).sort((a, b) => a.valueOf() - b.valueOf());
+                const lastDate = dates[dates.length - 1];
+                lastDate.setDate(lastDate.getDate() + 1);
+                filters.dateRange !== undefined && (demoWhere.startTime = { [Op.between]: dates.map(date => date.toISOString()) });
+            }
+
+            const demoIds: string[][] = [];
+
+            if (filters.tsRange !== undefined) {
+                const tsRangeDemoIds = await this.getTrueSkillDemoIds(filters.tsRange[0], filters.tsRange[1]);
+                demoIds.push(tsRangeDemoIds);
+            }
+
+            if (filters.players !== undefined) {
+                const playerDemoIds = await this.getPlayerDemoIds(filters.players);
+                demoIds.push(playerDemoIds);
+            }
+
+            if (demoIds.length) {
+                demoWhere.id = {
+                    [Op.and]: demoIds.map((ids) => { return { [Op.in]: ids }; })
+                };
+            }
+
+            console.log("demoWhere", demoWhere);
+            console.log("playerWhere", playerWhere);
+            console.log("mapWhere", mapWhere);
 
             const order = Object.entries(sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
 
-            const where: WhereAttributeHash<Demo> | AndOperator<Demo> | OrOperator<Demo> = {
-                ...(filters.preset !== undefined ? { preset: filters.preset } : {}),
-                ...(filters.hasBots !== undefined ? { hasBots: filters.hasBots } : {}),
-                ...(filters.endedNormally !== undefined ? { gameEndedNormally: filters.endedNormally } : {}),
-                ...(filters.reported !== undefined ? { reported: filters.reported } : {}),
-            };
-
-            console.log(where);
-
-            const optionalFilters: any = {};
-            if (filters.reported !== undefined) {
-                optionalFilters.reported = filters.reported;
-            }
-
             const result = await this.barDb.schema.demo.findAndCountAll({
                 offset: (page - 1) * limit,
-                limit: limit,
+                limit,
                 order,
-                attributes: ["id", "startTime", "durationMs", "hostSettings"],
+                attributes: ["id", "startTime", "durationMs"],
                 distinct: true,
                 include: [
-                    { model: this.barDb.schema.map, attributes: ["fileName"] },
+                    {
+                        model: this.barDb.schema.map,
+                        attributes: ["fileName", "scriptName"],
+                        where: mapWhere
+                    },
                     {
                         model: this.barDb.schema.allyTeam, // TODO: only include total player counts instead of objects
                         attributes: ["allyTeamId"],
                         include: [
-                            { model: this.barDb.schema.player, attributes: ["userId", "playerId", "name"] },
-                            { model: this.barDb.schema.ai, attributes: ["shortName"] }
-                        ]
+                            {
+                                model: this.barDb.schema.player,
+                                attributes: ["userId", "playerId", "name", "trueSkill"],
+                                where: playerWhere
+                            },
+                            {
+                                model: this.barDb.schema.ai,
+                                attributes: ["shortName"]
+                            }
+                        ],
+
+                        required: true
                     },
-                    { model: this.barDb.schema.spectator, attributes: ["userId", "playerId", "name"] }
+                    {
+                        model: this.barDb.schema.spectator,
+                        attributes: ["userId", "playerId", "name"]
+                    }
                 ],
-                where
+                where: demoWhere
             });
 
             const response: APIResponse<ReplayResponse[]> = {
                 totalResults: result.count,
-                page: page,
+                page,
                 resultsPerPage: limit,
-                filters: filters,
+                filters,
                 sorts: sort,
                 data: result.rows as unknown as ReplayResponse[]
             };
 
             res.json(response);
         });
+    }
 
-        this.app.get("/replays/:replayId", async (req, res) => {
+    protected replay() {
+        this.app.get("/replays/:replayId", async(req, res) => {
             const replay = await this.barDb.schema.demo.findByPk(req.params.replayId, {
                 include: [
                     { model: this.barDb.schema.map },
@@ -157,40 +200,40 @@ export class API {
         });
     }
 
-    protected players () {
-        this.app.get("/players", async (req, res) => {
+    protected players() {
+        this.app.get("/players", async(req, res) => {
             res.send("players");
         });
 
-        this.app.get("/players/:playerId", async (req, res) => {
+        this.app.get("/players/:playerId", async(req, res) => {
             res.send(`player: ${req.params.playerId}`);
         });
     }
 
-    protected maps () {
-        this.app.get("/maps", async (req, res) => {
+    protected maps() {
+        this.app.get("/maps", async(req, res) => {
             res.send("maps");
         });
 
-        this.app.get("/maps/:mapId", async (req, res) => {
+        this.app.get("/maps/:mapId", async(req, res) => {
             res.send(`map: ${req.params.mapId}`);
         });
     }
 
-    protected leaderboards () {
-        this.app.get("/leaderboards", async (req, res) => {
+    protected leaderboards() {
+        this.app.get("/leaderboards", async(req, res) => {
             res.json(this.leaderboardService.leaderboards);
         });
     }
 
-    protected battles () {
-        this.app.get("/battles", async (req, res) => {
+    protected battles() {
+        this.app.get("/battles", async(req, res) => {
             res.json(this.lobbyService.activeBattles);
         });
     }
 
     protected users() {
-        this.app.get("/users", async (req, res) => {
+        this.app.get("/users", async(req, res) => {
             const result = await this.barDb.schema.user.findAll({
                 attributes: ["username", "countryCode"]
             });
@@ -200,42 +243,73 @@ export class API {
     }
 
     protected cachedUsers() {
-        this.app.get("/cached-users", async (req, res) => {
+        this.app.get("/cached-users", async(req, res) => {
             const cachedUsers = await this.barDb.getUsersFromMemory();
 
-            res.setHeader('Content-Type', 'application/json');
+            res.setHeader("Content-Type", "application/json");
 
             return res.end(cachedUsers);
         });
     }
 
     protected cachedMaps() {
-        this.app.get("/cached-maps", async (req, res) => {
+        this.app.get("/cached-maps", async(req, res) => {
             const cachedMaps = await this.barDb.getMapsFromMemory();
 
-            res.setHeader('Content-Type', 'application/json');
+            res.setHeader("Content-Type", "application/json");
 
             return res.end(cachedMaps);
         });
     }
 
-    protected parseReplaysRequestQuery (query: { [key: string]: string }) : Required<ReplayRequest> {
-        const filters = parseReplayFilters(query);
+    protected async getPlayerDemoIds(players: string[]) {
+        const foundDemos = await this.barDb.schema.demo.findAll({
+            attributes: ["id", [Sequelize.fn("ARRAY_AGG", Sequelize.col("name")), "players"]],
+            include: [{
+                model: this.barDb.schema.allyTeam,
+                attributes: [],
+                include: [{
+                    model: this.barDb.schema.player,
+                    attributes: [],
+                    right: true,
+                    where: {
+                        name: {
+                            [Op.in]: players
+                        }
+                    }
+                }],
+                required: true
+            }],
+            group: ["Demo.id"],
+            having: Sequelize.literal(`COUNT(*) = ${players.length}`)
+        });
 
-        const sorts: Writeable<typeof defaultReplaySorts> = _.clone(defaultReplaySorts);
-        for (const key in query) {
-            const val = query[key];
-            if (key in sorts) {
-                sorts[key] = val === "asc" ? "asc" : "desc";
-            }
-        }
+        const foundDemoIds = foundDemos.map(demo => demo.id);
 
-        return {
-            page: parseInt(query.page) || defaultPaginatedRequest.page,
-            limit: Math.min(parseInt(query.limit), defaultPaginatedRequest.limit) || defaultPaginatedRequest.limit,
-            filters,
-            sort: sorts
-        };
+        return foundDemoIds;
+    }
+
+    protected async getTrueSkillDemoIds(trueSkillMin: number, trueSkillMax: number) {
+        const foundDemos = await this.barDb.schema.demo.findAll({
+            attributes: ["id"],
+            include: [{
+                model: this.barDb.schema.allyTeam,
+                attributes: [],
+                include: [{
+                    model: this.barDb.schema.player,
+                    attributes: []
+                }]
+            }],
+            where: {
+                hasBots: false
+            },
+            group: ["Demo.id"],
+            having: Sequelize.literal(`COUNT(*) = COUNT(CASE WHEN "AllyTeams->Players"."trueSkill" BETWEEN ${trueSkillMin} AND ${trueSkillMax} THEN 1 END)`)
+        });
+
+        const foundDemoIds = foundDemos.map(demo => demo.id);
+
+        return foundDemoIds;
     }
 }
 

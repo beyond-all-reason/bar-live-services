@@ -49,32 +49,32 @@ import { Battle } from "~/model/battle";
 export default class BattleComponent extends Vue {
     @Prop({ type: Object, required: true }) readonly battle!: Battle;
 
-    get mapUrl () : string {
+    get mapUrl() : string {
         if (this.battle.mapFileName) {
             return `/api/maps/${this.battle.mapFileName}/texture-lq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
 
-    get mapName () : string {
+    get mapName() : string {
         return this.battle.map.replace(/[_-]/g, " ");
     }
 
-    get playerCount () : number {
+    get playerCount() : number {
         if (!this.battle.founder.status?.bot) {
             return this.battle.players.length - this.battle.spectators;
         }
         return this.battle.players.length - (this.battle.spectators - 1);
     }
 
-    get spectatorCount () : number {
+    get spectatorCount() : number {
         if (!this.battle.founder.status?.bot) {
             return this.battle.spectators;
         }
         return this.battle.spectators - 1;
     }
 
-    countryImage (countryCode: string) {
+    countryImage(countryCode: string) {
         return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode}.svg`);
     }
 }

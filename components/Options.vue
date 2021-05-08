@@ -1,10 +1,10 @@
 <template>
     <div class="selection">
         <div class="name">
-            <slot name="title"></slot>
+            <slot name="title" />
         </div>
         <div class="options">
-            <slot></slot>
+            <slot />
         </div>
     </div>
 </template>
@@ -33,15 +33,17 @@ export default class OptionsComponent extends Vue {
                 if (this.selectedValue.includes(value)) {
                     if (!this.required || (this.required && this.selectedValue.length > 1)) {
                         this.selectedValue = this.selectedValue.filter((val: any) => val !== value);
+                        this.selectedValue.sort();
                     }
                 } else {
                     this.selectedValue = [...this.selectedValue, value];
+                    this.selectedValue.sort();
                 }
             } else {
                 this.selectedValue = value;
             }
 
-            this.$emit('input', this.selectedValue);
+            this.$emit("input", this.selectedValue);
         });
     }
 }

@@ -5,31 +5,79 @@
         </h1>
         <div class="filters">
             <Options v-model="filters.preset" multiple required>
-                <template v-slot:title>Preset <v-icon>mdi-account</v-icon></template>
-                <Option value="duel">Duel</Option>
-                <Option value="team">Team</Option>
-                <Option value="ffa">FFA</Option>
+                <template v-slot:title>
+                    Preset <v-icon>mdi-account</v-icon>
+                </template>
+                <Option value="duel">
+                    Duel
+                </Option>
+                <Option value="team">
+                    Team
+                </Option>
+                <Option value="ffa">
+                    FFA
+                </Option>
             </Options>
             <Options v-model="filters.hasBots">
-                <template v-slot:title>Has Bots <v-icon>mdi-robot</v-icon></template>
-                <Option :value="false" bgColor="#b83e3e" textColor="#fff"><v-icon color="#b13b3b">mdi-close-thick</v-icon></Option>
-                <Option :value="undefined"><v-icon>mdi-minus-thick</v-icon></Option>
-                <Option :value="true" bgColor="#70a232" textColor="#fff"><v-icon color="#91b64d">mdi-check-bold</v-icon></Option>
+                <template v-slot:title>
+                    Has Bots <v-icon>mdi-robot</v-icon>
+                </template>
+                <Option :value="false" bg-color="#b83e3e" text-color="#fff">
+                    <v-icon color="#b13b3b">
+                        mdi-close-thick
+                    </v-icon>
+                </Option>
+                <Option :value="undefined">
+                    <v-icon>mdi-minus-thick</v-icon>
+                </Option>
+                <Option :value="true" bg-color="#70a232" text-color="#fff">
+                    <v-icon color="#91b64d">
+                        mdi-check-bold
+                    </v-icon>
+                </Option>
             </Options>
             <Options v-model="filters.endedNormally">
-                <template v-slot:title>Ended Normally <v-icon>mdi-checkbox-marked-circle</v-icon></template>
-                <Option :value="false" bgColor="#b83e3e" textColor="#fff"><v-icon color="#b13b3b">mdi-close-thick</v-icon></Option>
-                <Option :value="undefined"><v-icon>mdi-minus-thick</v-icon></Option>
-                <Option :value="true" bgColor="#70a232" textColor="#fff"><v-icon color="#91b64d">mdi-check-bold</v-icon></Option>
+                <template v-slot:title>
+                    Ended Normally <v-icon>mdi-checkbox-marked-circle</v-icon>
+                </template>
+                <Option :value="false" bg-color="#b83e3e" text-color="#fff">
+                    <v-icon color="#b13b3b">
+                        mdi-close-thick
+                    </v-icon>
+                </Option>
+                <Option :value="undefined">
+                    <v-icon>mdi-minus-thick</v-icon>
+                </Option>
+                <Option :value="true" bg-color="#70a232" text-color="#fff">
+                    <v-icon color="#91b64d">
+                        mdi-check-bold
+                    </v-icon>
+                </Option>
             </Options>
             <DateFilter v-model="filters.dateRange" />
             <div class="flex-col range">
                 <label>Duration in minutes</label>
-                <v-range-slider :value="this.filters.durationRangeMins" :min="0" :max="120" thumb-label="always" tick-size="1" hide-details="true" @change="updateDuration"></v-range-slider>
+                <v-range-slider
+                    :value="filters.durationRangeMins"
+                    :min="0"
+                    :max="120"
+                    thumb-label="always"
+                    tick-size="1"
+                    hide-details="true"
+                    @change="updateDuration"
+                />
             </div>
             <div class="flex-col range">
                 <label>TrueSkill Range</label>
-                <v-range-slider :value="this.filters.tsRange" :min="0" :max="50" thumb-label="always" tick-size="1" hide-details="true" @change="updateTsRange"></v-range-slider>
+                <v-range-slider
+                    :value="filters.tsRange"
+                    :min="0"
+                    :max="50"
+                    thumb-label="always"
+                    tick-size="1"
+                    hide-details="true"
+                    @change="updateTsRange"
+                />
             </div>
             <PlayerFilter v-model="filters.players" />
             <MapFilter v-model="filters.maps" />
@@ -57,7 +105,7 @@ import { parseReplayFilters } from "~/modules/api/replays";
     watch: {
         "$route.query": "$fetch",
         filters: {
-            handler: function(this: ReplaysPage) {
+            handler(this: ReplaysPage) {
                 this.updateFilters();
             },
             deep: true
@@ -72,7 +120,7 @@ export default class ReplaysPage extends Vue {
     timeTaken = 0;
     filters: Partial<ReplayFilters> = defaultReplayFilters;
 
-    async fetch (): Promise<any> {
+    async fetch(): Promise<any> {
         const beforeTime = Date.now();
         const searchParams = new URLSearchParams(this.$route.query as {});
         const response = await this.$http.$get("replays", { searchParams }) as APIResponse<Demo[], ReplayFilters, ReplaySorts>;
@@ -80,11 +128,11 @@ export default class ReplaysPage extends Vue {
         this.totalResults = response.totalResults;
         this.page = response.page;
         this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
-        //this.filters = Object.keys(response.filters).filter(key => response.filters[key] === true);
+        // this.filters = Object.keys(response.filters).filter(key => response.filters[key] === true);
         this.replays = response.data;
     }
 
-    async changePage (page: number) {
+    async changePage(page: number) {
         this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
     }
 

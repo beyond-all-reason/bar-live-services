@@ -15,9 +15,9 @@ export const defaultPaginatedRequest: Optionals<PaginatedRequest> = {
 };
 
 export type FilterType = string | string[] | number | number[] | boolean | null | undefined;
-//export type Filters = { [key: string]: FilterType };
-//type PartialRecord<K extends string, T> = { [P in K]?: T; };
-//export type PartialFilter<K extends string> = { [P in K]?: FilterType; };
+// export type Filters = { [key: string]: FilterType };
+// type PartialRecord<K extends string, T> = { [P in K]?: T; };
+// export type PartialFilter<K extends string> = { [P in K]?: FilterType; };
 
 export type SortType = "asc" | "desc";
 export type Sort = Record<string, SortType>;

@@ -1,6 +1,6 @@
 <template>
-    <div :class="`option ${isSelected() ? 'selected' : ''}`" @click="optionSelected" :style="`--bgColor: ${bgColor}; --textColor: ${textColor}`">
-        <slot></slot>
+    <div :class="`option ${isSelected() ? 'selected' : ''}`" :style="`--bgColor: ${bgColor}; --textColor: ${textColor}`" @click="optionSelected">
+        <slot />
     </div>
 </template>
 
@@ -15,7 +15,7 @@ export default class OptionComponent extends Vue {
     @Prop({ type: String, required: false, default: "#000" }) readonly textColor!: string;
 
     optionSelected() {
-        this.$parent.$emit("optionSelected", this.value)
+        this.$parent.$emit("optionSelected", this.value);
     }
 
     isSelected() : boolean {

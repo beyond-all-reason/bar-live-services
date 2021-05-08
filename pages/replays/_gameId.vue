@@ -151,7 +151,7 @@ import { ReplayResponse } from "~/model/api/api-response";
         title: "BAR - Replay"
     },
     directives: {
-        setPlayerColor (el, binding) {
+        setPlayerColor(el, binding) {
             const { r, g, b } = binding.value as { r: number, g: number, b: number };
             const lightness = 0.299 * r + 0.587 * g + 0.114 * b; // https://stackoverflow.com/a/596243/1864403
             el.style.color = `rgba(${r}, ${g}, ${b}, 1)`;
@@ -160,7 +160,7 @@ import { ReplayResponse } from "~/model/api/api-response";
     }
 })
 export default class ReplayPage extends AbstractReplay {
-    async asyncData ({ store, $http, params }: Context): Promise<any> {
+    async asyncData({ store, $http, params }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
         for (const allyTeam of replay.AllyTeams) {
@@ -173,15 +173,15 @@ export default class ReplayPage extends AbstractReplay {
         return { replay, playerColors };
     }
 
-    get hostSettings () : { [key: string]: string; } {
+    get hostSettings() : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
     }
 
-    get gameSettings () : { [key: string]: string; } {
+    get gameSettings() : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
     }
 
-    get mapSettings () : { [key: string]: string; } {
+    get mapSettings() : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
     }
 }

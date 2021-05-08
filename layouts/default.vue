@@ -15,7 +15,7 @@ import "iframe-resizer/js/iframeResizer.contentWindow";
 
 @Component({
     watch: {
-        $route (route) {
+        $route(route) {
             if ((window as any).parentIFrame && (window as any).parentIFrame.sendMessage) {
                 (window as any).parentIFrame.sendMessage({
                     params: route.params,
@@ -26,9 +26,9 @@ import "iframe-resizer/js/iframeResizer.contentWindow";
     }
 })
 export default class DefaultLayout extends Vue {
-    fetchOnServer () { return false; }
+    fetchOnServer() { return false; }
 
-    async fetch () {
+    async fetch() {
         if (process.browser) {
             this.$store.commit("setEmbedded", window.self !== window.top);
         }

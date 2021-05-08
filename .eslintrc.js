@@ -34,6 +34,8 @@ module.exports = {
         "indent": ["error", 4],
         "vue/html-indent": ["error", 4],
         "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
-        "require-await": "off"
+        "require-await": "off",
+        "no-console": "off",
+        "space-before-function-paren": ["error", "never"]
     }
 }

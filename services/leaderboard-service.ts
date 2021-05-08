@@ -25,7 +25,7 @@ export class LeaderboardService extends Service {
     protected config: Required<LeaderboardServiceConfig>;
     protected sldbClient: SLDBClient;
 
-    constructor (config: LeaderboardServiceConfig) {
+    constructor(config: LeaderboardServiceConfig) {
         super();
 
         this.config = Object.assign({}, defaultLeaderboardServiceConfig, config) as Required<LeaderboardServiceConfig>;
@@ -38,13 +38,13 @@ export class LeaderboardService extends Service {
         });
     }
 
-    public init () {
+    public init() {
         this.updateLeaderboards();
 
         return super.init();
     }
 
-    protected async updateLeaderboards () {
+    protected async updateLeaderboards() {
         while (true) {
             this.leaderboards = await this.sldbClient.getLeaderboards("BYAR", this.config.leaderboards as SLDBModel.GameType[]);
 

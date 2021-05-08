@@ -11,11 +11,11 @@ import { Component, Vue } from "nuxt-property-decorator";
 export default class LoadingBar extends Vue {
     loading: boolean = false;
 
-    start () {
+    start() {
         this.loading = true;
     }
 
-    finish () {
+    finish() {
         this.loading = false;
     }
 }
