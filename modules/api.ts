@@ -83,10 +83,7 @@ export class API {
         this.app.get("/replays", async(req, res) => {
             const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
 
-            // console.log("filters", filters);
-
             const demoWhere: WhereAttributeHash<Demo> | AndOperator<Demo> | OrOperator<Demo> = {};
-            const playerWhere: WhereAttributeHash<Player> | AndOperator<Player> | OrOperator<Player> = {};
             const mapWhere: WhereAttributeHash<Map> | AndOperator<Map> | OrOperator<Map> = {};
 
             filters.preset !== undefined && (demoWhere.preset = filters.preset);
@@ -120,10 +117,6 @@ export class API {
                 };
             }
 
-            console.log("demoWhere", demoWhere);
-            console.log("playerWhere", playerWhere);
-            console.log("mapWhere", mapWhere);
-
             const order = Object.entries(sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
 
             const result = await this.barDb.schema.demo.findAndCountAll({
@@ -144,15 +137,13 @@ export class API {
                         include: [
                             {
                                 model: this.barDb.schema.player,
-                                attributes: ["userId", "playerId", "name", "trueSkill"],
-                                where: playerWhere
+                                attributes: ["userId", "playerId", "name", "trueSkill"]
                             },
                             {
                                 model: this.barDb.schema.ai,
                                 attributes: ["shortName"]
                             }
                         ],
-
                         required: true
                     },
                     {
@@ -300,9 +291,6 @@ export class API {
                     attributes: []
                 }]
             }],
-            where: {
-                hasBots: false
-            },
             group: ["Demo.id"],
             having: Sequelize.literal(`COUNT(*) = COUNT(CASE WHEN "AllyTeams->Players"."trueSkill" BETWEEN ${trueSkillMin} AND ${trueSkillMax} THEN 1 END)`)
         });
