@@ -2,7 +2,6 @@ import * as fs from "fs";
 import { Module } from "@nuxt/types";
 import { Database } from "bar-db";
 import { Demo } from "bar-db/dist/model/demo";
-import { Player } from "bar-db/dist/model/player";
 import { Map } from "bar-db/dist/model/map";
 import express from "express";
 import { AndOperator, Op, OrderItem, OrOperator, Sequelize, WhereAttributeHash } from "sequelize";

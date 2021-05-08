@@ -14,7 +14,7 @@ export class AbstractReplay extends Vue {
 
     get lowQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture-lq.jpg`;
+            return `/api/maps/${this.replay.Map.fileName}/texture-mq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
