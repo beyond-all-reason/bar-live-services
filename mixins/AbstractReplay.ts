@@ -35,7 +35,7 @@ export class AbstractReplay extends Vue {
     }
 
     get duration(): string {
-        return this.$moment.duration(this.replay.durationMs).humanize();
+        return `${this.$moment.duration(this.replay.durationMs).humanize({ m: 9999 })}`;
     }
 
     get mapName(): string {

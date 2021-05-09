@@ -11,6 +11,7 @@ import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
 import { parseReplaysRequestQuery } from "../modules/api/replays";
+import _ from "lodash";
 
 export type ServicesConfig = typeof Config;
 
@@ -93,6 +94,9 @@ export class API {
             filters.maps !== undefined && (mapWhere.scriptName = { [Op.or]: filters.maps });
             if (filters.dateRange !== undefined) {
                 const dates = filters.dateRange.map(str => new Date(str)).sort((a, b) => a.valueOf() - b.valueOf());
+                if (dates.length === 1) {
+                    dates.unshift(_.clone(dates[0]));
+                }
                 const lastDate = dates[dates.length - 1];
                 lastDate.setDate(lastDate.getDate() + 1);
                 filters.dateRange !== undefined && (demoWhere.startTime = { [Op.between]: dates.map(date => date.toISOString()) });
@@ -115,7 +119,7 @@ export class API {
                     [Op.and]: demoIds.map((ids) => { return { [Op.in]: ids }; })
                 };
             }
-
+            
             const order = Object.entries(sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
 
             const result = await this.barDb.schema.demo.findAndCountAll({

@@ -1,9 +1,18 @@
 <template>
     <div class="date-filter">
         <div class="label">
-            Date
+            Date <v-icon class="small">mdi-calendar</v-icon>
         </div>
         <div class="input">
+            <v-text-field
+                id="txtDate"
+                placeholder="Select Date Range"
+                :value="text"
+                readonly
+                prepend-icon="mdi-calendar"
+                clearable
+                @click:clear="clear"
+            />
             <v-menu
                 ref="menu"
                 v-model="menu"
@@ -11,19 +20,8 @@
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
+                activator="#txtDate"
             >
-                <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                        placeholder="Select Date Range"
-                        :value="text"
-                        readonly
-                        prepend-icon="mdi-calendar"
-                        v-bind="attrs"
-                        clearable
-                        v-on="on"
-                        @click:clear="clear"
-                    />
-                </template>
                 <v-date-picker v-model="date" no-title range color="#fff" @input="dispatch">
                     <v-spacer />
                     <v-btn text color="primary" @click="menu = false">
@@ -61,20 +59,6 @@ export default class DateFilterComponent extends Vue {
         } else if (this.date.length > 1) {
             text = `${this.parseDate(this.date[0])} - ${this.parseDate(this.date[1])}`;
         }
-
-        // const dateBlockEl = this.$refs.txtDate as Vue;
-        // if (dateBlockEl) {
-        //     const el = dateBlockEl.$el.querySelector("input[type=text]") as HTMLElement;
-        //     if (el) {
-        //         if (this.date.length === 0) {
-        //             el.style.width = "50px";
-        //         } else if (this.date.length === 1) {
-        //             el.style.width = "100px";
-        //         } else if (this.date.length === 2) {
-        //             el.style.width = "150px";
-        //         }
-        //     }
-        // }
 
         return text;
     }

@@ -49,6 +49,13 @@
     .v-text-field > .v-input__control > .v-input__slot:before {
         border-width: 0 !important;
     }
+    .v-chip--active {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+    }
+    .v-chip__content {
+        color: #fff !important;
+    }
 }
 .v-list-item__avatar {
     width: initial !important;
@@ -84,6 +91,9 @@
         margin-top: 0 !important;
         padding-top: 3px !important;
     }
+    input {
+        cursor: pointer !important;
+    }
 }
 
 .v-menu__content .v-date-picker-table .v-btn.v-btn--active {
@@ -95,4 +105,9 @@
 
 .v-text-field.v-input--is-focused > .v-input__control > .v-input__slot:after {
     display: none !important;
+}
+
+.v-icon.small {
+    font-size: 16px !important;
+    margin-bottom: 2px !important;
 }

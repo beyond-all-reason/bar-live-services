@@ -99,7 +99,7 @@ export default class BattleComponent extends Vue {
     left: 0;
     background-position: center;
     background-size: cover;
-    border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0px -4px 0px 0px rgb(0 0 0 / 30%);
     image-rendering: pixelated;
     z-index: 0;
     &:before {

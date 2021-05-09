@@ -72,14 +72,14 @@ export default class Page extends Vue {
     }
 }
 .battles {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     grid-gap: 1em;
-    grid-template-columns: repeat(1, 1fr);
-    @media (min-width: 700px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    @media (min-width: 1900px) {
-        grid-template-columns: repeat(3, 1fr);
-    }
+}
+.battle {
+    width: 100%;
+    @media (min-width: 800px) { width: calc(50% - 1em); }
+    @media (min-width: 1600px) { width: calc(100%/3 - 1em); }
 }
 </style>

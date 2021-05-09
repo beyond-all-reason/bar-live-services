@@ -1,7 +1,7 @@
 <template>
     <div class="text-filter">
         <div class="label">
-            Players
+            Players <v-icon class="small">mdi-account-group</v-icon>
         </div>
         <div class="input">
             <v-autocomplete
@@ -15,6 +15,7 @@
                 deletable-chips
                 multiple
                 dense
+                small-chips
                 @change="clear"
             >
                 <template v-slot:item="data">
@@ -31,12 +32,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "nuxt-property-decorator";
+import { Component, Prop, Vue } from "nuxt-property-decorator";
+import _ from "lodash";
 
 @Component({ fetchOnServer: false })
 export default class PlayerFilter extends Vue {
+    @Prop({ type: Array, required: true }) readonly value!: string[];
+
     items: any[] = [];
     selectedItems: string[] = [];
+
+    beforeMount() {
+        this.selectedItems = _.clone(this.value);
+    }
 
     async fetch() {
         const players = await this.$http.$get("cached-users") as Array<{ id: number, username: string, countryCode: string }>;

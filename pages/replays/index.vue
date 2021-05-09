@@ -6,7 +6,7 @@
         <div class="filters">
             <Options v-model="filters.preset" multiple required>
                 <template v-slot:title>
-                    Preset <v-icon>mdi-account</v-icon>
+                    Preset <v-icon class="small">mdi-account</v-icon>
                 </template>
                 <Option value="duel">
                     Duel
@@ -20,7 +20,7 @@
             </Options>
             <Options v-model="filters.hasBots">
                 <template v-slot:title>
-                    Has Bots <v-icon>mdi-robot</v-icon>
+                    Has Bots <v-icon class="small">mdi-robot</v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
                     <v-icon color="#b13b3b">
@@ -38,7 +38,7 @@
             </Options>
             <Options v-model="filters.endedNormally">
                 <template v-slot:title>
-                    Ended Normally <v-icon>mdi-checkbox-marked-circle</v-icon>
+                    Ended Normally <v-icon class="small">mdi-checkbox-marked-circle</v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
                     <v-icon color="#b13b3b">
@@ -56,7 +56,7 @@
             </Options>
             <DateFilter v-model="filters.dateRange" />
             <div class="flex-col range">
-                <label>Duration in minutes</label>
+                <label>Duration in minutes <v-icon class="small">mdi-clock</v-icon></label>
                 <v-range-slider
                     :value="filters.durationRangeMins"
                     :min="0"
@@ -68,7 +68,7 @@
                 />
             </div>
             <div class="flex-col range">
-                <label>TrueSkill Range</label>
+                <label>TrueSkill Range <v-icon class="small">mdi-chevron-triple-up</v-icon></label>
                 <v-range-slider
                     :value="filters.tsRange"
                     :min="0"
@@ -99,6 +99,7 @@ import { Component, Vue } from "nuxt-property-decorator";
 import { APIResponse } from "~/model/api/api-response";
 import { ReplayFilters, defaultReplayFilters, ReplaySorts } from "~/model/api/replays";
 import { parseReplayFilters } from "~/modules/api/replays";
+import _ from "lodash";
 
 @Component({
     head: { title: "BAR - Replays" },
@@ -118,7 +119,7 @@ export default class ReplaysPage extends Vue {
     pageCount = 0;
     replays: Demo[] = [];
     timeTaken = 0;
-    filters: Partial<ReplayFilters> = defaultReplayFilters;
+    filters: Partial<ReplayFilters> = _.clone(defaultReplayFilters);
 
     async fetch(): Promise<any> {
         const beforeTime = Date.now();
@@ -128,7 +129,6 @@ export default class ReplaysPage extends Vue {
         this.totalResults = response.totalResults;
         this.page = response.page;
         this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
-        // this.filters = Object.keys(response.filters).filter(key => response.filters[key] === true);
         this.replays = response.data;
     }
 
@@ -139,7 +139,7 @@ export default class ReplaysPage extends Vue {
     updateFilters() {
         const query: { [key: string]: string } = {};
         for (const [key, val] of Object.entries(this.filters)) {
-            const isDefaultVal = JSON.stringify((defaultReplayFilters as any)[key]) === JSON.stringify(val);
+            const isDefaultVal = _.isEqual(defaultReplayFilters[key as keyof ReplayFilters], val);
 
             if (isDefaultVal) {
                 continue;
@@ -153,6 +153,7 @@ export default class ReplaysPage extends Vue {
                 query[key] = encodeURI(String(val));
             }
         }
+
         this.$router.push({ query });
     }
 
@@ -161,12 +162,8 @@ export default class ReplaysPage extends Vue {
         this.filters = parseReplayFilters(query, this.filters);
     }
 
-    isDefaultFilter(key: string) : key is keyof typeof defaultReplayFilters {
-        return (key in defaultReplayFilters);
-    }
-
     updateDuration(durationRangeMins: [number, number]) {
-        if (JSON.stringify(this.filters.durationRangeMins) === JSON.stringify(durationRangeMins)) {
+        if (_.isEqual(this.filters.durationRangeMins, durationRangeMins)) {
             return;
         }
         this.filters.durationRangeMins = durationRangeMins;
@@ -174,7 +171,7 @@ export default class ReplaysPage extends Vue {
     }
 
     updateTsRange(tsRange: [number, number]) {
-        if (JSON.stringify(this.filters.tsRange) === JSON.stringify(tsRange)) {
+        if (_.isEqual(this.filters.tsRange, tsRange)) {
             return;
         }
         this.filters.tsRange = tsRange;

@@ -63,10 +63,6 @@ export default class OptionsComponent extends Vue {
     padding: 2px 7px;
     background: rgba(255, 255, 255, 0.05);
     border-bottom: solid 1px #4a4a4a;
-    .v-icon {
-        font-size: 16px;
-        margin-bottom: 2px;
-    }
 }
 .options {
     display: flex;

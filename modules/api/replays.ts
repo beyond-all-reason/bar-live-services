@@ -41,9 +41,6 @@ export function parseReplayFilters(query: { [key: string]: string }, defaultFilt
             case "tsRange": filters[filterKey] = parseNumberArray(strVal) as [number, number]; break;
             case "players": filters[filterKey] = parseStringArray(strVal); break;
             case "maps": filters[filterKey] = parseStringArray(strVal); break;
-            default: {
-                console.log(`Unhandled filter: ${filterKey}`);
-            }
             }
         }
     }

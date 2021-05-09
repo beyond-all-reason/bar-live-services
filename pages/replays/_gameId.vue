@@ -21,7 +21,7 @@
                         </tr>
                         <tr>
                             <td>Duration</td>
-                            <td>{{ $moment.duration(replay.durationMs).humanize() }}</td>
+                            <td>{{ duration }}</td>
                         </tr>
                         <tr>
                             <td>Date</td>

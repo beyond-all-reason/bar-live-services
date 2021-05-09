@@ -32,7 +32,7 @@ export class LobbyService extends Service {
         this.lobbyClient = new SpringLobbyProtocolClient(this.config);
 
         process.on("SIGINT", async() => {
-            await this.lobbyClient.disconnect();
+            await this.lobbyClient.disconnect(false);
 
             process.exit();
         });
