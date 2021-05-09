@@ -36,7 +36,7 @@ import _ from "lodash";
 
 @Component({ fetchOnServer: false })
 export default class MapFilterComponent extends Vue {
-    @Prop({ type: Array, required: true }) readonly value!: string[];
+    @Prop({ type: Array, required: false, default: () => [] }) readonly value!: string[];
 
     items: any[] = [];
     selectedItems: string[] = [];

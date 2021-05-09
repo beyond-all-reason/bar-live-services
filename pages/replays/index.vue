@@ -4,7 +4,7 @@
             Replays
         </h1>
         <div class="filters">
-            <Options v-model="filters.preset" multiple required>
+            <Options v-model="filters.preset" multiple>
                 <template v-slot:title>
                     Preset <v-icon class="small">
                         mdi-account
@@ -165,7 +165,7 @@ export default class ReplaysPage extends Vue {
 
     beforeMount() {
         const query = this.$route.query as { [key: string]: string };
-        this.filters = parseReplayFilters(query, this.filters);
+        this.filters = parseReplayFilters(query);
     }
 
     updateDuration(durationRangeMins: [number, number]) {

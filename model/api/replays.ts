@@ -16,13 +16,7 @@ export interface ReplayFilters {
 }
 
 export const defaultReplayFilters: Partial<Readonly<ReplayFilters>> = {
-    preset: ["duel", "ffa", "team"],
-    endedNormally: true,
-    tsRange: [0, 50],
-    durationRangeMins: [0, 120],
-    players: [],
-    maps: [],
-    dateRange: []
+    endedNormally: true
 };
 
 export interface ReplaySorts extends Sort {

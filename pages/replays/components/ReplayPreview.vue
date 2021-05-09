@@ -1,9 +1,17 @@
 <template>
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
         <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
-        <!-- <div class="map-name">
-            {{ mapName }}
-        </div> -->
+        <div class="hover-info">
+            <div class="team" v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex">
+                <div class="team-title">
+                    <span>Team {{ allyTeamIndex + 1 }}</span>
+                    <span v-if="team.winningTeam"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+                </div>
+                <div class="player" v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`player-`+playerIndex">
+                    {{ player.name || player.shortName }}
+                </div>
+            </div>
+        </div>
         <div class="meta">
             <div class="times">
                 <div class="duration">
@@ -49,8 +57,11 @@ export default class ReplayPreview extends AbstractReplay {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     overflow: hidden;
     border-radius: 3px;
+    color: #fff;
+    text-shadow: 1px 1px #000;
     &:before {
         position: absolute;
         width: calc(100% - 2px);
@@ -63,7 +74,7 @@ export default class ReplayPreview extends AbstractReplay {
     }
     &:hover {
         .map {
-            filter: brightness(120%);
+            //filter: brightness(120%);
             transform: scale(1.1);
         }
     }
@@ -108,6 +119,8 @@ export default class ReplayPreview extends AbstractReplay {
     align-items: center;
     font-size: 13px;
     z-index: 2;
+    opacity: 1;
+    transition: opacity .2s;
 }
 .times {
     width: 100%;
@@ -121,5 +134,73 @@ export default class ReplayPreview extends AbstractReplay {
 .v-icon.v-icon {
     font-size: 13px;
     margin-right: 3px;
+}
+.hover-info {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    padding: 10px;
+    transition: opacity .2s;
+    font-size: 12px;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 7px;
+
+    .replay-preview:hover & {
+        opacity: 1;
+
+        & + .meta {
+            opacity: 0;
+        }
+    }
+}
+.team {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    flex-grow: 0;
+    &:first-child{
+        text-align: right;
+        .team-title {
+            width: 100%;
+            text-align: right;
+        }
+    }
+    &:last-child {
+        text-align: left;
+        .team-title {
+            width: 100%;
+            text-align: left;
+        }
+        &:before {
+            content: "";
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 15%, rgba(0,0,0,0.4) 85%, rgba(0,0,0,0) 100%);
+            position: absolute;
+            left: -5px;
+        }
+        &:after {
+            content: "";
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 15%, rgba(255,255,255,0.2) 85%, rgba(255,255,255,0) 100%);
+            position: absolute;
+            left: -4px;
+        }
+    }
+}
+.team-title {
+    font-size: 14px;
+}
+.player {
+    width: 100%;
 }
 </style>

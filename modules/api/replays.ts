@@ -2,7 +2,7 @@ import { Writeable } from "jaz-ts-utils";
 import _ from "lodash";
 import { defaultPaginatedRequest } from "../../model/api/paginated-request";
 import { parseStringArray, parseNumberArray, parseBoolean } from "../../model/api/query-parser";
-import { defaultReplaySorts, ReplayFilters, ReplayRequest } from "../../model/api/replays";
+import { defaultReplayFilters, defaultReplaySorts, ReplayFilters, ReplayRequest } from "../../model/api/replays";
 
 export function parseReplaysRequestQuery(query: { [key: string]: string }) : Required<ReplayRequest> {
     const filters = parseReplayFilters(query);
@@ -23,8 +23,8 @@ export function parseReplaysRequestQuery(query: { [key: string]: string }) : Req
     };
 }
 
-export function parseReplayFilters(query: { [key: string]: string }, defaultFilters: Partial<ReplayFilters> = {}) : Partial<ReplayFilters> {
-    const filters: Partial<ReplayFilters> = defaultFilters;
+export function parseReplayFilters(query: { [key: string]: string }) : Partial<ReplayFilters> {
+    const filters: Partial<ReplayFilters> = _.cloneDeep(defaultReplayFilters);
 
     for (const key in query) {
         const filterKey = key as keyof ReplayFilters;

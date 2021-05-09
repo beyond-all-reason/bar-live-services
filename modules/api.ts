@@ -90,9 +90,9 @@ export class API {
             filters.hasBots !== undefined && (demoWhere.hasBots = filters.hasBots);
             filters.endedNormally !== undefined && (demoWhere.gameEndedNormally = filters.endedNormally);
             filters.reported !== undefined && (demoWhere.reported = filters.reported);
-            filters.durationRangeMins !== undefined && (demoWhere.durationMs = { [Op.between]: filters.durationRangeMins.map(ms => ms * 1000 * 60) });
-            filters.maps !== undefined && (mapWhere.scriptName = { [Op.or]: filters.maps });
-            if (filters.dateRange !== undefined) {
+            filters.durationRangeMins !== undefined && filters.durationRangeMins.length && (demoWhere.durationMs = { [Op.between]: filters.durationRangeMins.map(ms => ms * 1000 * 60) });
+            filters.maps !== undefined && filters.maps.length && (mapWhere.scriptName = { [Op.or]: filters.maps });
+            if (filters.dateRange !== undefined && filters.dateRange.length) {
                 const dates = filters.dateRange.map(str => new Date(str)).sort((a, b) => a.valueOf() - b.valueOf());
                 if (dates.length === 1) {
                     dates.unshift(_.clone(dates[0]));
@@ -104,12 +104,12 @@ export class API {
 
             const demoIds: string[][] = [];
 
-            if (filters.tsRange !== undefined) {
+            if (filters.tsRange !== undefined && filters.tsRange.length) {
                 const tsRangeDemoIds = await this.getTrueSkillDemoIds(filters.tsRange[0], filters.tsRange[1]);
                 demoIds.push(tsRangeDemoIds);
             }
 
-            if (filters.players !== undefined) {
+            if (filters.players !== undefined && filters.players.length) {
                 const playerDemoIds = await this.getPlayerDemoIds(filters.players);
                 demoIds.push(playerDemoIds);
             }
@@ -119,6 +119,8 @@ export class API {
                     [Op.and]: demoIds.map((ids) => { return { [Op.in]: ids }; })
                 };
             }
+
+            console.log(demoWhere);
 
             const order = Object.entries(sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
 
@@ -132,26 +134,31 @@ export class API {
                     {
                         model: this.barDb.schema.map,
                         attributes: ["fileName", "scriptName"],
-                        where: mapWhere
+                        where: mapWhere,
+                        subQuery: false
                     },
                     {
                         model: this.barDb.schema.allyTeam, // TODO: only include total player counts instead of objects
-                        attributes: ["allyTeamId"],
+                        attributes: ["winningTeam"],
                         include: [
                             {
                                 model: this.barDb.schema.player,
-                                attributes: ["userId", "playerId", "name", "trueSkill"]
+                                attributes: ["name"],
+                                subQuery: false
                             },
                             {
                                 model: this.barDb.schema.ai,
-                                attributes: ["shortName"]
+                                attributes: ["shortName"],
+                                subQuery: false
                             }
                         ],
-                        required: true
+                        required: true,
+                        subQuery: false
                     },
                     {
                         model: this.barDb.schema.spectator,
-                        attributes: ["userId", "playerId", "name"]
+                        attributes: ["name"],
+                        subQuery: false
                     }
                 ],
                 where: demoWhere
@@ -174,14 +181,21 @@ export class API {
         this.app.get("/replays/:replayId", async(req, res) => {
             const replay = await this.barDb.schema.demo.findByPk(req.params.replayId, {
                 include: [
-                    { model: this.barDb.schema.map },
+                    { 
+                        model: this.barDb.schema.map,
+                        subQuery: false
+                    },
                     {
                         model: this.barDb.schema.allyTeam,
                         include: [this.barDb.schema.player, this.barDb.schema.ai],
                         separate: true,
-                        order: [["allyTeamId", "ASC"]]
+                        order: [["allyTeamId", "ASC"]],
+                        subQuery: false
                     },
-                    { model: this.barDb.schema.spectator }
+                    { 
+                        model: this.barDb.schema.spectator,
+                        subQuery: false
+                    }
                 ]
             });
 

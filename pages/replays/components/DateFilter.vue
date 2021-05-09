@@ -44,7 +44,7 @@ import { cloneDeep } from "lodash";
 
 @Component
 export default class DateFilterComponent extends Vue {
-    @Prop({ type: Array, required: true }) readonly value!: string[];
+    @Prop({ type: Array, required: false, default: () => [] }) readonly value!: string[];
 
     menu: boolean = false;
     date: string[] = [];

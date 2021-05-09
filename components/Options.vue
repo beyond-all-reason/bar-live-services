@@ -15,9 +15,9 @@ import { cloneDeep } from "lodash";
 
 @Component
 export default class OptionsComponent extends Vue {
-    @Prop({ required: true }) readonly value!: any;
+    @Prop({ required: false, default: () => [] }) readonly value!: any;
     @Prop({ type: Boolean, required: false, default: false }) readonly multiple!: boolean;
-    @Prop({ type: Boolean, required: false, default: true }) readonly required!: boolean;
+    @Prop({ type: Boolean, required: false, default: false }) readonly required!: boolean;
 
     selectedValue: any;
 
