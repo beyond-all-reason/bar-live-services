@@ -1,7 +1,9 @@
 <template>
     <div class="date-filter">
         <div class="label">
-            Date <v-icon class="small">mdi-calendar</v-icon>
+            Date <v-icon class="small">
+                mdi-calendar
+            </v-icon>
         </div>
         <div class="input">
             <v-text-field

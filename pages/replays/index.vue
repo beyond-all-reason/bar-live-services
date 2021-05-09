@@ -6,7 +6,9 @@
         <div class="filters">
             <Options v-model="filters.preset" multiple required>
                 <template v-slot:title>
-                    Preset <v-icon class="small">mdi-account</v-icon>
+                    Preset <v-icon class="small">
+                        mdi-account
+                    </v-icon>
                 </template>
                 <Option value="duel">
                     Duel
@@ -20,7 +22,9 @@
             </Options>
             <Options v-model="filters.hasBots">
                 <template v-slot:title>
-                    Has Bots <v-icon class="small">mdi-robot</v-icon>
+                    Has Bots <v-icon class="small">
+                        mdi-robot
+                    </v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
                     <v-icon color="#b13b3b">
@@ -38,7 +42,9 @@
             </Options>
             <Options v-model="filters.endedNormally">
                 <template v-slot:title>
-                    Ended Normally <v-icon class="small">mdi-checkbox-marked-circle</v-icon>
+                    Ended Normally <v-icon class="small">
+                        mdi-checkbox-marked-circle
+                    </v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
                     <v-icon color="#b13b3b">
@@ -96,10 +102,10 @@
 import { Demo } from "bar-db/dist/model/demo";
 import { Component, Vue } from "nuxt-property-decorator";
 
+import _ from "lodash";
 import { APIResponse } from "~/model/api/api-response";
 import { ReplayFilters, defaultReplayFilters, ReplaySorts } from "~/model/api/replays";
 import { parseReplayFilters } from "~/modules/api/replays";
-import _ from "lodash";
 
 @Component({
     head: { title: "BAR - Replays" },

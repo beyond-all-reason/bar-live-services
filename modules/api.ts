@@ -6,12 +6,12 @@ import { Map } from "bar-db/dist/model/map";
 import express from "express";
 import { AndOperator, Op, OrderItem, OrOperator, Sequelize, WhereAttributeHash } from "sequelize";
 
+import _ from "lodash";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
 import { parseReplaysRequestQuery } from "../modules/api/replays";
-import _ from "lodash";
 
 export type ServicesConfig = typeof Config;
 
@@ -119,7 +119,7 @@ export class API {
                     [Op.and]: demoIds.map((ids) => { return { [Op.in]: ids }; })
                 };
             }
-            
+
             const order = Object.entries(sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
 
             const result = await this.barDb.schema.demo.findAndCountAll({

@@ -1,7 +1,9 @@
 <template>
     <div class="text-filter">
         <div class="label">
-            Players <v-icon class="small">mdi-account-group</v-icon>
+            Players <v-icon class="small">
+                mdi-account-group
+            </v-icon>
         </div>
         <div class="input">
             <v-autocomplete

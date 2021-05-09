@@ -1,7 +1,9 @@
 <template>
     <div class="text-filter">
         <div class="label">
-            Maps <v-icon class="small">mdi-image-filter-hdr</v-icon>
+            Maps <v-icon class="small">
+                mdi-image-filter-hdr
+            </v-icon>
         </div>
         <div class="input">
             <v-autocomplete
