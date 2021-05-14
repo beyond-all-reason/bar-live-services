@@ -16,7 +16,9 @@ export interface ReplayFilters {
 }
 
 export const defaultReplayFilters: Partial<Readonly<ReplayFilters>> = {
-    endedNormally: true
+    endedNormally: true,
+    durationRangeMins: [0, 120],
+    tsRange: [0, 50]
 };
 
 export interface ReplaySorts extends Sort {

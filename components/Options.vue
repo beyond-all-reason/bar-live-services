@@ -15,14 +15,14 @@ import { cloneDeep } from "lodash";
 
 @Component
 export default class OptionsComponent extends Vue {
-    @Prop({ required: false, default: () => [] }) readonly value!: any;
+    @Prop({ required: false }) readonly value!: any;
     @Prop({ type: Boolean, required: false, default: false }) readonly multiple!: boolean;
     @Prop({ type: Boolean, required: false, default: false }) readonly required!: boolean;
 
-    selectedValue: any;
+    selectedValue!: any[];
 
     beforeMount() {
-        this.selectedValue = cloneDeep(this.value);
+        this.selectedValue = Array.isArray(this.value) ? cloneDeep(this.value) : this.multiple ? [] : [this.value];
 
         if (this.multiple && this.required && this.selectedValue.length === 0) {
             throw new Error("Multiple option picker is required but has no value");
@@ -39,11 +39,12 @@ export default class OptionsComponent extends Vue {
                     this.selectedValue = [...this.selectedValue, value];
                     this.selectedValue.sort();
                 }
-            } else {
-                this.selectedValue = value;
-            }
 
-            this.$emit("input", this.selectedValue);
+                this.$emit("input", this.selectedValue);
+            } else {
+                this.selectedValue = [value];
+                this.$emit("input", value);
+            }
         });
     }
 }

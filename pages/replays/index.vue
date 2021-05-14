@@ -65,8 +65,8 @@
                 <label>Duration in minutes <v-icon class="small">mdi-clock</v-icon></label>
                 <v-range-slider
                     :value="filters.durationRangeMins"
-                    :min="0"
-                    :max="120"
+                    :min="defaultFilters.durationRangeMins[0]"
+                    :max="defaultFilters.durationRangeMins[1]"
                     thumb-label="always"
                     tick-size="1"
                     hide-details="true"
@@ -77,8 +77,8 @@
                 <label>TrueSkill Range <v-icon class="small">mdi-chevron-triple-up</v-icon></label>
                 <v-range-slider
                     :value="filters.tsRange"
-                    :min="0"
-                    :max="50"
+                    :min="defaultFilters.tsRange[0]"
+                    :max="defaultFilters.tsRange[1]"
                     thumb-label="always"
                     tick-size="1"
                     hide-details="true"
@@ -125,6 +125,7 @@ export default class ReplaysPage extends Vue {
     pageCount = 0;
     replays: Demo[] = [];
     timeTaken = 0;
+    defaultFilters: Partial<ReplayFilters> = _.clone(defaultReplayFilters);
     filters: Partial<ReplayFilters> = _.clone(defaultReplayFilters);
 
     async fetch(): Promise<any> {

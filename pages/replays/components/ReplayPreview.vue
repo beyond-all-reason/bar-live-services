@@ -2,12 +2,12 @@
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
         <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
         <div class="hover-info">
-            <div class="team" v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex">
+            <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex" class="team">
                 <div class="team-title">
                     <span>Team {{ allyTeamIndex + 1 }}</span>
-                    <span v-if="team.winningTeam"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+                    <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
                 </div>
-                <div class="player" v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`player-`+playerIndex">
+                <div v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`player-`+playerIndex" class="player">
                     {{ player.name || player.shortName }}
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default class ReplayPreview extends AbstractReplay {
     }
     &:hover {
         .map {
-            //filter: brightness(120%);
+            filter: brightness(80%);
             transform: scale(1.1);
         }
     }
@@ -171,6 +171,7 @@ export default class ReplayPreview extends AbstractReplay {
         .team-title {
             width: 100%;
             text-align: right;
+            flex-direction: row-reverse;
         }
     }
     &:last-child {
@@ -199,6 +200,11 @@ export default class ReplayPreview extends AbstractReplay {
 }
 .team-title {
     font-size: 14px;
+    display: flex;
+    justify-content: flex-start;
+    .trophy {
+        margin: 0 5px;
+    }
 }
 .player {
     width: 100%;

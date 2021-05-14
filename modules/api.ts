@@ -12,6 +12,7 @@ import { LobbyService } from "../services/lobby-service";
 import { APIResponse, ReplayResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
 import { parseReplaysRequestQuery } from "../modules/api/replays";
+import { defaultReplayFilters } from "../model/api/replays";
 
 export type ServicesConfig = typeof Config;
 
@@ -59,6 +60,13 @@ export class API {
         this.app.use("/maps", express.static(servicesConfig.bardb.mapPath));
         this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
 
+        const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
+            res.status(500);
+            res.send("error");
+            console.log(err);
+        };
+        this.app.use(errorHandler);
+
         this.replays();
         this.replay();
         this.players();
@@ -68,6 +76,7 @@ export class API {
         this.users();
         this.cachedUsers();
         this.cachedMaps();
+        this.test();
     }
 
     public async init() {
@@ -80,7 +89,7 @@ export class API {
     }
 
     protected replays() {
-        this.app.get("/replays", async(req, res) => {
+        this.app.get("/replays", async(req, res, next) => {
             const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
 
             const demoWhere: WhereAttributeHash<Demo> | AndOperator<Demo> | OrOperator<Demo> = {};
@@ -90,7 +99,6 @@ export class API {
             filters.hasBots !== undefined && (demoWhere.hasBots = filters.hasBots);
             filters.endedNormally !== undefined && (demoWhere.gameEndedNormally = filters.endedNormally);
             filters.reported !== undefined && (demoWhere.reported = filters.reported);
-            filters.durationRangeMins !== undefined && filters.durationRangeMins.length && (demoWhere.durationMs = { [Op.between]: filters.durationRangeMins.map(ms => ms * 1000 * 60) });
             filters.maps !== undefined && filters.maps.length && (mapWhere.scriptName = { [Op.or]: filters.maps });
             if (filters.dateRange !== undefined && filters.dateRange.length) {
                 const dates = filters.dateRange.map(str => new Date(str)).sort((a, b) => a.valueOf() - b.valueOf());
@@ -102,9 +110,13 @@ export class API {
                 filters.dateRange !== undefined && (demoWhere.startTime = { [Op.between]: dates.map(date => date.toISOString()) });
             }
 
+            filters.durationRangeMins !== undefined && filters.durationRangeMins.length &&
+                !_.isEqual(filters.durationRangeMins, defaultReplayFilters.durationRangeMins) &&
+                (demoWhere.durationMs = { [Op.between]: filters.durationRangeMins.map(ms => ms * 1000 * 60) });
+
             const demoIds: string[][] = [];
 
-            if (filters.tsRange !== undefined && filters.tsRange.length) {
+            if (filters.tsRange !== undefined && filters.tsRange.length && !_.isEqual(filters.tsRange, defaultReplayFilters.tsRange)) {
                 const tsRangeDemoIds = await this.getTrueSkillDemoIds(filters.tsRange[0], filters.tsRange[1]);
                 demoIds.push(tsRangeDemoIds);
             }
@@ -154,11 +166,6 @@ export class API {
                         ],
                         required: true,
                         subQuery: false
-                    },
-                    {
-                        model: this.barDb.schema.spectator,
-                        attributes: ["name"],
-                        subQuery: false
                     }
                 ],
                 where: demoWhere
@@ -178,10 +185,10 @@ export class API {
     }
 
     protected replay() {
-        this.app.get("/replays/:replayId", async(req, res) => {
+        this.app.get("/replays/:replayId", async(req, res, next) => {
             const replay = await this.barDb.schema.demo.findByPk(req.params.replayId, {
                 include: [
-                    { 
+                    {
                         model: this.barDb.schema.map,
                         subQuery: false
                     },
@@ -192,7 +199,7 @@ export class API {
                         order: [["allyTeamId", "ASC"]],
                         subQuery: false
                     },
-                    { 
+                    {
                         model: this.barDb.schema.spectator,
                         subQuery: false
                     }
@@ -200,7 +207,7 @@ export class API {
             });
 
             if (replay === null) {
-                res.status(404).send("Replay not found");
+                next("Replay not found");
                 return;
             }
 
@@ -267,6 +274,12 @@ export class API {
             res.setHeader("Content-Type", "application/json");
 
             return res.end(cachedMaps);
+        });
+    }
+
+    protected test() {
+        this.app.get("/test", async(req, res, next) => {
+            throw new Error("test");
         });
     }
 

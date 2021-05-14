@@ -27,21 +27,28 @@ export function parseReplayFilters(query: { [key: string]: string }) : Partial<R
     const filters: Partial<ReplayFilters> = _.cloneDeep(defaultReplayFilters);
 
     for (const key in query) {
-        const filterKey = key as keyof ReplayFilters;
-        const strVal = query[key];
+        try {
+            const filterKey = key as keyof ReplayFilters;
+            const strVal = query[key];
 
-        if (strVal !== "any") {
-            switch (filterKey) {
-            case "preset": filters[filterKey] = strVal === "null" ? null : parseStringArray(strVal) as Array<"duel" | "team" | "ffa">; break;
-            case "hasBots": filters[filterKey] = strVal === "null" ? null : parseBoolean(strVal); break;
-            case "endedNormally": filters[filterKey] = parseBoolean(strVal); break;
-            case "reported": filters[filterKey] = strVal === "null" ? null : parseBoolean(strVal); break;
-            case "dateRange": filters[filterKey] = parseStringArray(strVal); break;
-            case "durationRangeMins": filters[filterKey] = parseNumberArray(strVal) as [number, number]; break;
-            case "tsRange": filters[filterKey] = parseNumberArray(strVal) as [number, number]; break;
-            case "players": filters[filterKey] = parseStringArray(strVal); break;
-            case "maps": filters[filterKey] = parseStringArray(strVal); break;
+            if (strVal !== "any") {
+                switch (filterKey) {
+                case "preset": filters[filterKey] = strVal === "null" ? null : parseStringArray(strVal) as Array<"duel" | "team" | "ffa">; break;
+                case "hasBots": filters[filterKey] = strVal === "null" ? null : parseBoolean(strVal); break;
+                case "endedNormally": filters[filterKey] = parseBoolean(strVal); break;
+                case "reported": filters[filterKey] = strVal === "null" ? null : parseBoolean(strVal); break;
+                case "dateRange": filters[filterKey] = parseStringArray(strVal); break;
+                case "durationRangeMins": filters[filterKey] = parseNumberArray(strVal) as [number, number]; break;
+                case "tsRange": filters[filterKey] = parseNumberArray(strVal) as [number, number]; break;
+                case "players": filters[filterKey] = parseStringArray(strVal); break;
+                case "maps": filters[filterKey] = parseStringArray(strVal); break;
+                }
+            } else {
+                delete filters[filterKey];
             }
+        } catch (err) {
+            console.log("Error parsing filters:", query);
+            return filters;
         }
     }
 
