@@ -2,15 +2,24 @@
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
         <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
         <div class="hover-info">
-            <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex" class="team">
-                <div class="team-title">
-                    <span>Team {{ allyTeamIndex + 1 }}</span>
-                    <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+            <template v-if="replay.AllyTeams.length > 2">
+                <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-${allyTeamIndex}`" class="players">
+                    <div v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`${replay.id}-${playerIndex}`" class="player">
+                        {{ player.name || player.shortName }}
+                    </div>
                 </div>
-                <div v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`player-`+playerIndex" class="player">
-                    {{ player.name || player.shortName }}
+            </template>
+            <template v-else>
+                <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-${allyTeamIndex}`" class="team">
+                    <div class="team-title">
+                        <span>Team {{ allyTeamIndex + 1 }}</span>
+                        <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+                    </div>
+                    <div v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`${replay.id}-${playerIndex}`" class="player">
+                        {{ player.name || player.shortName }}
+                    </div>
                 </div>
-            </div>
+            </template>
         </div>
         <div class="meta">
             <div class="times">
@@ -197,6 +206,9 @@ export default class ReplayPreview extends AbstractReplay {
             left: -4px;
         }
     }
+    .player {
+        width: 100%;
+    }
 }
 .team-title {
     font-size: 14px;
@@ -206,7 +218,17 @@ export default class ReplayPreview extends AbstractReplay {
         margin: 0 5px;
     }
 }
-.player {
+.players {
     width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    .player {
+        width: 50%;
+        text-align: center;
+    }
 }
 </style>
