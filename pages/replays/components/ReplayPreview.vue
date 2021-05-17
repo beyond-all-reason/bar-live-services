@@ -1,15 +1,20 @@
 <template>
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
         <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
-        <div class="hover-info">
-            <template v-if="replay.AllyTeams.length > 2">
-                <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-${allyTeamIndex}`" class="players">
-                    <div v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`${replay.id}-${playerIndex}`" class="player">
-                        {{ player.name || player.shortName }}
-                    </div>
+        <template v-if="replay.AllyTeams.length > 2">
+            <div class="hover-info hover-info--ffa">
+                <div class="players">
+                    <template v-for="(team, tId) in replay.AllyTeams" >
+                        <div v-for="(player, pId) in (team.Players.concat(team.AIs))" class="player" :key="`team-${tId}player-${pId}`">
+                            <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+                            <span>{{ player.name || player.shortName }}</span>
+                        </div>
+                    </template>
                 </div>
-            </template>
-            <template v-else>
+            </div>
+        </template>
+        <template v-else>
+            <div class="hover-info">
                 <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-${allyTeamIndex}`" class="team">
                     <div class="team-title">
                         <span>Team {{ allyTeamIndex + 1 }}</span>
@@ -19,8 +24,8 @@
                         {{ player.name || player.shortName }}
                     </div>
                 </div>
-            </template>
-        </div>
+            </div>
+        </template>
         <div class="meta">
             <div class="times">
                 <div class="duration">
@@ -156,7 +161,9 @@ export default class ReplayPreview extends AbstractReplay {
     flex-direction: row;
     align-items: flex-start;
     gap: 7px;
-
+    &--ffa{
+        height: 100%;
+    }
     .replay-preview:hover & {
         opacity: 1;
 
@@ -229,6 +236,10 @@ export default class ReplayPreview extends AbstractReplay {
     .player {
         width: 50%;
         text-align: center;
+        flex-wrap: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 </style>
