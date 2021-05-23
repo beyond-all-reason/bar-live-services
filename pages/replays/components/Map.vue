@@ -102,6 +102,8 @@ export default class MapComponent extends Vue {
 .box {
     position: absolute;
     background: rgba(194, 10, 10, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-sizing: border-box;
     &:nth-child(1){
         background: rgba(23, 202, 32, 0.3);
     }

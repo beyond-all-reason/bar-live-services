@@ -2,7 +2,8 @@ module.exports = {
     root: true,
     ignorePatterns: [
         ".nuxt",
-        "nuxt.config.ts"
+        "nuxt.config.ts",
+        "working-files"
     ],
     env: {
         browser: true,
