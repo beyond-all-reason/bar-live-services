@@ -55,8 +55,13 @@ export class AbstractReplay extends Vue {
     }
 
     factionImage(factionStr: string) {
-        const faction = /arm/i.test(factionStr) ? "armada" : "cortex";
-        return require(`assets/images/${faction}_default.png`);
+        let faction = "unknown";
+        if (factionStr === "Cortex") {
+            faction = "cortex";
+        } else if (factionStr === "Armada") {
+            faction = "armada";
+        }
+        return require(`assets/images/${faction}_faction.png`);
     }
 
     countryImage(countryCode: string) {
