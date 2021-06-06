@@ -8,7 +8,7 @@
             <div class="balance-changes">
                 <div v-for="(change, index1) in balanceChanges" :key="index1" class="balance-change">
                     <div class="meta">
-                        <div class="flex-row flex-space-between">
+                        <div class="flex-row flex-space-between flex-wrap">
                             <div class="date">
                                 {{ $moment(change.date).format("dddd, MMMM Do YYYY") }}
                             </div>
@@ -90,6 +90,7 @@ export default class Page extends Vue {
     align-items: center;
 }
 .balance-changes {
+    width: 100%;
     max-width: 800px;
     margin-top: 10px;
 }
