@@ -138,6 +138,9 @@ $removed: rgb(190, 92, 0);
     display: flex;
     align-items: flex-start;
     padding: 2px 0;
+    .property-title {
+        align-self: normal;
+    }
     .property-name {
         font-size: 16px;
         margin-right: 10px;
