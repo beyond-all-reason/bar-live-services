@@ -19,8 +19,7 @@ import { AI } from "bar-db/dist/model/ai";
 import { AllyTeam } from "bar-db/dist/model/ally-team";
 import { Player } from "bar-db/dist/model/player";
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-
-import { ReplayResponse } from "~/model/api/api-response";
+import { ReplayResponse } from "~/model/api/replays";
 
 @Component({
     directives: {

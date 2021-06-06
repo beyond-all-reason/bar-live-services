@@ -14,14 +14,3 @@ export interface APIResponse<T extends any, F extends any = {}, S extends Sort =
     sorts: S;
     data: T;
 }
-
-export interface ReplayResponse extends Demo {
-    AllyTeams: AllyTeamResponse[];
-    Spectators: Spectator[];
-    Map: Map;
-}
-
-export interface AllyTeamResponse extends AllyTeam {
-    AIs: AI[];
-    Players: Player[];
-}

@@ -1,4 +1,4 @@
-import { AllyTeamResponse } from "~/model/api/api-response";
+import { AllyTeamResponse } from "~/model/api/replays";
 
 export function replayTitle(allyTeams: AllyTeamResponse[]) : string {
     if (allyTeams.length > 2) {

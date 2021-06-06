@@ -19,6 +19,7 @@
         "pollInterval": 60000,
         "verbose": true
     },
+    "bardbConfig": "C:/Users/bob/Repos/bar-db/config.json",
     "bardb": {
         "dbHost": "localhost",
         "dbPort": 5432,

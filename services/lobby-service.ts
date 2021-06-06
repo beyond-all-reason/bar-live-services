@@ -133,7 +133,7 @@ export class LobbyService extends Service {
         return super.init();
     }
 
-    protected updateActiveBattles() {
+    protected async updateActiveBattles() {
         const allBattles: Battle[] = Object.values(this.battles).map((battle) => {
             const playersObj = battle.players;
             const playersArr = Object.values(playersObj);
@@ -144,13 +144,12 @@ export class LobbyService extends Service {
         });
 
         let activeBattles = allBattles.filter(battle => battle.players.length > 0);
-        activeBattles.forEach(async(battle, i) => {
-            const map = await this.db.schema.map.findOne({
-                where: { scriptName: battle.map },
-                attributes: ["fileName"]
-            });
+        const mapsStr = await this.db.getMapsFromMemory();
+        const maps = JSON.parse(mapsStr || "[]") as Array<{ id: string, scriptName: string, fileName: string }>;
 
-            battle.mapFileName = map?.fileName;
+        activeBattles.forEach((battle, i) => {
+            const fileName = maps?.find(map => map.scriptName === battle.map)?.fileName;
+            battle.mapFileName = fileName;
         });
 
         activeBattles = activeBattles.sort((a, b) => b.players.length - a.players.length);

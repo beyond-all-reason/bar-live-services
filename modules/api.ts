@@ -1,20 +1,25 @@
 import * as fs from "fs";
 import { Module } from "@nuxt/types";
-import { Database } from "bar-db";
+import { BARDBConfig, Database } from "bar-db";
 import { Demo } from "bar-db/dist/model/demo";
 import { Map } from "bar-db/dist/model/map";
 import express from "express";
 import { AndOperator, Op, OrderItem, OrOperator, Sequelize, WhereAttributeHash } from "sequelize";
+import compression from "compression";
 
 import _ from "lodash";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
-import { APIResponse, ReplayResponse } from "../model/api/api-response";
+import { APIResponse } from "../model/api/api-response";
 import Config from "../config-example.json";
 import { parseReplaysRequestQuery } from "../modules/api/replays";
-import { defaultReplayFilters } from "../model/api/replays";
+import { defaultReplayFilters, ReplayResponse } from "../model/api/replays";
+import { BalanceChangeFetcher } from "bar-balance-changes";
+import { BalanceChangeResponse } from "~/model/api/balance-changes";
 
 export type ServicesConfig = typeof Config;
+
+const isProd = process.env.NODE_ENV === "production";
 
 const apiModule: Module = async function() {
     if (!(this.options.dev || this.options._start)) {
@@ -48,6 +53,7 @@ export class API {
     public barDb!: Database;
     public leaderboardService!: LeaderboardService;
     public lobbyService!: LobbyService;
+    public barDbConfig!: BARDBConfig;
 
     constructor(servicesConfig: ServicesConfig) {
         this.config = servicesConfig;
@@ -59,6 +65,7 @@ export class API {
         }
         this.app.use("/maps", express.static(servicesConfig.bardb.mapPath));
         this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
+        this.app.use(express.static("static"));
 
         const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
             res.status(500);
@@ -67,20 +74,34 @@ export class API {
         };
         this.app.use(errorHandler);
 
-        this.replays();
-        this.replay();
-        this.players();
-        this.maps();
-        this.leaderboards();
-        this.battles();
-        this.users();
-        this.cachedUsers();
-        this.cachedMaps();
-        this.test();
+        if (!isProd) {
+            // enabled for testing gzipped file sizes locally, but on prod nginx takes care of compression so don't need this
+            this.app.use(compression());
+        }
     }
 
     public async init() {
-        this.barDb = new Database({ ...this.config.bardb, syncModel: false, initMemoryStore: false, logSQL: false });
+        const bardbConfigStr = await fs.promises.readFile(this.config.bardbConfig, { encoding: "utf8" });
+        this.barDbConfig = JSON.parse(bardbConfigStr.toString());
+        
+        this.barDbConfig.db.logSQL = false;
+        this.barDbConfig.db.initMemoryStore = false;
+        this.barDbConfig.db.syncModel = false;
+
+        this.barDb = new Database(this.barDbConfig.db);
+
+        await this.replays();
+        await this.replay();
+        await this.players();
+        await this.maps();
+        await this.leaderboards();
+        await this.battles();
+        await this.users();
+        await this.cachedUsers();
+        await this.cachedMaps();
+        await this.balanceChanges();
+        await this.test();
+        await this.unitNames();
 
         await this.barDb.init();
 
@@ -88,7 +109,7 @@ export class API {
         this.lobbyService = await new LobbyService(this.config.lobby, this.barDb).init();
     }
 
-    protected replays() {
+    protected async replays() {
         this.app.get("/replays", async(req, res, next) => {
             const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
 
@@ -132,8 +153,6 @@ export class API {
                 };
             }
 
-            console.log(demoWhere);
-
             const order = Object.entries(sort).map(([key, sortType]) => [key, sortType.toUpperCase()]) as OrderItem[];
 
             const result = await this.barDb.schema.demo.findAndCountAll({
@@ -147,7 +166,7 @@ export class API {
                         model: this.barDb.schema.map,
                         attributes: ["fileName", "scriptName"],
                         where: mapWhere,
-                        subQuery: false
+                        subQuery: true
                     },
                     {
                         model: this.barDb.schema.allyTeam, // TODO: only include total player counts instead of objects
@@ -184,7 +203,7 @@ export class API {
         });
     }
 
-    protected replay() {
+    protected async replay() {
         this.app.get("/replays/:replayId", async(req, res, next) => {
             const replay = await this.barDb.schema.demo.findByPk(req.params.replayId, {
                 include: [
@@ -215,7 +234,7 @@ export class API {
         });
     }
 
-    protected players() {
+    protected async players() {
         this.app.get("/players", async(req, res) => {
             res.send("players");
         });
@@ -225,7 +244,7 @@ export class API {
         });
     }
 
-    protected maps() {
+    protected async maps() {
         this.app.get("/maps", async(req, res) => {
             res.send("maps");
         });
@@ -235,19 +254,19 @@ export class API {
         });
     }
 
-    protected leaderboards() {
+    protected async leaderboards() {
         this.app.get("/leaderboards", async(req, res) => {
             res.json(this.leaderboardService.leaderboards);
         });
     }
 
-    protected battles() {
+    protected async battles() {
         this.app.get("/battles", async(req, res) => {
             res.json(this.lobbyService.activeBattles);
         });
     }
 
-    protected users() {
+    protected async users() {
         this.app.get("/users", async(req, res) => {
             const result = await this.barDb.schema.user.findAll({
                 attributes: ["username", "countryCode"]
@@ -257,27 +276,74 @@ export class API {
         });
     }
 
-    protected cachedUsers() {
+    protected async cachedUsers() {
         this.app.get("/cached-users", async(req, res) => {
-            const cachedUsers = await this.barDb.getUsersFromMemory();
-
-            res.setHeader("Content-Type", "application/json");
-
-            return res.end(cachedUsers);
+            const results = await this.barDb.getUsersFromMemory();
+            res.setHeader('Content-Type', 'application/json');
+            return res.end(results);
         });
     }
 
-    protected cachedMaps() {
+    protected async cachedMaps() {
         this.app.get("/cached-maps", async(req, res) => {
-            const cachedMaps = await this.barDb.getMapsFromMemory();
-
-            res.setHeader("Content-Type", "application/json");
-
-            return res.end(cachedMaps);
+            const results = await this.barDb.getMapsFromMemory();
+            res.setHeader('Content-Type', 'application/json');
+            return res.end(results);
         });
     }
 
-    protected test() {
+    protected async balanceChanges() {
+        // TODO: make db calls then cache ssr pages
+        this.app.get("/balance-changes", async(req, res) => {
+            const { limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
+
+            const result = await this.barDb.schema.balanceChange.findAndCountAll({
+                attributes: ["sha", "date", "message", "url"],
+                include: [
+                    {
+                        model: this.barDb.schema.balanceChangeAuthor,
+                        attributes: ["name", "img", "url"],
+                        as: "author",
+                        required: true
+                    },
+                    {
+                        model: this.barDb.schema.balanceChangeUnitDef,
+                        attributes: [["changes", "unit"]],
+                        as: "changes",
+                        where: {
+                            scav: false
+                        },
+                        required: true
+                    }
+                ],
+                order: [["date", "DESC"]],
+                offset: (page - 1) * limit,
+                limit
+            });
+
+            const response: APIResponse<BalanceChangeResponse[]> = {
+                totalResults: result.count,
+                page,
+                resultsPerPage: limit,
+                filters: {},
+                sorts: {},
+                data: result.rows as unknown as BalanceChangeResponse[]
+            };
+
+            return res.json(response);
+        });
+    }
+
+    protected async unitNames() {
+        const balanceChangeFetcher = new BalanceChangeFetcher(this.barDbConfig.balanceChanges);
+        const unitNames = await balanceChangeFetcher.fetchUnitNames();
+
+        this.app.get("/unit-names", async(req, res) => {
+            res.json(unitNames);
+        });
+    }
+
+    protected async test() {
         this.app.get("/test", async(req, res, next) => {
             throw new Error("test");
         });

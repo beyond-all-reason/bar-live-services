@@ -1,6 +1,6 @@
 import { Component, Vue } from "nuxt-property-decorator";
 
-import { AllyTeamResponse, ReplayResponse } from "~/model/api/api-response";
+import { AllyTeamResponse, ReplayResponse } from "~/model/api/replays";
 @Component
 export class AbstractReplay extends Vue {
     replay!: ReplayResponse;

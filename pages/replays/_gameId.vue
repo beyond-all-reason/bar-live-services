@@ -144,7 +144,7 @@ import { Context } from "@nuxt/types";
 import { Component } from "nuxt-property-decorator";
 
 import { AbstractReplay } from "~/mixins/AbstractReplay";
-import { ReplayResponse } from "~/model/api/api-response";
+import { ReplayResponse } from "~/model/api/replays";
 
 @Component({
     head: {

@@ -16,6 +16,9 @@
             <NuxtLink to="/leaderboards">
                 Leaderboards
             </NuxtLink>
+            <NuxtLink to="/balance-changes">
+                Balance Changes
+            </NuxtLink>
         </nav>
     </div>
 </template>

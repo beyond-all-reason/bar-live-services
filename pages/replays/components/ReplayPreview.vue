@@ -54,7 +54,7 @@
 import { Component, Prop } from "nuxt-property-decorator";
 
 import { AbstractReplay } from "~/mixins/AbstractReplay";
-import { ReplayResponse } from "~/model/api/api-response";
+import { ReplayResponse } from "~/model/api/replays";
 
 @Component
 export default class ReplayPreview extends AbstractReplay {
