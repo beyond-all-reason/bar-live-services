@@ -1,35 +1,51 @@
 <template>
     <div :class="`change depth-${depth} ${data.changes ? '' : 'value-block'}`">
-        <img class="unitpic3d" :src="`/unitpics3d/${data.propertyId}.png`" alt="" v-if="depth === 0"/>
+        <img v-if="depth === 0" class="unitpic3d" :src="`/unitpics3d/${data.propertyId}.png`" alt="">
         <div class="property-title">
-            <img class="unitpic" v-if="depth === 0" :src="`/unitpics/${data.propertyId}.png`">
-            <img class="faction" v-if="depth === 0" :src="require(`~/assets/images/${data.propertyId.substr(0, 3) === 'cor' ? 'cortex' : 'armada'}_faction.png`)">
-            <a class="property-name" :href="`https://www.beyondallreason.info/unit/${data.propertyId}`" v-if="depth === 0">{{ data.propertyName }}</a>
-            <div class="property-name" v-else>
-                <template v-if="data.propertyName === 'Undefined'">?</template>
-                <template v-else>{{ data.propertyName }}</template>
+            <img v-if="depth === 0" class="unitpic" :src="`/unitpics/${data.propertyId}.png`">
+            <img v-if="depth === 0" class="faction" :src="require(`~/assets/images/${data.propertyId.substr(0, 3) === 'cor' ? 'cortex' : 'armada'}_faction.png`)">
+            <a v-if="depth === 0" class="property-name" :href="`https://www.beyondallreason.info/unit/${data.propertyId}`">{{ data.propertyName }}</a>
+            <div v-else class="property-name">
+                <template v-if="data.propertyName === 'Undefined'">
+                    ?
+                </template>
+                <template v-else>
+                    {{ data.propertyName }}
+                </template>
             </div>
         </div>
-        <div class="changes" v-if="data.changes">
-            <PropertyChange v-for="(change, index) in data.changes" :key="index" :data="change" :depth="depth+1"/>
+        <div v-if="data.changes" class="changes">
+            <PropertyChange v-for="(change, index) in data.changes" :key="index" :data="change" :depth="depth+1" />
         </div>
-        <div class="property-change" v-else>
-            <div :class="`badge badge--${data.changeType}`" v-if="data.changeType !== 'Unknown'">{{ data.changeType }}</div>
+        <div v-else class="property-change">
+            <div v-if="data.changeType !== 'Unknown'" :class="`badge badge--${data.changeType}`">
+                {{ data.changeType }}
+            </div>
 
             <div v-if="data.prevValue && Array.isArray(data.prevValue)">
-                <div class="badge" v-for="(value, index) of data.prevValue" :key="index">{{ value }}</div>
+                <div v-for="(value, index) of data.prevValue" :key="index" class="badge">
+                    {{ value }}
+                </div>
             </div>
             <template v-else-if="data.prevValue">
-                <div class="badge">{{ data.prevValue }}</div>
+                <div class="badge">
+                    {{ data.prevValue }}
+                </div>
             </template>
 
-            <v-icon color="#fff" v-if="data.changeType !== 'Removed' && data.changeType !== 'Added'">mdi-arrow-right-thick</v-icon>
+            <v-icon v-if="data.changeType !== 'Removed' && data.changeType !== 'Added'" color="#fff">
+                mdi-arrow-right-thick
+            </v-icon>
 
             <div v-if="data.newValue && Array.isArray(data.newValue)">
-                <div class="badge" v-for="(value, index) of data.newValue" :key="index">{{ value }}</div>
+                <div v-for="(value, index) of data.newValue" :key="index" class="badge">
+                    {{ value }}
+                </div>
             </div>
             <template v-else-if="data.newValue">
-                <div class="badge">{{ data.newValue }}</div>
+                <div class="badge">
+                    {{ data.newValue }}
+                </div>
             </template>
         </div>
     </div>

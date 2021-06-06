@@ -1,13 +1,17 @@
 <template>
     <div>
-        <h1 class="page-title">Balance Changes</h1>
+        <h1 class="page-title">
+            Balance Changes
+        </h1>
         <div class="wrapper">
             <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
             <div class="balance-changes">
-                <div class="balance-change" v-for="(change, index) in balanceChanges" :key="index">
+                <div v-for="(change, index1) in balanceChanges" :key="index1" class="balance-change">
                     <div class="meta">
                         <div class="flex-row flex-space-between">
-                            <div class="date">{{ $moment(change.date).format("dddd, MMMM Do YYYY") }}</div>
+                            <div class="date">
+                                {{ $moment(change.date).format("dddd, MMMM Do YYYY") }}
+                            </div>
                             <div class="flex-row flex-center">
                                 <div class="sha">
                                     <a :href="change.url">{{ change.sha.substr(0, 7) }}</a>
@@ -19,13 +23,13 @@
                             </div>
                         </div>
                         <div>
-                            <div class="message" v-for="(message, index) in change.message.split('\n')" :key="index">
+                            <div v-for="(message, index2) in change.message.split('\n')" :key="index2" class="message">
                                 {{ message }}
                             </div>
                         </div>
                     </div>
                     <div class="changes">
-                        <PropertyChange v-for="(change, index) in change.changes" :key="index" :data="change.unit" :depth="0" />
+                        <PropertyChange v-for="(change2, index) in change.changes" :key="index" :data="change2.unit" :depth="0" />
                     </div>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 import { BalanceChangesRequest, defaultBalanceChangeRequest } from "../../model/api/balance-changes";
-import { defaultPaginatedRequest } from "../../model/api/paginated-request";
 
 export function parseBalanceChangesRequestQuery(query: { [key: string]: string }) : Required<BalanceChangesRequest> {
     return {

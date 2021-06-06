@@ -4,8 +4,8 @@
         <template v-if="replay.AllyTeams.length > 2">
             <div class="hover-info hover-info--ffa">
                 <div class="players">
-                    <template v-for="(team, tId) in replay.AllyTeams" >
-                        <div v-for="(player, pId) in (team.Players.concat(team.AIs))" class="player" :key="`team-${tId}player-${pId}`">
+                    <template v-for="(team, tId) in replay.AllyTeams">
+                        <div v-for="(player, pId) in (team.Players.concat(team.AIs))" :key="`team-${tId}player-${pId}`" class="player">
                             <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
                             <span>{{ player.name || player.shortName }}</span>
                         </div>

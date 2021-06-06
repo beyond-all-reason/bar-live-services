@@ -82,7 +82,7 @@ export class API {
     public async init() {
         const bardbConfigStr = await fs.promises.readFile(this.config.bardbConfig, { encoding: "utf8" });
         this.barDbConfig = JSON.parse(bardbConfigStr.toString());
-        
+
         this.barDbConfig.db.logSQL = false;
         this.barDbConfig.db.initMemoryStore = false;
         this.barDbConfig.db.syncModel = false;
@@ -278,7 +278,7 @@ export class API {
     protected async cachedUsers() {
         this.app.get("/cached-users", async(req, res) => {
             const results = await this.barDb.getUsersFromMemory();
-            res.setHeader('Content-Type', 'application/json');
+            res.setHeader("Content-Type", "application/json");
             return res.end(results);
         });
     }
@@ -286,7 +286,7 @@ export class API {
     protected async cachedMaps() {
         this.app.get("/cached-maps", async(req, res) => {
             const results = await this.barDb.getMapsFromMemory();
-            res.setHeader('Content-Type', 'application/json');
+            res.setHeader("Content-Type", "application/json");
             return res.end(results);
         });
     }
@@ -295,7 +295,7 @@ export class API {
         // TODO: make db calls then cache ssr pages
         this.app.get("/balance-changes", async(req, res) => {
             const { limit, page } = parseBalanceChangesRequestQuery(req.query as { [key: string]: string });
-            
+
             const result = await this.barDb.schema.balanceChange.findAndCountAll({
                 attributes: ["sha", "date", "message", "url"],
                 distinct: true,

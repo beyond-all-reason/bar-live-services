@@ -1,6 +1,6 @@
-import { PaginatedRequest } from "~/model/api/paginated-request";
 import { ObjectChanges } from "bar-balance-changes";
 import { Optionals } from "jaz-ts-utils";
+import { PaginatedRequest } from "~/model/api/paginated-request";
 
 export interface BalanceChangesRequest extends PaginatedRequest {
 }
