@@ -19,7 +19,7 @@
         </div>
         <div v-else class="property-change">
             <div v-if="data.changeType !== 'Unknown'" :class="`badge badge--${data.changeType}`">
-                {{ data.changeType }}
+                {{ data.percentChange !== undefined ? `${data.percentChange > 0 ? '+' : ''}${Math.round(data.percentChange * 100)}%` : "" }} {{ data.changeType }}
             </div>
 
             <div v-if="data.prevValue && Array.isArray(data.prevValue)">
