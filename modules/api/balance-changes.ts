@@ -1,11 +1,10 @@
-import { BalanceChangesRequest } from "~/model/api/balance-changes";
-import { defaultPaginatedRequest } from "~/model/api/paginated-request";
-import { ReplayRequest } from "~/model/api/replays";
+import { BalanceChangesRequest, defaultBalanceChangeRequest } from "../../model/api/balance-changes";
+import { defaultPaginatedRequest } from "../../model/api/paginated-request";
 
-export function parseReplaysRequestQuery(query: { [key: string]: string }) : Required<BalanceChangesRequest> {
+export function parseBalanceChangesRequestQuery(query: { [key: string]: string }) : Required<BalanceChangesRequest> {
     return {
-        page: parseInt(query.page) || defaultPaginatedRequest.page,
-        limit: Math.min(parseInt(query.limit), defaultPaginatedRequest.limit) || defaultPaginatedRequest.limit,
+        page: parseInt(query.page) || defaultBalanceChangeRequest.page,
+        limit: Math.min(parseInt(query.limit), defaultBalanceChangeRequest.limit) || defaultBalanceChangeRequest.limit,
         filters: {},
         sort: {}
     };

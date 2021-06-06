@@ -1,10 +1,9 @@
 <template>
     <div :class="`change depth-${depth} ${data.changes ? '' : 'value-block'}`">
-        <!-- <nuxt-img class="unitpic3d" :src="`~/assets/images/unitpics3d/${data.propertyId}.png`" alt="" v-if="depth === 0"/> -->
-        <nuxt-img class="unitpic3d" src="~/assets/images/unitpics3d/armmex.png" alt="" v-if="depth === 0"/>
+        <img class="unitpic3d" :src="`/unitpics3d/${data.propertyId}.png`" alt="" v-if="depth === 0"/>
         <div class="property-title">
-            <img class="unitpic" v-if="depth === 0" :src="require('assets/images/unitpics/' + data.propertyId + '.png')">
-            <img class="faction" v-if="depth === 0" :src="require(`assets/images/${data.propertyId.substr(0, 3) === 'cor' ? 'cortex' : 'armada'}_faction.png`)">
+            <img class="unitpic" v-if="depth === 0" :src="`/unitpics/${data.propertyId}.png`">
+            <img class="faction" v-if="depth === 0" :src="require(`~/assets/images/${data.propertyId.substr(0, 3) === 'cor' ? 'cortex' : 'armada'}_faction.png`)">
             <a class="property-name" :href="`https://www.beyondallreason.info/unit/${data.propertyId}`" v-if="depth === 0">{{ data.propertyName }}</a>
             <div class="property-name" v-else>
                 <template v-if="data.propertyName === 'Undefined'">?</template>

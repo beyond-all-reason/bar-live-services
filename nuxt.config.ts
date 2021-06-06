@@ -12,7 +12,7 @@ const nuxtConfig: NuxtConfig = {
     //watch: ["modules"],
     components: [
         "~/components",
-        { path: "~/pages", pattern: "*/components/**" }
+        { path: "~/pages", pattern: "*/components/**", pathPrefix: false }
     ],
     //loading: '~/components/LoadingBar.vue',
     ignore: [
@@ -51,17 +51,17 @@ const nuxtConfig: NuxtConfig = {
         treeShake: true,
         optionsPath: "./vuetify.options.ts"
     },
-    transition: {
+    pageTransition: {
         name: "slide-transition",
         mode: "out-in"
     },
     buildModules: [
         "@nuxt/typescript-build",
-        "@nuxt/image",
         "@nuxtjs/moment",
         "@nuxtjs/vuetify"
     ],
     modules: [
+        "@nuxt/image",
         "@nuxtjs/pwa",
         "@nuxt/http",
         "~/modules/api"

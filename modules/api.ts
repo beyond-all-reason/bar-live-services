@@ -1,21 +1,20 @@
 import * as fs from "fs";
 import { Module } from "@nuxt/types";
-import { BARDBConfig, Database } from "bar-db";
-import { Demo } from "bar-db/dist/model/demo";
-import { Map } from "bar-db/dist/model/map";
+import { BARDBConfig, Database, Demo, Map } from "bar-db";
 import express from "express";
 import { AndOperator, Op, OrderItem, OrOperator, Sequelize, WhereAttributeHash } from "sequelize";
 import compression from "compression";
-
+import { BalanceChangeFetcher } from "bar-balance-changes";
 import _ from "lodash";
+
+import Config from "../config-example.json";
 import { LeaderboardService } from "../services/leaderboard-service";
 import { LobbyService } from "../services/lobby-service";
 import { APIResponse } from "../model/api/api-response";
-import Config from "../config-example.json";
 import { parseReplaysRequestQuery } from "../modules/api/replays";
 import { defaultReplayFilters, ReplayResponse } from "../model/api/replays";
-import { BalanceChangeFetcher } from "bar-balance-changes";
-import { BalanceChangeResponse } from "~/model/api/balance-changes";
+import { BalanceChangeResponse } from "../model/api/balance-changes";
+import { parseBalanceChangesRequestQuery } from "../modules/api/balance-changes";
 
 export type ServicesConfig = typeof Config;
 
@@ -295,10 +294,11 @@ export class API {
     protected async balanceChanges() {
         // TODO: make db calls then cache ssr pages
         this.app.get("/balance-changes", async(req, res) => {
-            const { limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
-
+            const { limit, page } = parseBalanceChangesRequestQuery(req.query as { [key: string]: string });
+            
             const result = await this.barDb.schema.balanceChange.findAndCountAll({
                 attributes: ["sha", "date", "message", "url"],
+                distinct: true,
                 include: [
                     {
                         model: this.barDb.schema.balanceChangeAuthor,

@@ -32,7 +32,8 @@
             "@nuxt/image",
             "@nuxtjs/moment",
             "@nuxt/vue-app",
-            "@nuxtjs/vuetify"
+            "@nuxtjs/vuetify",
+            "vuetify/types"
         ]
     },
     "exclude": [

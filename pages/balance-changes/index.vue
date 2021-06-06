@@ -2,9 +2,8 @@
     <div>
         <h1 class="page-title">Balance Changes</h1>
         <div class="wrapper">
+            <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
             <div class="balance-changes">
-                <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
-
                 <div class="balance-change" v-for="(change, index) in balanceChanges" :key="index">
                     <div class="meta">
                         <div class="flex-row flex-space-between">
@@ -29,9 +28,8 @@
                         <PropertyChange v-for="(change, index) in change.changes" :key="index" :data="change.unit" :depth="0" />
                     </div>
                 </div>
-
-                <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
             </div>
+            <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
         </div>
     </div>
 </template>
@@ -44,9 +42,9 @@ import { APIResponse } from "~/model/api/api-response";
 
 @Component({
     head: { title: "BAR - Balance Changes" },
-    // watch: {
-    //     "$route.query": "$fetch"
-    // }
+    watch: {
+        //"$route.query": "$asyncData"
+    }
 })
 export default class Page extends Vue {
     totalResults = 0;
@@ -74,10 +72,12 @@ export default class Page extends Vue {
 <style lang="scss" scoped>
 .wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 .balance-changes {
     max-width: 800px;
+    margin-top: 10px;
 }
 .balance-change {
     position: relative;
