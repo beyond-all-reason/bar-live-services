@@ -316,6 +316,11 @@ export class API {
                         required: true
                     }
                 ],
+                where: {
+                    message: {
+                        [Op.notILike]: "Merge pull request%"
+                    }
+                },
                 order: [["date", "DESC"]],
                 offset: (page - 1) * limit,
                 limit
