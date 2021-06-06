@@ -113,7 +113,7 @@ export default class Page extends Vue {
     box-shadow: 0 1px 3px rgb(0 0 0 / 60%);
 }
 .date {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 600;
 }
 .author {
