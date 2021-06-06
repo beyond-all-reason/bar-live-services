@@ -87,6 +87,7 @@ export default class Page extends Vue {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 .balance-changes {
     max-width: 800px;
