@@ -96,9 +96,9 @@ export default class Page extends Vue {
 }
 .balance-change {
     position: relative;
-    border-bottom: 5px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    margin-bottom: 20px;
+    /* border-bottom: 5px solid hsla(0,0%,100%,.1); */
+    background: hsla(0,0%,100%,.05);
+    margin-bottom: 35px;
 }
 .sha {
     margin-right: 10px;
@@ -106,11 +106,11 @@ export default class Page extends Vue {
     border-right: 1px solid rgba(255, 255, 255, 0.5);;
 }
 .meta {
-    padding: 10px 40px;
-    padding-bottom: 15px;
-    background: #c70000;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    padding: 15px 40px;
+    padding-bottom: 18px;
+    background: #98989852;
+    /* border: 1px solid hsla(0,0%,100%,.3); */
+    box-shadow: 0 1px 3px rgb(0 0 0 / 60%);
 }
 .date {
     font-size: 32px;
