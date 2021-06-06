@@ -43,7 +43,7 @@ import { APIResponse } from "~/model/api/api-response";
 @Component({
     head: { title: "BAR - Balance Changes" },
     watch: {
-        //"$route.query": "$asyncData"
+        "$route.query": "$fetch"
     }
 })
 export default class Page extends Vue {
@@ -61,6 +61,15 @@ export default class Page extends Vue {
             pageCount: Math.ceil(result.totalResults / result.resultsPerPage),
             balanceChanges: result.data
         };
+    }
+
+    async fetch(): Promise<any> {
+        const searchParams = new URLSearchParams(this.$route.query as {});
+        const result = await this.$http.$get("balance-changes", { searchParams }) as APIResponse<BalanceChange[]>;
+        this.totalResults = result.totalResults;
+        this.page = result.page;
+        this.pageCount = Math.ceil(result.totalResults / result.resultsPerPage);
+        this.balanceChanges = result.data;
     }
 
     async changePage(page: number) {
