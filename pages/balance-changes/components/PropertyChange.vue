@@ -1,10 +1,14 @@
 <template>
     <div :class="`change depth-${depth} ${data.changes ? '' : 'value-block'}`">
-        <img v-if="depth === 0" class="unitpic3d" :src="`/unitpics3d/${data.propertyId}.png`" alt="">
+        <a v-if="depth === 0" class="property-name" :href="`https://www.beyondallreason.info/unit/${data.propertyId}`" target="_parent">
+            <img class="unitpic3d" :src="`/unitpics3d/${data.propertyId}.png`" alt="">
+        </a>
         <div class="property-title">
-            <img v-if="depth === 0" class="unitpic" :src="`/unitpics/${data.propertyId}.png`">
-            <img v-if="depth === 0" class="faction" :src="require(`~/assets/images/${data.propertyId.substr(0, 3) === 'cor' ? 'cortex' : 'armada'}_faction.png`)">
-            <a v-if="depth === 0" class="property-name" :href="`https://www.beyondallreason.info/unit/${data.propertyId}`">{{ data.propertyName }}</a>
+            <a v-if="depth === 0" class="property-name" :href="`https://www.beyondallreason.info/unit/${data.propertyId}`" target="_parent">
+                <img v-if="depth === 0" class="unitpic" :src="`/unitpics/${data.propertyId}.png`">
+                <img v-if="depth === 0" class="faction" :src="require(`~/assets/images/${data.propertyId.substr(0, 3) === 'cor' ? 'cortex' : 'armada'}_faction.png`)">
+                {{ data.propertyName }}
+            </a>
             <div v-else class="property-name">
                 <template v-if="data.propertyName === 'Undefined'">
                     ?

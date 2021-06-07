@@ -14,9 +14,9 @@
                             </div>
                             <div class="flex-row flex-center">
                                 <div class="sha">
-                                    <a :href="change.url">{{ change.sha.substr(0, 7) }}</a>
+                                    <a :href="change.url" target="_parent">{{ change.sha.substr(0, 7) }}</a>
                                 </div>
-                                <a class="author" :href="change.author.url">
+                                <a class="author" :href="change.author.url" target="_parent">
                                     {{ change.author.name }}
                                     <img class="author__avatar" :src="change.author.img">
                                 </a>
