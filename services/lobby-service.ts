@@ -128,6 +128,11 @@ export class LobbyService extends Service {
             this.onBattleUpdate.dispatch();
         });
 
+        this.lobbyClient.onDisconnect.add(() => {
+            this.battles = {};
+            this.players = {};
+        });
+
         await this.lobbyClient.connect();
 
         return super.init();
