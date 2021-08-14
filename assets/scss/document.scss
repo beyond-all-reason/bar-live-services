@@ -18,3 +18,7 @@ a, .v-application a {
 .container {
     overflow: hidden;
 }
+
+.noselect {
+    user-select: none;
+}

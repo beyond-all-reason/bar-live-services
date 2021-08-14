@@ -45,11 +45,15 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="spoilers noselect">
+                    <label for="chkSpoilers">Spoil Results</label>
+                    <input type="checkbox" id="chkSpoilers" v-model="spoilResults" @change="spoilResultsChanged">
+                </div>
                 <table class="players">
                     <tbody v-for="(AllyTeam, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex">
                         <tr>
                             <td class="team-heading" colspan="100%">
-                                Team {{ AllyTeam.allyTeamId + 1 }} {{ AllyTeam.winningTeam ? "🏆" : "" }}
+                                Team {{ AllyTeam.allyTeamId + 1 }} {{ AllyTeam.winningTeam && spoilResults ? "🏆" : "" }}
                             </td>
                         </tr>
                         <tr v-for="(Player, index) in AllyTeam.Players" :key="`player-`+index">
@@ -160,6 +164,14 @@ import { ReplayResponse } from "~/model/api/replays";
     }
 })
 export default class ReplayPage extends AbstractReplay {
+    spoilResults = false;
+
+    created() {
+        if (process.client) {
+            this.spoilResults = localStorage.getItem("spoilResults") === "true";
+        }
+    }
+
     async asyncData({ store, $http, params }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
@@ -181,6 +193,10 @@ export default class ReplayPage extends AbstractReplay {
 
     get mapSettings() : { [key: string]: string; } {
         return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
+    }
+
+    spoilResultsChanged() {
+        localStorage.setItem("spoilResults", String(this.spoilResults));
     }
 }
 </script>

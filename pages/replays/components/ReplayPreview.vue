@@ -6,7 +6,7 @@
                 <div class="players">
                     <template v-for="(team, tId) in replay.AllyTeams">
                         <div v-for="(player, pId) in (team.Players.concat(team.AIs))" :key="`team-${tId}player-${pId}`" class="player">
-                            <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+                            <span v-if="team.winningTeam && spoilResults" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
                             <span>{{ player.name || player.shortName }}</span>
                         </div>
                     </template>
@@ -18,7 +18,7 @@
                 <div v-for="(team, allyTeamIndex) in replay.AllyTeams" :key="`team-${allyTeamIndex}`" class="team">
                     <div class="team-title">
                         <span>Team {{ allyTeamIndex + 1 }}</span>
-                        <span v-if="team.winningTeam" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
+                        <span v-if="team.winningTeam && spoilResults" class="trophy"><v-icon color="#FFD700">mdi-trophy</v-icon></span>
                     </div>
                     <div v-for="(player, playerIndex) in (team.Players.concat(team.AIs))" :key="`${replay.id}-${playerIndex}`" class="player">
                         {{ player.name || player.shortName }}
@@ -59,6 +59,7 @@ import { ReplayResponse } from "~/model/api/replays";
 @Component
 export default class ReplayPreview extends AbstractReplay {
     @Prop({ type: Object, required: true }) readonly replay!: ReplayResponse;
+    @Prop({ type: Boolean, required: true, default: false }) readonly spoilResults!: boolean;
 }
 </script>
 
@@ -67,7 +68,6 @@ export default class ReplayPreview extends AbstractReplay {
     position: relative;
     width: 250px;
     height: 247px;
-    margin: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
