@@ -166,10 +166,8 @@ import { ReplayResponse } from "~/model/api/replays";
 export default class ReplayPage extends AbstractReplay {
     spoilResults = false;
 
-    created() {
-        if (process.client) {
-            this.spoilResults = localStorage.getItem("spoilResults") === "true";
-        }
+    beforeMount() {
+        this.spoilResults = localStorage.getItem("spoilResults") === "true";
     }
 
     async asyncData({ store, $http, params }: Context): Promise<any> {

@@ -175,15 +175,11 @@ export default class ReplaysPage extends Vue {
         this.$router.push({ query });
     }
 
-    created() {
-        if (process.client) {
-            this.spoilResults = localStorage.getItem("spoilResults") === "true";
-        }
-    }
-
     beforeMount() {
         const query = this.$route.query as { [key: string]: string };
         this.filters = parseReplayFilters(query);
+
+        this.spoilResults = localStorage.getItem("spoilResults") === "true";
     }
 
     updateDuration(durationRangeMins: [number, number]) {
