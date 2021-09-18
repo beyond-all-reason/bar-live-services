@@ -10,8 +10,10 @@
             </div>
             <div class="right-col">
                 <div class="dl-links">
-                    <a class="download" :href="`/api/replays/${replay.fileName}`">Download</a>
-                    <!-- <a class="api" target="_blank" :href="`/api/replays/${replay.id}`"><v-icon>mdi-code-braces</v-icon></a> -->
+                    <a class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download</a>
+                    <!-- <a class="json-api" target="_blank" :href="`/api/replays/${replay.id}`">
+                        <v-icon size="22">mdi-code-braces</v-icon>
+                    </a> -->
                 </div>
                 <table class="meta">
                     <tbody>
@@ -170,15 +172,20 @@ export default class ReplayPage extends AbstractReplay {
         this.spoilResults = localStorage.getItem("spoilResults") === "true";
     }
 
-    async asyncData({ store, $http, params }: Context): Promise<any> {
+    async asyncData({ store, $http, params, $config }: Context): Promise<any> {
         const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
+        replay.AllyTeams.forEach(allyTeam => {
+            allyTeam.Players = allyTeam.Players.sort((a, b) => (b.trueSkill || 0) - (a.trueSkill || 0));
+        });
+        replay.Spectators = replay.Spectators.sort((a, b) => (parseInt(b.skill) || 0) - (parseInt(a.skill) || 0));
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
         for (const allyTeam of replay.AllyTeams) {
             for (const player of allyTeam.Players) {
                 playerColors[player.playerId] = { r: player.rgbColor.r, g: player.rgbColor.g, b: player.rgbColor.b };
             }
         }
-        return { replay, playerColors };
+
+        return { replay, playerColors, $config };
     }
 
     get hostSettings() : { [key: string]: string; } {
@@ -262,6 +269,9 @@ hr {
 .dl-links {
     margin-top: 8px;
     margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .download {
     padding: 8px 16px;
@@ -275,17 +285,16 @@ hr {
         background: white;
         color: #000;
     }
-    .api {
-        margin-left: auto;
+}
+.json-api {
+    cursor: pointer;
+    &:hover .v-icon {
+        color: #fff;
+    }
+    .v-icon{
+        all: initial;
         cursor: pointer;
-        &:hover .v-icon {
-            color: #fff;
-        }
-        .v-icon{
-            all: initial;
-            cursor: pointer;
-            color: #b4b4b4;
-        }
+        color: #b4b4b4;
     }
 }
 .team-heading {
