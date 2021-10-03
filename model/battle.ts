@@ -1,3 +1,4 @@
+import { SpadsBattleData } from "./spads";
 import { Player } from "./player";
 
 export interface Battle<PlayersType extends { [username: string]: Player } | Player[] = Player[]> {
@@ -15,5 +16,11 @@ export interface Battle<PlayersType extends { [username: string]: Player } | Pla
     title: string;
     game: string;
     spectators: number;
+    lobbyStatus?: string;
+    gameStatus?: string;
+    gameType?: string;
+    preset?: string;
+    delaySinceLastGame?: number;
+    gameTime?: number;
     players: PlayersType;
 }

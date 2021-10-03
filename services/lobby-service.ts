@@ -6,6 +6,7 @@ import { createFileLogger } from "../utils/logger";
 import { Battle } from "../model/battle";
 import { Player } from "../model/player";
 import { Service } from "../services/service";
+import { SpadsBattleData } from "../model/spads";
 
 export interface LobbyServiceConfig extends SpringLobbyProtocolClientConfig {}
 
@@ -30,6 +31,8 @@ export class LobbyService extends Service {
         this.db = db;
 
         this.lobbyClient = new SpringLobbyProtocolClient(this.config);
+
+        setInterval(() => this.updateSpadsInfo(), 3000);
 
         process.on("SIGINT", async() => {
             await this.lobbyClient.disconnect(false);
@@ -171,11 +174,101 @@ export class LobbyService extends Service {
         this.activeBattles = activeBattles;
     }
 
-    protected getSpadsInfo(ip: string, port: number) {
-        return new Promise((resolve) => {
+    protected async updateSpadsInfo() {
+        for (const battle of Object.values(this.battles)) {
+            try {
+                const spadsInfo = await this.getSPADSBattleStatus(battle.ip, battle.port);
+
+                if (!spadsInfo) {
+                    continue;
+                }
+                //battle.spadsInfo = spadsInfo;
+    
+                if (spadsInfo?.battleLobby?.status) {
+                    battle.lobbyStatus = spadsInfo.battleLobby.status.battleStatus;
+                    battle.gameType = spadsInfo.battleLobby.status["Game type"];
+                    battle.preset = spadsInfo.battleLobby.status.Preset;
+                    battle.delaySinceLastGame = spadsInfo.battleLobby.status.delaySinceLastGame;
+                }
+    
+                if (spadsInfo?.game?.status) {
+                    battle.gameStatus = spadsInfo.game.status.gameStatus;
+                    battle.gameTime = spadsInfo.game.status.gameTime;
+                }
+    
+                if (spadsInfo?.battleLobby?.clients) {
+                    for (const client of spadsInfo.battleLobby.clients) {
+                        const player = this.players[client.Name];
+                        if (player) {
+                            player.lobbyReady = client.Ready;
+                            player.skill = client.Skill;
+                            player.clan = client.Clan;
+                            player.teamId = client.Id;
+                        }
+                    }
+                }
+    
+                if (spadsInfo?.game?.clients) {
+                    for (const client of spadsInfo.game.clients) {
+                        let clientName = client.Name;
+                        let joinedAfterStart = false;
+                        if (clientName.charAt(1) === "+") {
+                            clientName = clientName.split(" + ")[1];
+                            joinedAfterStart = true;
+                        }
+                        const player = this.players[client.Name];
+                        if (player) {
+                            player.gameReady = client.Ready;
+                            player.gameStatus = client.Status;
+                            player.joinedGameAfterStart = joinedAfterStart;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                console.log("error with spads query");
+                continue;
+            }
+        }
+    }
+
+    protected async getSPADSBattleStatus(host: string, port: number) : Promise<SpadsBattleData | undefined> {
+        return new Promise(resolve => {
             const socket = new net.Socket();
+
+            let chunk = "";
+
+            socket.on("data", (buffer) => {
+                chunk += buffer.toString("utf8");
+            });
+
+            socket.on("error", (err) => {
+                socket.destroy();
+                resolve(undefined);
+            });
+
+            socket.on("close", (err) => {
+                if (chunk) {
+                    const data = JSON.parse(chunk) as SpadsBattleData;
+                    resolve(data);
+                } else {
+                    resolve(undefined);
+                }
+                socket.destroy();
+            });
+
+            socket.on("timeout", () => {
+                socket.destroy();
+                resolve(undefined);
+            });
+
             socket.on("connect", () => {
-                socket.write("getGameStatus");
+                socket.write("getFullStatus");
+            });
+
+            socket.connect({
+                host,
+                port,
             });
         });
     }

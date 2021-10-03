@@ -39,7 +39,7 @@ export class AbstractReplay extends Vue {
     }
 
     get mapName(): string {
-        return this.replay.Map.scriptName!.replace(/_/g, " ");
+        return this.replay.Map.scriptName!.replace(/[_-]/g, " ");
     }
 
     getTitle(allyTeams: AllyTeamResponse[]) : string {

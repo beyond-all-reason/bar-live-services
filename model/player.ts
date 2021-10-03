@@ -6,4 +6,11 @@ export interface Player {
     country: string;
     status?: PlayerStatus;
     battleId?: number;
+    skill?: string;
+    lobbyReady?: string;
+    gameReady?: string;
+    clan?: string;
+    teamId?: number;
+    gameStatus?: string;
+    joinedGameAfterStart?: boolean;
 }

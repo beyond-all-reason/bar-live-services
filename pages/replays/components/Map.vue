@@ -124,7 +124,7 @@ export default class MapComponent extends Vue {
     &-tooltip {
         position: absolute;
         transform: translateX(-50%);
-        left: 5px;
+        left: 6px;
         bottom: 13px;
         font-size: 14px;
         .left &, .right & {

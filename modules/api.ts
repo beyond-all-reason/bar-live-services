@@ -15,6 +15,8 @@ import { parseReplaysRequestQuery } from "../modules/api/replays";
 import { defaultReplayFilters, ReplayResponse } from "../model/api/replays";
 import { BalanceChangeResponse } from "../model/api/balance-changes";
 import { parseBalanceChangesRequestQuery } from "../modules/api/balance-changes";
+import { MapResponse } from "../model/api/maps";
+import { parseMapsRequestQuery } from "../modules/api/maps";
 
 export type ServicesConfig = typeof Config;
 
@@ -53,6 +55,7 @@ export class API {
     public leaderboardService!: LeaderboardService;
     public lobbyService!: LobbyService;
     public barDbConfig!: BARDBConfig;
+    public userNameIdMap: { [username: string]: number } = {};
 
     constructor(servicesConfig: ServicesConfig) {
         this.config = servicesConfig;
@@ -93,6 +96,7 @@ export class API {
         await this.replay();
         await this.players();
         await this.maps();
+        await this.map();
         await this.leaderboards();
         await this.battles();
         await this.users();
@@ -103,6 +107,8 @@ export class API {
         await this.unitNames();
 
         await this.barDb.init();
+
+        const users = await this.barDb.getUsersFromMemory();
 
         this.leaderboardService = await new LeaderboardService(this.config.leaderboards).init();
         this.lobbyService = await new LobbyService(this.config.lobby, this.barDb).init();
@@ -245,11 +251,35 @@ export class API {
 
     protected async maps() {
         this.app.get("/maps", async(req, res) => {
-            res.send("maps");
-        });
+            const { filters, sort, limit, page } = parseMapsRequestQuery(req.query as { [key: string]: string });
 
+            const results = await this.barDb.schema.map.findAndCountAll({
+                offset: (page - 1) * limit,
+                limit,
+                attributes: ["id", "scriptName", "fileName", "name", "width", "height", "startPositions"],
+                order: [["name", "ASC"]]
+            });
+
+            const response: APIResponse<MapResponse[]> = {
+                totalResults: results.count,
+                page,
+                resultsPerPage: limit,
+                filters,
+                sorts: sort,
+                data: results.rows as unknown as MapResponse[]
+            };
+
+            res.json(response);
+        });
+    }
+
+    protected async map() {
         this.app.get("/maps/:mapId", async(req, res) => {
-            res.send(`map: ${req.params.mapId}`);
+            const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
+
+            const map = await this.barDb.schema.map.findByPk(req.params.mapId);
+
+            res.json(map);
         });
     }
 
@@ -355,8 +385,16 @@ export class API {
     }
 
     protected async getPlayerDemoIds(players: string[]) {
+        const userIds: number[] = [];
+        for (const name of players) {
+            const userId = await this.getPlayerUserId(name);
+            if (userId !== undefined) {
+                userIds.push(userId);
+            }
+        }
+
         const foundDemos = await this.barDb.schema.demo.findAll({
-            attributes: ["id", [Sequelize.fn("ARRAY_AGG", Sequelize.col("name")), "players"]],
+            attributes: ["id"],
             include: [{
                 model: this.barDb.schema.allyTeam,
                 attributes: [],
@@ -365,15 +403,15 @@ export class API {
                     attributes: [],
                     right: true,
                     where: {
-                        name: {
-                            [Op.in]: players
+                        userId: {
+                            [Op.in]: userIds
                         }
                     }
                 }],
                 required: true
             }],
             group: ["Demo.id"],
-            having: Sequelize.literal(`COUNT(*) = ${players.length}`)
+            //having: Sequelize.literal(`COUNT(*) = ${userIds.length}`)
         });
 
         const foundDemoIds = foundDemos.map(demo => demo.id);
@@ -399,6 +437,23 @@ export class API {
         const foundDemoIds = foundDemos.map(demo => demo.id);
 
         return foundDemoIds;
+    }
+
+    protected async getPlayerUserId(playerName: string) : Promise<number | undefined> {
+        const userId = this.userNameIdMap[playerName];
+
+        if (userId === undefined) {
+            const userLookupStr = await this.barDb.getUsersFromMemory();
+            if (userLookupStr) {
+                const users = JSON.parse(userLookupStr) as Array<{ id: number, username: string, countryCode: string}>;
+                for (const user of users) {
+                    this.userNameIdMap[user.username] = user.id;
+                }
+                return this.userNameIdMap[playerName];
+            }
+        }
+
+        return userId;
     }
 }
 

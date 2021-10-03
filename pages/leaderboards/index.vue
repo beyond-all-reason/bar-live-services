@@ -3,6 +3,9 @@
         <h1 class="page-title">
             Leaderboards
         </h1>
+        <div class="disclaimer text-center">
+            <p>The TrueSkill values shown on this page are <em>Trusted</em>, as opposed to <em>Estimated</em>. It is calculated by <strong>Estimated Skill - (3 * Uncertainty)</strong>. See <a href="https://springrts.com/phpbb/viewtopic.php?p=536862#p536862" target="_blank">here</a> for more info.</p>
+        </div>
         <div class="leaderboards">
             <div v-for="leaderboard of leaderboards" :key="leaderboard.gameType" class="leaderboard">
                 <h2>{{ leaderboard.gameType }}</h2>
@@ -14,7 +17,7 @@
                         Name
                     </div>
                     <div class="row__trueskill">
-                        TS
+                        TrueSkill
                     </div>
                 </div>
                 <div v-for="(player, index) in leaderboard.players" :key="index" class="row">
@@ -50,6 +53,9 @@ export default class Page extends Vue {
 </script>
 
 <style lang="scss" scoped>
+a {
+    text-decoration: underline;
+}
 .leaderboards {
     width: 100%;
     display: flex;

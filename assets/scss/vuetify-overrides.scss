@@ -1,5 +1,5 @@
 .v-slide-group__content {
-    justify-content: center !important;
+    justify-content: center;
 }
 
 .v-pagination__item--active {
@@ -110,4 +110,8 @@
 .v-icon.small {
     font-size: 16px !important;
     margin-bottom: 2px !important;
+}
+
+.v-icon {
+    position: relative !important;
 }

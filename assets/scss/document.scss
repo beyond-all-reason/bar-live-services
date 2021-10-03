@@ -6,19 +6,20 @@ a, .v-application a {
         color: #fff;
     }
 }
-
 .v-application:not(.not-embedded) .v-application--wrap {
     min-height: unset !important;
 }
-
 [v-cloak] {
     display: none !important;
 }
-
 .container {
     overflow: hidden;
 }
-
 .noselect {
     user-select: none;
+}
+.preload {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
 }

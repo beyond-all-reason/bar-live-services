@@ -1,0 +1,48 @@
+.maps-view {
+    width: 100%;
+    .v-item-group {
+        width: 100%;
+        background-color: transparent !important;
+        margin-bottom: 10px;
+    }
+    .v-tabs-bar {
+        background-color: transparent !important;
+    }
+    .v-tab {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 10px 5px;
+    }
+    .v-tabs .v-item-group {
+        height: unset;
+    }
+    .v-tab--active {
+        
+    }
+    .v-slide-group .v-tabs-bar__content {
+        gap: 5px;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .v-tabs-slider-wrapper {
+        height: 0 !important;
+    }
+    .v-tabs-bar {
+        //position: absolute;
+        z-index: 2;
+        .v-slide-group__content {
+            justify-content: center;
+        }
+    }
+    // .v-tabs {
+    //     .v-slide-group__content {
+    //         //justify-content: flex-end !important;
+    //     }
+    // }
+}
+
+.maps-mapId {
+    .container {
+        max-width: 1185px;
+    }
+}

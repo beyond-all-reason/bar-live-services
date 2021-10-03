@@ -1,5 +1,5 @@
 <template>
-    <v-app id="vApp" :class="`${this.$vuetify.breakpoint.name} ${!this.$store.state.embedded ? 'not-embedded' : 'embedded'}`">
+    <v-app id="vApp" :class="`${this.$route.name} ${this.$vuetify.breakpoint.name} ${!this.$store.state.embedded ? 'not-embedded' : 'embedded'}`">
         <Navigation v-show="!this.$store.state.embedded" />
         <v-main>
             <v-container>
@@ -37,8 +37,6 @@ export default class DefaultLayout extends Vue {
 </script>
 
 <style lang="scss">
-@import "~/assets/scss/main.scss";
-
 .theme--dark.v-application {
     background: transparent !important;
     &.not-embedded {

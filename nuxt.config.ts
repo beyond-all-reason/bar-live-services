@@ -55,6 +55,16 @@ const nuxtConfig: NuxtConfig = {
         name: "slide-transition",
         mode: "out-in"
     },
+    build: {
+        transpile: [
+            "three"
+        ],
+        babel: {
+            generatorOpts: {
+                compact: false
+            }
+        }
+    },
     buildModules: [
         "@nuxt/typescript-build",
         "@nuxtjs/moment",

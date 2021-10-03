@@ -214,6 +214,9 @@ export default class ReplaysPage extends Vue {
         margin: 5px;
     }
 }
+.replays-container {
+    margin-bottom: 10px;
+}
 .replays {
     display: flex;
     flex-wrap: wrap;

@@ -4,10 +4,10 @@
             <NuxtLink to="/replays">
                 Replays
             </NuxtLink>
-            <!-- <NuxtLink to="/maps">
+            <NuxtLink to="/maps">
                 Maps
             </NuxtLink>
-            <NuxtLink to="/players">
+            <!--<NuxtLink to="/players">
                 Players
             </NuxtLink> -->
             <NuxtLink to="/battles">

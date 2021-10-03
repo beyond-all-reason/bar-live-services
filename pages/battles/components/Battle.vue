@@ -12,8 +12,9 @@
             <div v-if="battle.locked || battle.passworded" class="lock">
                 <img src="~/assets/images/lock.png">
             </div>
-            <div class="map">
-                {{ mapName }}
+            <div class="map-gametime">
+                <div class="map">{{ mapName }}</div>
+                <div class="gametime" v-if="battle.lobbyStatus === 'running'">Running for {{ runTime }} minutes</div>
             </div>
             <div v-if="playerCount" class="player-count">
                 {{ playerCount }}
@@ -24,8 +25,24 @@
                 <img src="~/assets/images/spectator.png">
             </div>
         </div>
-        <div class="players">
-            <div v-for="(player, index) in battle.players" :key="index" class="player">
+        <div class="players" v-if="players.length">
+            <div class="heading">Players</div>
+            <div v-for="(player, index) in players" :key="index" class="player">
+                <div v-if="player.country !== '??'" class="flag">
+                    <img :src="countryImage(player.country.toLowerCase())" alt="">
+                </div>
+                <div class="rank">
+                    <img v-if="player.status" :src="require(`~/assets/images/ranks/${player.status.rank + 1}.svg`)">
+                    <img v-else src="~/assets/images/ranks/1.svg">
+                </div>
+                <div class="username">
+                    {{ player.username }}
+                </div>
+            </div>
+        </div>
+        <div class="players" v-if="spectators.length">
+            <div class="heading">Spectators</div>
+            <div v-for="(player, index) in spectators" :key="index" class="player">
                 <div v-if="player.country !== '??'" class="flag">
                     <img :src="countryImage(player.country.toLowerCase())" alt="">
                 </div>
@@ -44,6 +61,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 import { Battle } from "~/model/battle";
+import { Player } from "~/model/player";
 
 @Component
 export default class BattleComponent extends Vue {
@@ -61,17 +79,41 @@ export default class BattleComponent extends Vue {
     }
 
     get playerCount() : number {
-        if (!this.battle.founder.status?.bot) {
-            return this.battle.players.length - this.battle.spectators;
-        }
-        return this.battle.players.length - (this.battle.spectators - 1);
+        // if (!this.battle.founder.status?.bot) {
+        //     return this.battle.players.length - this.battle.spectators;
+        // }
+        // return this.battle.players.length - (this.battle.spectators - 1);
+        return this.players.length;
     }
 
     get spectatorCount() : number {
-        if (!this.battle.founder.status?.bot) {
-            return this.battle.spectators;
+        // if (!this.battle.founder.status?.bot) {
+        //     return this.battle.spectators;
+        // }
+        // return this.battle.spectators - 1;
+        return this.spectators.length;
+    }
+
+    get battleStarted() : boolean {
+        return this.battle.lobbyStatus === "running" || this.battle.gameStatus === "running";
+    }
+
+    get players() : Player[] {
+        if (this.battleStarted) {
+            return this.battle.players.filter(player => player.gameStatus === "Playing" || player.gameStatus === "Waiting");
         }
-        return this.battle.spectators - 1;
+        return this.battle.players.filter(player => player.lobbyReady);
+    }
+
+    get spectators() : Player[] {
+        if (this.battleStarted) {
+            return this.battle.players.filter(player => player.gameStatus !== "Playing");
+        }
+        return this.battle.players.filter(player => !player.lobbyReady || player.lobbyReady === "No");
+    }
+
+    get runTime() : string {
+        return ((this.battle?.gameTime ?? 0) / 60).toFixed(0);
     }
 
     countryImage(countryCode: string) {
@@ -122,11 +164,11 @@ export default class BattleComponent extends Vue {
     padding: 4px;
     font-size: 16px;
     z-index: 1;
+    column-gap: 5px;
 }
 .ingame{
     display: flex;
     align-items: center;
-    margin-right: 5px;
     img {
         max-height: 32px;
     }
@@ -134,15 +176,21 @@ export default class BattleComponent extends Vue {
 .battle-title{
     text-align: left;
 }
-.map{
+.map-gametime {
+    display: flex;
     flex-grow: 1;
     text-align: center;
-    padding: 0 10px;
+    flex-direction: column;
+}
+.gametime {
+    background: red;
+    height: 0;
+    font-size: 11px;
+    margin-top: -3px;
 }
 .lock{
     display: flex;
     align-items: center;
-    margin-left: 5px;
     img {
         max-height: 16px;
     }
@@ -150,7 +198,6 @@ export default class BattleComponent extends Vue {
 .player-count{
     display: flex;
     align-items: center;
-    margin-right: 8px;
     img {
         margin-left: 3px;
         max-height: 18px;
@@ -164,17 +211,20 @@ export default class BattleComponent extends Vue {
         max-height: 18px;
     }
 }
-.max-players{
-    margin-left: 5px;
-}
 .players{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 12px 4px 4px 5px;
     justify-content: left;
     align-items: flex-start;
     z-index: 1;
+}
+.heading {
+    position: relative;
+    width: 100%;
+    font-size: 13px;
+    margin-left: 5px;
+    margin-bottom: 2px;
 }
 .player{
     background: rgba(0, 0, 0, 0.59);
