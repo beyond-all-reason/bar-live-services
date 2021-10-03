@@ -256,8 +256,8 @@ export class API {
             const results = await this.barDb.schema.map.findAndCountAll({
                 offset: (page - 1) * limit,
                 limit,
-                attributes: ["id", "scriptName", "fileName", "name", "width", "height", "startPositions"],
-                order: [["name", "ASC"]]
+                //attributes: ["id", "scriptName", "fileName", "name", "width", "height", "startPositions", "minWind", "maxWind"],
+                order: [["scriptName", "ASC"]]
             });
 
             const response: APIResponse<MapResponse[]> = {

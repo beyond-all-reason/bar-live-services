@@ -255,7 +255,7 @@ class SpringMapWebGL {
                 reflectivity: 1
             });
             water.receiveShadow = true;
-            water.position.z = ((Math.abs(this.config.map.minDepth) / 1000) * 100) + 0.6;
+            water.position.z = ((Math.abs(this.config.map.minDepth) / 1000) * 100) * depthFactor + 0.55;
             this.scene.add(water);
         }
 
