@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { Module } from "@nuxt/types";
-import { BARDBConfig, Database, Demo, Map } from "bar-db";
+import { BARDBConfig, Database, Demo, SpringMap } from "bar-db";
 import express from "express";
 import { AndOperator, Op, OrderItem, OrOperator, Sequelize, WhereAttributeHash } from "sequelize";
 import compression from "compression";
@@ -119,7 +119,7 @@ export class API {
             const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
 
             const demoWhere: WhereAttributeHash<Demo> | AndOperator<Demo> | OrOperator<Demo> = {};
-            const mapWhere: WhereAttributeHash<Map> | AndOperator<Map> | OrOperator<Map> = {};
+            const mapWhere: WhereAttributeHash<SpringMap> | AndOperator<SpringMap> | OrOperator<SpringMap> = {};
 
             filters.preset !== undefined && (demoWhere.preset = filters.preset);
             filters.hasBots !== undefined && (demoWhere.hasBots = filters.hasBots);

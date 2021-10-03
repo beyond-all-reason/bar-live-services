@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Map } from "bar-db/dist/model/map";
+import { SpringMap } from "bar-db";
 import { Component, Vue } from "nuxt-property-decorator";
 
 import _ from "lodash";
@@ -45,7 +45,7 @@ export default class MapsPage extends Vue {
     totalResults = 0;
     page = 1;
     pageCount = 0;
-    maps: Map[] = [];
+    maps: SpringMap[] = [];
     timeTaken = 0;
     defaultFilters: Partial<MapFilters> = _.clone(defaultMapFilters);
     filters: Partial<MapFilters> = _.clone(defaultMapFilters);
@@ -54,7 +54,7 @@ export default class MapsPage extends Vue {
     async fetch(): Promise<any> {
         const beforeTime = Date.now();
         const searchParams = new URLSearchParams(this.$route.query as {});
-        const response = await this.$http.$get("maps", { searchParams }) as APIResponse<Map[], MapFilters, MapSorts>;
+        const response = await this.$http.$get("maps", { searchParams }) as APIResponse<SpringMap[], MapFilters, MapSorts>;
         this.timeTaken = Date.now() - beforeTime;
         this.totalResults = response.totalResults;
         this.page = response.page;

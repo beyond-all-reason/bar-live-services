@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-import { Map } from "bar-db";
+import { SpringMap } from "bar-db";
 import * as THREE from 'three';
 import { AmbientLight, BackSide, CameraHelper, DirectionalLight, DoubleSide, Mesh, MeshPhongMaterial, PCFSoftShadowMap } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -66,7 +66,7 @@ import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessC
 
 @Component
 export default class Map3D extends Vue {
-    @Prop({ type: Object, required: true }) readonly map!: Map;
+    @Prop({ type: Object, required: true }) readonly map!: SpringMap;
 
     map3D!: SpringMapWebGL;
 
@@ -91,7 +91,7 @@ export default class Map3D extends Vue {
 }
 
 interface SpringMapWebGLConfig {
-    map: Map,
+    map: SpringMap,
     containerId: string;
     mapWidth: number;
     mapHeight: number;
@@ -225,12 +225,17 @@ class SpringMapWebGL {
         const totalMapWidth = this.config.mapWidth * 64;
         const totalMapHeight = this.config.mapHeight * 64;
 
-        const totalDepth = Math.abs(this.config.map.minDepth!) + Math.abs(this.config.map.maxDepth!); // usually 1000 but not always
-        const depthFactor = totalDepth / 1000;
+        //const totalDepth = Math.abs(this.config.map.minDepth!) + Math.abs(this.config.map.maxDepth!); // usually 1000 but not always
+        //const totalDepth = Math.abs(this.config.map.minDepth!) + Math.abs(this.config.map.maxDepth!); // usually 1000 but not always
+        //const depthFactor = 1000 / totalDepth;
+        const depthRange = this.config.map.maxDepth! - this.config.map.minDepth!;
+        const heightNormalise = 0.1;
 
         const position = this.mesh.geometry.attributes.position;
+
         for (let i = 0; i < heightData.data.length; i++) {
-            let height = heightData.data[i * 4] * 0.4 * depthFactor;
+            const heightFactor = heightData.data[i * 4] / 255;
+            let height = heightFactor * depthRange * heightNormalise;
             if (
                 i < (totalMapWidth + 1) ||
                 i % (totalMapWidth + 1) === 0 ||
@@ -255,7 +260,7 @@ class SpringMapWebGL {
                 reflectivity: 1
             });
             water.receiveShadow = true;
-            water.position.z = ((Math.abs(this.config.map.minDepth) / totalDepth) * 100) * depthFactor;
+            water.position.z = (Math.abs(this.config.map.minDepth) / depthRange) * depthRange * heightNormalise;
             this.scene.add(water);
         }
 
