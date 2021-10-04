@@ -1,4 +1,6 @@
 import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import { Module } from "@nuxt/types";
 import { BARDBConfig, Database, Demo, SpringMap } from "bar-db";
 import express from "express";
@@ -17,6 +19,7 @@ import { BalanceChangeResponse } from "../model/api/balance-changes";
 import { parseBalanceChangesRequestQuery } from "../modules/api/balance-changes";
 import { MapResponse } from "../model/api/maps";
 import { parseMapsRequestQuery } from "../modules/api/maps";
+import fileUpload, { UploadedFile } from "express-fileupload";
 
 export type ServicesConfig = typeof Config;
 
@@ -65,9 +68,13 @@ export class API {
         if (process.env.NODE_ENV !== "production") {
             this.app.set("json spaces", 4);
         }
-        this.app.use("/maps", express.static(servicesConfig.bardb.mapPath));
-        this.app.use("/replays", express.static(servicesConfig.bardb.demoPath));
+        this.app.use("/maps", express.static(path.join(servicesConfig.bardb.mapPath, "processed")));
+        this.app.use("/replays", express.static(path.join(servicesConfig.bardb.demoPath, "processed")));
         this.app.use(express.static("static"));
+        this.app.use(fileUpload({
+            useTempFiles: true,
+            tempFileDir: path.join(servicesConfig.bardb.mapPath, "unprocessed")
+        }));
 
         const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
             res.status(500);
@@ -97,6 +104,7 @@ export class API {
         await this.players();
         await this.maps();
         await this.map();
+        await this.mapUpload();
         await this.leaderboards();
         await this.battles();
         await this.users();
@@ -274,7 +282,7 @@ export class API {
     }
 
     protected async map() {
-        this.app.get("/maps/:mapId", async(req, res) => {
+        this.app.get("/maps/:mapId", async (req, res) => {
             const { filters, sort, limit, page } = parseReplaysRequestQuery(req.query as { [key: string]: string });
 
             const map = await this.barDb.schema.map.findByPk(req.params.mapId);
@@ -283,8 +291,22 @@ export class API {
         });
     }
 
+    protected async mapUpload() {
+        // TODO: separate API and nuxt
+        this.app.post('/map-upload', async (req, res) => {
+            if (req.files && req.files.map) {
+                const mapFiles = Array.isArray(req.files.map) ? req.files.map : [req.files.map];
+                for (const mapFile of mapFiles) {
+                    console.log(mapFile);
+                }
+            } else {
+                console.log(req.files);
+            }
+        });
+    }
+
     protected async leaderboards() {
-        this.app.get("/leaderboards", async(req, res) => {
+        this.app.get("/leaderboards", async (req, res) => {
             res.json(this.leaderboardService.leaderboards);
         });
     }

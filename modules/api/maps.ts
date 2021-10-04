@@ -1,4 +1,4 @@
-import { Writeable } from "jaz-ts-utils";
+import { Writable } from "jaz-ts-utils";
 import _ from "lodash";
 import { defaultMapFilters, defaultMapSorts, MapFilters, Maprequest } from "../../model/api/maps";
 import { defaultPaginatedRequest } from "../../model/api/paginated-request";
@@ -6,7 +6,7 @@ import { defaultPaginatedRequest } from "../../model/api/paginated-request";
 export function parseMapsRequestQuery(query: { [key: string]: string }) : Required<Maprequest> {
     const filters = parseMapFilters(query);
 
-    const sorts: Writeable<typeof defaultMapSorts> = _.clone(defaultMapSorts);
+    const sorts: Writable<typeof defaultMapSorts> = _.clone(defaultMapSorts);
     for (const key in query) {
         const val = query[key];
         if (key in sorts) {

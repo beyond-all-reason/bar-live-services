@@ -126,9 +126,10 @@ export class LobbyService extends Service {
             const player = this.players[data.userName];
             const battle = this.battles[data.battleId];
 
-            delete battle.players[player.username];
-
-            this.onBattleUpdate.dispatch();
+            if (player && battle) {
+                delete battle.players[player.username];
+                this.onBattleUpdate.dispatch();
+            }
         });
 
         this.lobbyClient.onDisconnect.add(() => {

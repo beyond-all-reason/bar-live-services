@@ -81,8 +81,6 @@ export default class Map3D extends Vue {
         });
 
         this.map3D.init();
-
-        console.log(this.map);
     }
 
     public destroyed() {
@@ -199,7 +197,6 @@ class SpringMapWebGL {
     protected async draw() {
         const heightMap = await this.loader.loadAsync(this.config.heightUrl);
         const textureMap = await this.loader.loadAsync(this.config.textureUrl);
-        //const textureMap = await this.loader.loadAsync("/api/maps/dsdr_4.0/texture-hq.png");
         //const specularMap = await this.loader.loadAsync("assets/dsd/specular.png");
         // not using normal map atm because difference is negligible for the file size cost
         // const normalMap = await this.loader.loadAsync("assets/dsd/smaller.jpg");
@@ -225,9 +222,6 @@ class SpringMapWebGL {
         const totalMapWidth = this.config.mapWidth * 64;
         const totalMapHeight = this.config.mapHeight * 64;
 
-        //const totalDepth = Math.abs(this.config.map.minDepth!) + Math.abs(this.config.map.maxDepth!); // usually 1000 but not always
-        //const totalDepth = Math.abs(this.config.map.minDepth!) + Math.abs(this.config.map.maxDepth!); // usually 1000 but not always
-        //const depthFactor = 1000 / totalDepth;
         const depthRange = this.config.map.maxDepth! - this.config.map.minDepth!;
         const heightNormalise = 0.1;
 

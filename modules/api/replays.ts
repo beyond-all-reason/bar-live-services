@@ -1,4 +1,4 @@
-import { Writeable } from "jaz-ts-utils";
+import { Writable } from "jaz-ts-utils";
 import _ from "lodash";
 import { defaultPaginatedRequest } from "../../model/api/paginated-request";
 import { parseStringArray, parseNumberArray, parseBoolean } from "../../model/api/query-parser";
@@ -7,7 +7,7 @@ import { defaultReplayFilters, defaultReplaySorts, ReplayFilters, ReplayRequest 
 export function parseReplaysRequestQuery(query: { [key: string]: string }) : Required<ReplayRequest> {
     const filters = parseReplayFilters(query);
 
-    const sorts: Writeable<typeof defaultReplaySorts> = _.clone(defaultReplaySorts);
+    const sorts: Writable<typeof defaultReplaySorts> = _.clone(defaultReplaySorts);
     for (const key in query) {
         const val = query[key];
         if (key in sorts) {

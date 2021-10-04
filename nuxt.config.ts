@@ -71,7 +71,6 @@ const nuxtConfig: NuxtConfig = {
         "@nuxtjs/vuetify"
     ],
     modules: [
-        "@nuxt/image",
         "@nuxtjs/pwa",
         "@nuxt/http",
         "~/modules/api"

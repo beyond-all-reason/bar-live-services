@@ -50,7 +50,7 @@
             </div>
             <div class="right-col">
                 <div class="dl-links">
-                    <a class="download" :href="`${$config.objectStorageUrl}/maps/${map.fileName}`">Download</a>
+                    <a class="download" :href="`${$config.objectStorageUrl}/maps/${map.fileNameWithExtension || map.fileName + '.sd7'}`">Download</a>
                     <a class="json-api" target="_blank" :href="`/api/maps/${map.id}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>

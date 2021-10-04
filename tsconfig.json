@@ -29,7 +29,6 @@
             "@types/jest",
             "@nuxt/types",
             "@nuxt/http",
-            "@nuxt/image",
             "@nuxtjs/moment",
             "@nuxt/vue-app",
             "@nuxtjs/vuetify",

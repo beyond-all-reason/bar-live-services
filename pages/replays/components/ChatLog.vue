@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-import { DemoModel } from "sdfz-demo-parser";
 
 @Component({
     directives: {
@@ -33,7 +32,7 @@ import { DemoModel } from "sdfz-demo-parser";
     }
 })
 export default class ChatLog extends Vue {
-    @Prop({ type: Array, required: true }) readonly chatlog!: DemoModel.ChatMessage[];
+    @Prop({ type: Array, required: true }) readonly chatlog!: any[];
     @Prop({ type: Object, required: true }) readonly playerColors!: { [playerId: number]: { r: number, g: number, b: number } };
 
     gameTimeString(gameTime: number) {
