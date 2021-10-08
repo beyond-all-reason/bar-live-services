@@ -100,14 +100,14 @@ export default class BattleComponent extends Vue {
 
     get players() : Player[] {
         if (this.battleStarted) {
-            return this.battle.players.filter(player => player.gameStatus === "Playing" || player.gameStatus === "Waiting");
+            return this.battle.players.filter(player => player.gameStatus === "Playing" || player.gameStatus === "Waiting" || player.gameReady === "Placed");
         }
         return this.battle.players.filter(player => player.lobbyReady);
     }
 
     get spectators() : Player[] {
         if (this.battleStarted) {
-            return this.battle.players.filter(player => player.gameStatus !== "Playing");
+            return this.battle.players.filter(player => player.gameStatus !== "Playing" && player.gameReady === "Placed");
         }
         return this.battle.players.filter(player => !player.lobbyReady || player.lobbyReady === "No");
     }
