@@ -146,6 +146,15 @@ export default class BattleComponent extends Vue {
         z-index: -1;
         background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.0) 100%);
     }
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.15);
+    }
 }
 .top{
     display: flex;
