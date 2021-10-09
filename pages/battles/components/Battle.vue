@@ -79,23 +79,15 @@ export default class BattleComponent extends Vue {
     }
 
     get playerCount() : number {
-        // if (!this.battle.founder.status?.bot) {
-        //     return this.battle.players.length - this.battle.spectators;
-        // }
-        // return this.battle.players.length - (this.battle.spectators - 1);
         return this.players.length;
     }
 
     get spectatorCount() : number {
-        // if (!this.battle.founder.status?.bot) {
-        //     return this.battle.spectators;
-        // }
-        // return this.battle.spectators - 1;
         return this.spectators.length;
     }
 
     get battleStarted() : boolean {
-        return this.battle.lobbyStatus === "running" || this.battle.gameStatus === "running";
+        return this.battle.founder.status?.ingame === true;
     }
 
     get players() : Player[] {
@@ -107,7 +99,7 @@ export default class BattleComponent extends Vue {
 
     get spectators() : Player[] {
         if (this.battleStarted) {
-            return this.battle.players.filter(player => player.gameStatus !== "Playing" && player.gameReady === "Placed");
+            return this.battle.players.filter(player => player.gameStatus !== "Playing" && player.gameReady !== "Placed");
         }
         return this.battle.players.filter(player => !player.lobbyReady || player.lobbyReady === "No");
     }
