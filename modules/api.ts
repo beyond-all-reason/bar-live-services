@@ -19,7 +19,6 @@ import { BalanceChangeResponse } from "../model/api/balance-changes";
 import { parseBalanceChangesRequestQuery } from "../modules/api/balance-changes";
 import { MapResponse } from "../model/api/maps";
 import { parseMapsRequestQuery } from "../modules/api/maps";
-import fileUpload, { UploadedFile } from "express-fileupload";
 
 export type ServicesConfig = typeof Config;
 
@@ -71,10 +70,10 @@ export class API {
         this.app.use("/maps", express.static(path.join(servicesConfig.bardb.mapPath, "processed")));
         this.app.use("/replays", express.static(path.join(servicesConfig.bardb.demoPath, "processed")));
         this.app.use(express.static("static"));
-        this.app.use(fileUpload({
-            useTempFiles: true,
-            tempFileDir: path.join(servicesConfig.bardb.mapPath, "unprocessed")
-        }));
+        // this.app.use(fileUpload({
+        //     useTempFiles: true,
+        //     tempFileDir: path.join(servicesConfig.bardb.mapPath, "unprocessed")
+        // }));
 
         const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
             res.status(500);
@@ -104,7 +103,7 @@ export class API {
         await this.players();
         await this.maps();
         await this.map();
-        await this.mapUpload();
+        // await this.mapUpload();
         await this.leaderboards();
         await this.battles();
         await this.users();
@@ -112,7 +111,6 @@ export class API {
         await this.cachedMaps();
         await this.balanceChanges();
         await this.test();
-        await this.unitNames();
 
         await this.barDb.init();
 
@@ -264,7 +262,6 @@ export class API {
             const results = await this.barDb.schema.map.findAndCountAll({
                 offset: (page - 1) * limit,
                 limit,
-                //attributes: ["id", "scriptName", "fileName", "name", "width", "height", "startPositions", "minWind", "maxWind"],
                 order: [["scriptName", "ASC"]]
             });
 
@@ -291,19 +288,19 @@ export class API {
         });
     }
 
-    protected async mapUpload() {
-        // TODO: separate API and nuxt
-        this.app.post('/map-upload', async (req, res) => {
-            if (req.files && req.files.map) {
-                const mapFiles = Array.isArray(req.files.map) ? req.files.map : [req.files.map];
-                for (const mapFile of mapFiles) {
-                    console.log(mapFile);
-                }
-            } else {
-                console.log(req.files);
-            }
-        });
-    }
+    // protected async mapUpload() {
+    //     // TODO: separate API and nuxt
+    //     this.app.post('/map-upload', async (req, res) => {
+    //         if (req.files && req.files.map) {
+    //             const mapFiles = Array.isArray(req.files.map) ? req.files.map : [req.files.map];
+    //             for (const mapFile of mapFiles) {
+    //                 console.log(mapFile);
+    //             }
+    //         } else {
+    //             console.log(req.files);
+    //         }
+    //     });
+    // }
 
     protected async leaderboards() {
         this.app.get("/leaderboards", async (req, res) => {
@@ -388,15 +385,6 @@ export class API {
             };
 
             return res.json(response);
-        });
-    }
-
-    protected async unitNames() {
-        const balanceChangeFetcher = new BalanceChangeFetcher(this.barDbConfig.balanceChanges);
-        const unitNames = await balanceChangeFetcher.fetchUnitNames();
-
-        this.app.get("/unit-names", async(req, res) => {
-            res.json(unitNames);
         });
     }
 

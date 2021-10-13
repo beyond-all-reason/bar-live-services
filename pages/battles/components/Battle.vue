@@ -98,10 +98,7 @@ export default class BattleComponent extends Vue {
     }
 
     get spectators() : Player[] {
-        if (this.battleStarted) {
-            return this.battle.players.filter(player => player.gameStatus !== "Playing" && player.gameReady !== "Placed");
-        }
-        return this.battle.players.filter(player => !player.lobbyReady || player.lobbyReady === "No");
+        return this.battle.players.filter(player => !this.players.includes(player));
     }
 
     get runTime() : string {
