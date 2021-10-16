@@ -22,15 +22,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 
-import { MapResponse } from "~/model/api/maps";
-
 @Component
 export default class MapPreview extends Vue {
-    @Prop({ type: Object, required: true }) readonly map!: MapResponse;
+    @Prop({ type: Object, required: true }) readonly map!: any;
 
     get mapThumbnailUrl(): string {
         if (this.map.fileName) {
-            return `/api/maps/${this.map.fileName}/texture-thumb.jpg`;
+            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/texture-thumb.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }

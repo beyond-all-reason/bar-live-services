@@ -60,12 +60,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-import { Battle } from "~/model/battle";
-import { Player } from "~/model/player";
+
 
 @Component
 export default class BattleComponent extends Vue {
-    @Prop({ type: Object, required: true }) readonly battle!: Battle;
+    @Prop({ type: Object, required: true }) readonly battle!: any;
 
     get mapUrl() : string {
         if (this.battle.mapFileName) {
@@ -90,15 +89,15 @@ export default class BattleComponent extends Vue {
         return this.battle.founder.status?.ingame === true;
     }
 
-    get players() : Player[] {
+    get players() : any[] {
         if (this.battleStarted) {
-            return this.battle.players.filter(player => player.gameStatus === "Playing" || player.gameStatus === "Waiting" || player.gameReady === "Placed");
+            return this.battle.players.filter((player: any) => player.gameStatus === "Playing" || player.gameStatus === "Waiting" || player.gameReady === "Placed");
         }
-        return this.battle.players.filter(player => player.lobbyReady);
+        return this.battle.players.filter((player: any) => player.lobbyReady);
     }
 
-    get spectators() : Player[] {
-        return this.battle.players.filter(player => !this.players.includes(player));
+    get spectators() : any[] {
+        return this.battle.players.filter((player: any) => !this.players.includes(player));
     }
 
     get runTime() : string {

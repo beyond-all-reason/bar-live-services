@@ -27,7 +27,7 @@
                             </client-only>
                         </v-tab-item>
                         <v-tab-item class="map-view">
-                            <img :src="`/api/maps/${this.map.fileName}/texture-hq.jpg`">
+                            <img :src="textureMap">
                             <div v-if="map.startPositions" class="start-positions">
                                 <div v-for="(startPos, index) in map.startPositions" :key="index" v-startPos="[startPos, map.width, map.height]" class="start-pos">
                                     <div class="start-pos-tooltip">
@@ -37,13 +37,13 @@
                             </div>
                         </v-tab-item>
                         <v-tab-item class="map-view">
-                            <img :src="`/api/maps/${this.map.fileName}/metal.png`">
+                            <img :src="metalMap">
                         </v-tab-item>
                         <v-tab-item class="map-view">
-                            <img :src="`/api/maps/${this.map.fileName}/height.png`">
+                            <img :src="heightMap">
                         </v-tab-item>
                         <v-tab-item class="map-view">
-                            <img :src="`/api/maps/${this.map.fileName}/type.png`">
+                            <img :src="typeMap">
                         </v-tab-item>
                     </v-tabs-items>
                 </div>
@@ -108,8 +108,6 @@
 import { Context } from "@nuxt/types";
 import { Component, Vue } from "nuxt-property-decorator";
 
-import { MapResponse } from "~/model/api/maps";
-
 @Component({
     head: { title: "BAR - Map" },
     directives: {
@@ -125,17 +123,45 @@ import { MapResponse } from "~/model/api/maps";
     }
 })
 export default class ReplayPage extends Vue {
-    map!: MapResponse;
+    map!: any;
     tab: number | null = null;
 
     async asyncData({ store, $http, params, $config }: Context): Promise<any> {
-        const map = await $http.$get(`maps/${params.mapId}`) as MapResponse;
+        const map = await $http.$get(`maps/${params.mapId}`) as any;
 
         return { map, $config };
     }
 
     get mapName(): string {
         return this.map.scriptName!.replace(/[_-]/g, " ");
+    }
+
+    get textureMap() : string {
+        if (this.map.fileName) {
+            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/texture-mq.jpg`);
+        }
+        return require("assets/images/default-minimap.png");
+    }
+
+    get metalMap() : string {
+        if (this.map.fileName) {
+            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/metal.png`);
+        }
+        return require("assets/images/default-minimap.png");
+    }
+
+    get heightMap() : string {
+        if (this.map.fileName) {
+            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/height.png`);
+        }
+        return require("assets/images/default-minimap.png");
+    }
+
+    get typeMap() : string {
+        if (this.map.fileName) {
+            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/type.png`);
+        }
+        return require("assets/images/default-minimap.png");
     }
 }
 </script>

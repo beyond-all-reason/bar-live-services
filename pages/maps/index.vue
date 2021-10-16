@@ -16,7 +16,7 @@
                 <MapPreview v-for="(map, index) in maps" :key="index" :map="map" />
             </div>
         </div>
-        <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
+        <v-pagination v-model="page" :length="numOfPages" :total-visible="10" @input="changePage" />
     </div>
 </template>
 
@@ -25,72 +25,34 @@ import { SpringMap } from "bar-db";
 import { Component, Vue } from "nuxt-property-decorator";
 
 import _ from "lodash";
-import { APIResponse } from "~/model/api/api-response";
-import { MapFilters, defaultMapFilters, MapSorts } from "~/model/api/maps";
-import { parseMapFilters } from "~/modules/api/maps";
 
 @Component({
     head: { title: "BAR - Maps" },
     watch: {
-        "$route.query": "$fetch",
-        filters: {
-            handler(this: MapsPage) {
-                this.updateFilters();
-            },
-            deep: true
-        }
+        "$route.query": "$fetch"
     }
 })
 export default class MapsPage extends Vue {
     totalResults = 0;
     page = 1;
-    pageCount = 0;
+    numOfPages = 0;
     maps: SpringMap[] = [];
     timeTaken = 0;
-    defaultFilters: Partial<MapFilters> = _.clone(defaultMapFilters);
-    filters: Partial<MapFilters> = _.clone(defaultMapFilters);
-    spoilResults = false;
 
     async fetch(): Promise<any> {
         const beforeTime = Date.now();
         const searchParams = new URLSearchParams(this.$route.query as {});
-        const response = await this.$http.$get("maps", { searchParams }) as APIResponse<SpringMap[], MapFilters, MapSorts>;
+        const response = await this.$http.$get("maps", { searchParams }) as any;
         this.timeTaken = Date.now() - beforeTime;
         this.totalResults = response.totalResults;
         this.page = response.page;
-        this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
+        this.numOfPages = Math.ceil(response.totalResults / response.limit);
         this.maps = response.data;
     }
 
     async changePage(page: number) {
         this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
         window.scrollTo(0, 0);
-    }
-
-    updateFilters() {
-        const query: { [key: string]: string } = {};
-        for (const [key, val] of Object.entries(this.filters)) {
-            const isDefaultVal = _.isEqual(defaultMapFilters[key as keyof MapFilters], val);
-
-            if (isDefaultVal) {
-                continue;
-            }
-
-            if (val === null) {
-                query[key] = "null";
-            } else if (val === undefined || (Array.isArray(val) && val.length === 0)) {
-                query[key] = "any";
-            } else {
-                query[key] = encodeURI(String(val));
-            }
-        }
-
-        this.$router.push({ query });
-    }
-
-    beforeMount() {
-        const query = this.$route.query as { [key: string]: string };
-        this.filters = parseMapFilters(query);
     }
 }
 </script>

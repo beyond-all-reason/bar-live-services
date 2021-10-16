@@ -1,92 +1,63 @@
 <template>
     <div>
-        <h1 class="page-title">
-            Replays
-        </h1>
+        <h1 class="page-title">Replays</h1>
+        
         <div class="filters">
-            <Options v-model="filters.preset" multiple>
+
+            <Options v-model="preset" multiple>
                 <template v-slot:title>
-                    Preset <v-icon class="small">
-                        mdi-account
-                    </v-icon>
+                    Preset <v-icon class="small">mdi-account</v-icon>
                 </template>
-                <Option value="duel">
-                    Duel
-                </Option>
-                <Option value="team">
-                    Team
-                </Option>
-                <Option value="ffa">
-                    FFA
-                </Option>
+                <Option value="duel">Duel</Option>
+                <Option value="team">Team</Option>
+                <Option value="ffa">FFA</Option>
             </Options>
-            <Options v-model="filters.hasBots">
+
+            <Options v-model="hasBots">
                 <template v-slot:title>
-                    Has Bots <v-icon class="small">
-                        mdi-robot
-                    </v-icon>
+                    Has Bots <v-icon class="small">mdi-robot</v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
-                    <v-icon color="#b13b3b">
-                        mdi-close-thick
-                    </v-icon>
+                    <v-icon color="#b13b3b">mdi-close-thick</v-icon>
                 </Option>
                 <Option :value="undefined">
                     <v-icon>mdi-minus-thick</v-icon>
                 </Option>
                 <Option :value="true" bg-color="#70a232" text-color="#fff">
-                    <v-icon color="#91b64d">
-                        mdi-check-bold
-                    </v-icon>
+                    <v-icon color="#91b64d">mdi-check-bold</v-icon>
                 </Option>
             </Options>
-            <Options v-model="filters.endedNormally">
+
+            <Options v-model="endedNormally">
                 <template v-slot:title>
-                    Ended Normally <v-icon class="small">
-                        mdi-checkbox-marked-circle
-                    </v-icon>
+                    Ended Normally <v-icon class="small">mdi-checkbox-marked-circle</v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
-                    <v-icon color="#b13b3b">
-                        mdi-close-thick
-                    </v-icon>
+                    <v-icon color="#b13b3b">mdi-close-thick</v-icon>
                 </Option>
                 <Option :value="undefined">
                     <v-icon>mdi-minus-thick</v-icon>
                 </Option>
                 <Option :value="true" bg-color="#70a232" text-color="#fff">
-                    <v-icon color="#91b64d">
-                        mdi-check-bold
-                    </v-icon>
+                    <v-icon color="#91b64d">mdi-check-bold</v-icon>
                 </Option>
             </Options>
-            <DateFilter v-model="filters.dateRange" />
+
+            <DateFilter v-model="date" />
+
             <div class="flex-col range">
                 <label>Duration in minutes <v-icon class="small">mdi-clock</v-icon></label>
-                <v-range-slider
-                    :value="filters.durationRangeMins"
-                    :min="defaultFilters.durationRangeMins[0]"
-                    :max="defaultFilters.durationRangeMins[1]"
-                    thumb-label="always"
-                    tick-size="1"
-                    hide-details="true"
-                    @change="updateDuration"
-                />
+                <v-range-slider :value="durationRangeMins" :min="0" :max="120" thumb-label="always" tick-size="1" hide-details="true" />
             </div>
+
             <div class="flex-col range">
                 <label>TrueSkill Range <v-icon class="small">mdi-chevron-triple-up</v-icon></label>
-                <v-range-slider
-                    :value="filters.tsRange"
-                    :min="defaultFilters.tsRange[0]"
-                    :max="defaultFilters.tsRange[1]"
-                    thumb-label="always"
-                    tick-size="1"
-                    hide-details="true"
-                    @change="updateTsRange"
-                />
+                <v-range-slider :value="tsRange" :min="0" :max="50" thumb-label="always" tick-size="1" hide-details="true" />
             </div>
-            <PlayerFilter v-model="filters.players" />
-            <MapFilter v-model="filters.maps" />
+
+            <PlayerFilter v-model="players" />
+
+            <MapFilter v-model="maps" />
         </div>
         <div class="replays-container">
             <div class="toolbar">
@@ -103,7 +74,7 @@
                 <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" :spoilResults="spoilResults" />
             </div>
         </div>
-        <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
+        <v-pagination v-model="page" :length="numOfPages" :total-visible="10" @input="changePage" />
     </div>
 </template>
 
@@ -111,18 +82,13 @@
 import { Demo } from "bar-db/dist/model/demo";
 import { Component, Vue } from "nuxt-property-decorator";
 
-import _ from "lodash";
-import { APIResponse } from "~/model/api/api-response";
-import { ReplayFilters, defaultReplayFilters, ReplaySorts } from "~/model/api/replays";
-import { parseReplayFilters } from "~/modules/api/replays";
-
 @Component({
     head: { title: "BAR - Replays" },
     watch: {
         "$route.query": "$fetch",
         filters: {
             handler(this: ReplaysPage) {
-                this.updateFilters();
+                
             },
             deep: true
         }
@@ -131,21 +97,28 @@ import { parseReplayFilters } from "~/modules/api/replays";
 export default class ReplaysPage extends Vue {
     totalResults = 0;
     page = 1;
-    pageCount = 0;
+    numOfPages = 0;
     replays: Demo[] = [];
     timeTaken = 0;
-    defaultFilters: Partial<ReplayFilters> = _.clone(defaultReplayFilters);
-    filters: Partial<ReplayFilters> = _.clone(defaultReplayFilters);
     spoilResults = false;
+
+    preset?: string = "";
+    hasBots?: boolean = false;
+    endedNormally?: boolean = true;
+    date?: [string, string] | [string] = [""]
+    durationRangeMins?: [number, number] = [0, 120];
+    tsRange?: [number, number] = [0, 50];
+    players?: string[] = [];
+    maps?: string[] = [];
 
     async fetch(): Promise<any> {
         const beforeTime = Date.now();
         const searchParams = new URLSearchParams(this.$route.query as {});
-        const response = await this.$http.$get("replays", { searchParams }) as APIResponse<Demo[], ReplayFilters, ReplaySorts>;
+        const response = await this.$http.$get("replays", { searchParams }) as any;
         this.timeTaken = Date.now() - beforeTime;
         this.totalResults = response.totalResults;
         this.page = response.page;
-        this.pageCount = Math.ceil(response.totalResults / response.resultsPerPage);
+        this.numOfPages = Math.ceil(response.totalResults / response.limit);
         this.replays = response.data;
     }
 
@@ -154,48 +127,8 @@ export default class ReplaysPage extends Vue {
         window.scrollTo(0, 0);
     }
 
-    updateFilters() {
-        const query: { [key: string]: string } = {};
-        for (const [key, val] of Object.entries(this.filters)) {
-            const isDefaultVal = _.isEqual(defaultReplayFilters[key as keyof ReplayFilters], val);
-
-            if (isDefaultVal) {
-                continue;
-            }
-
-            if (val === null) {
-                query[key] = "null";
-            } else if (val === undefined || (Array.isArray(val) && val.length === 0)) {
-                query[key] = "any";
-            } else {
-                query[key] = encodeURI(String(val));
-            }
-        }
-
-        this.$router.push({ query });
-    }
-
     beforeMount() {
-        const query = this.$route.query as { [key: string]: string };
-        this.filters = parseReplayFilters(query);
-
         this.spoilResults = localStorage.getItem("spoilResults") === "true";
-    }
-
-    updateDuration(durationRangeMins: [number, number]) {
-        if (_.isEqual(this.filters.durationRangeMins, durationRangeMins)) {
-            return;
-        }
-        this.filters.durationRangeMins = durationRangeMins;
-        this.updateFilters();
-    }
-
-    updateTsRange(tsRange: [number, number]) {
-        if (_.isEqual(this.filters.tsRange, tsRange)) {
-            return;
-        }
-        this.filters.tsRange = tsRange;
-        this.updateFilters();
     }
 
     spoilResultsChanged() {

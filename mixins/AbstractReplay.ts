@@ -1,27 +1,26 @@
 import { Component, Vue } from "nuxt-property-decorator";
 
-import { AllyTeamResponse, ReplayResponse } from "~/model/api/replays";
 @Component
 export class AbstractReplay extends Vue {
-    replay!: ReplayResponse;
+    replay!: any;
 
     get highQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture-hq.png`;
+            return (`${this.$http.getBaseURL()}/maps/${this.replay.Map.fileName}/texture-hq.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get lowQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture-mq.jpg`;
+            return (`${this.$http.getBaseURL()}/maps/${this.replay.Map.fileName}/texture-mq.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get mapThumbnailUrl(): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture-thumb.jpg`;
+            return (`${this.$http.getBaseURL()}/maps/${this.replay.Map.fileName}/texture-thumb.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
@@ -42,7 +41,7 @@ export class AbstractReplay extends Vue {
         return this.replay.Map.scriptName!.replace(/[_-]/g, " ");
     }
 
-    getTitle(allyTeams: AllyTeamResponse[]) : string {
+    getTitle(allyTeams: any[]) : string {
         if (allyTeams.length > 2) {
             const numOfTeams = allyTeams.length;
             return `${numOfTeams} Way FFA`;

@@ -1,6 +1,4 @@
-import { AllyTeamResponse } from "~/model/api/replays";
-
-export function replayTitle(allyTeams: AllyTeamResponse[]) : string {
+export function replayTitle(allyTeams: any[]) : string {
     if (allyTeams.length > 2) {
         const numOfTeams = allyTeams.length;
         return `${numOfTeams} Way FFA`;

@@ -19,7 +19,6 @@ import { AI } from "bar-db/dist/model/ai";
 import { AllyTeam } from "bar-db/dist/model/ally-team";
 import { Player } from "bar-db/dist/model/player";
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-import { ReplayResponse } from "~/model/api/replays";
 
 @Component({
     directives: {
@@ -56,7 +55,7 @@ import { ReplayResponse } from "~/model/api/replays";
     }
 })
 export default class MapComponent extends Vue {
-    @Prop({ type: Object, required: true }) readonly replay!: ReplayResponse;
+    @Prop({ type: Object, required: true }) readonly replay!: any;
 
     mapWidthElmos = this.replay.Map.width ? this.replay.Map.width * 512 : null;
     mapHeightElmos = this.replay.Map.height ? this.replay.Map.height * 512 : null;
@@ -69,7 +68,7 @@ export default class MapComponent extends Vue {
     }
 
     get playersAndAi() : Array<Player | AI> {
-        return this.replay.AllyTeams.flatMap(allyTeam => [...allyTeam.AIs, ...allyTeam.Players]);
+        return this.replay.AllyTeams.flatMap((allyTeam: any) => [...allyTeam.AIs, ...allyTeam.Players]);
     }
 
     factionImage(factionStr: string) {

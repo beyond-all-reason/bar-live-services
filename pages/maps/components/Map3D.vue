@@ -76,8 +76,8 @@ export default class Map3D extends Vue {
             containerId: "three-container",
             mapWidth: this.map.width!,
             mapHeight: this.map.height!,
-            textureUrl: `/api/maps/${this.map.fileName}/texture-hq.jpg`,
-            heightUrl: `/api/maps/${this.map.fileName}/height.png`
+            textureUrl: `${this.$http.getBaseURL()}/maps/${this.map.fileName}/texture-hq.jpg`,
+            heightUrl: `${this.$http.getBaseURL()}/maps/${this.map.fileName}/height.png`
         });
 
         this.map3D.init();

@@ -4,7 +4,7 @@
             Balance Changes
         </h1>
         <div class="wrapper">
-            <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
+            <v-pagination v-model="page" :length="limit" :total-visible="10" @input="changePage" />
             <div class="balance-changes">
                 <div v-for="(change, index1) in balanceChanges" :key="index1" class="balance-change">
                     <div class="meta">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <v-pagination v-model="page" :length="pageCount" :total-visible="10" @input="changePage" />
+            <v-pagination v-model="page" :length="limit" :total-visible="10" @input="changePage" />
         </div>
     </div>
 </template>
@@ -42,7 +42,6 @@
 import { Context } from "@nuxt/types/app";
 import { BalanceChange } from "bar-db";
 import { Component, Vue } from "nuxt-property-decorator";
-import { APIResponse } from "~/model/api/api-response";
 
 @Component({
     head: { title: "BAR - Balance Changes" },
@@ -53,26 +52,26 @@ import { APIResponse } from "~/model/api/api-response";
 export default class Page extends Vue {
     totalResults = 0;
     page = 1;
-    pageCount = 0;
+    limit = 0;
     balanceChanges: BalanceChange[] = [];
 
     async asyncData({ store, $http, params, query }: Context): Promise<any> {
         const searchParams = new URLSearchParams(query as {});
-        const result = await $http.$get("balance-changes", { searchParams }) as APIResponse<BalanceChange[]>;
+        const result = await $http.$get("balance-changes", { searchParams }) as any;
         return {
             totalResults: result.totalResults,
             page: result.page,
-            pageCount: Math.ceil(result.totalResults / result.resultsPerPage),
+            limit: Math.ceil(result.totalResults / result.resultsPerPage),
             balanceChanges: result.data
         };
     }
 
     async fetch(): Promise<any> {
         const searchParams = new URLSearchParams(this.$route.query as {});
-        const result = await this.$http.$get("balance-changes", { searchParams }) as APIResponse<BalanceChange[]>;
+        const result = await this.$http.$get("balance-changes", { searchParams }) as any;
         this.totalResults = result.totalResults;
         this.page = result.page;
-        this.pageCount = Math.ceil(result.totalResults / result.resultsPerPage);
+        this.limit = Math.ceil(result.totalResults / result.resultsPerPage);
         this.balanceChanges = result.data;
     }
 

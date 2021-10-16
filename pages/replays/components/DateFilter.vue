@@ -1,37 +1,15 @@
 <template>
     <div class="date-filter">
         <div class="label">
-            Date <v-icon class="small">
-                mdi-calendar
-            </v-icon>
+            Date <v-icon class="small">mdi-calendar</v-icon>
         </div>
         <div class="input">
-            <v-text-field
-                id="txtDate"
-                placeholder="Select Date Range"
-                :value="text"
-                readonly
-                prepend-icon="mdi-calendar"
-                clearable
-                @click:clear="clear"
-            />
-            <v-menu
-                ref="menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                activator="#txtDate"
-            >
+            <v-text-field id="txtDate" placeholder="Select Date Range" :value="text" readonly prepend-icon="mdi-calendar" clearable @click:clear="clear" />
+            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" activator="#txtDate">
                 <v-date-picker v-model="date" no-title range color="#fff" @input="dispatch">
                     <v-spacer />
-                    <v-btn text color="primary" @click="menu = false">
-                        Cancel
-                    </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
-                        OK
-                    </v-btn>
+                    <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                    <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
                 </v-date-picker>
             </v-menu>
         </div>

@@ -1,22 +1,24 @@
 import { NuxtConfig } from "@nuxt/types";
 
 console.log("NODE_ENV", process.env.NODE_ENV);
-console.log("BASE_URL", process.env.BASE_URL);
+console.log("API_URL", process.env.API_URL);
 
 const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
-    env: {
-        baseUrl: process.env.BASE_URL || "http://localhost:3000/api"
+    http: {
+        baseURL: process.env.API_URL || 'http://localhost:3001'
     },
-    //watch: ["modules"],
+    publicRuntimeConfig: {
+        objectStorageUrl: "https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR"
+    },
     components: [
         "~/components",
         { path: "~/pages", pattern: "*/components/**", pathPrefix: false }
     ],
-    //loading: '~/components/LoadingBar.vue',
     ignore: [
-        "pages/*/components/*"
+        "pages/*/components/*",
+        "working-files/"
     ],
     router: {
         extendRoutes(routes, resolve) {
@@ -73,14 +75,7 @@ const nuxtConfig: NuxtConfig = {
     modules: [
         "@nuxtjs/pwa",
         "@nuxt/http",
-        "~/modules/api"
     ],
-    http: {
-        baseURL: process.env.BASE_URL || 'http://localhost:3000/api'
-    },
-    publicRuntimeConfig: {
-        objectStorageUrl: "https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR"
-    }
 }
 
 export default nuxtConfig;

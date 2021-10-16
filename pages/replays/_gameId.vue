@@ -150,7 +150,6 @@ import { Context } from "@nuxt/types";
 import { Component } from "nuxt-property-decorator";
 
 import { AbstractReplay } from "~/mixins/AbstractReplay";
-import { ReplayResponse } from "~/model/api/replays";
 
 @Component({
     head: {
@@ -173,11 +172,11 @@ export default class ReplayPage extends AbstractReplay {
     }
 
     async asyncData({ store, $http, params, $config }: Context): Promise<any> {
-        const replay = await $http.$get(`replays/${params.gameId}`) as ReplayResponse;
-        replay.AllyTeams.forEach(allyTeam => {
-            allyTeam.Players = allyTeam.Players.sort((a, b) => (b.trueSkill || 0) - (a.trueSkill || 0));
+        const replay = await $http.$get(`replays/${params.gameId}`) as any;
+        replay.AllyTeams.forEach((allyTeam: any) => {
+            allyTeam.Players = allyTeam.Players.sort((a: any, b: any) => (b.trueSkill || 0) - (a.trueSkill || 0));
         });
-        replay.Spectators = replay.Spectators.sort((a, b) => (parseInt(b.skill) || 0) - (parseInt(a.skill) || 0));
+        replay.Spectators = replay.Spectators.sort((a: any, b: any) => (parseInt(b.skill) || 0) - (parseInt(a.skill) || 0));
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
         for (const allyTeam of replay.AllyTeams) {
             for (const player of allyTeam.Players) {
@@ -188,15 +187,15 @@ export default class ReplayPage extends AbstractReplay {
         return { replay, playerColors, $config };
     }
 
-    get hostSettings() : { [key: string]: string; } {
+    get hostSettings() : { [key: string]: any; } {
         return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
     }
 
-    get gameSettings() : { [key: string]: string; } {
+    get gameSettings() : { [key: string]: any; } {
         return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
     }
 
-    get mapSettings() : { [key: string]: string; } {
+    get mapSettings() : { [key: string]: any; } {
         return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
     }
 

@@ -54,11 +54,10 @@
 import { Component, Prop } from "nuxt-property-decorator";
 
 import { AbstractReplay } from "~/mixins/AbstractReplay";
-import { ReplayResponse } from "~/model/api/replays";
 
 @Component
 export default class ReplayPreview extends AbstractReplay {
-    @Prop({ type: Object, required: true }) readonly replay!: ReplayResponse;
+    @Prop({ type: Object, required: true }) readonly replay!: any;
     @Prop({ type: Boolean, required: true, default: false }) readonly spoilResults!: boolean;
 }
 </script>

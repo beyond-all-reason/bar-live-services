@@ -21,24 +21,22 @@
 import { Context } from "@nuxt/types/app";
 import { Component, Vue } from "nuxt-property-decorator";
 
-import { Battle } from "~/model/battle";
-
 @Component({
     head: { title: "BAR - Battles" }
 })
 export default class Page extends Vue {
-    battles: Battle[] = [];
+    battles: any[] = [];
     pollInterval = 0;
     numOfPlayers = 0;
 
     async asyncData({ $http }: Context): Promise<any> {
-        const battles = await $http.$get("battles") as Battle[];
+        const battles = await $http.$get("battles") as any[];
         return { battles };
     }
 
     async fetch() {
         try {
-            this.battles = await this.$http.$get("battles") as Battle[];
+            this.battles = await this.$http.$get("battles") as any[];
             this.numOfPlayers = this.battles.reduce((total, battle) => total + battle.players.length, 0);
         } catch (err) {
 
