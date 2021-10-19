@@ -28,7 +28,7 @@ export default class MapPreview extends Vue {
 
     get mapThumbnailUrl(): string {
         if (this.map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/texture-thumb.jpg`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/texture-thumb.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }

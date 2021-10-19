@@ -1,25 +1,11 @@
 <template>
-    <div class="text-filter">
-        <div class="label">
-            Players <v-icon class="small">
-                mdi-account-group
-            </v-icon>
+    <div :class="`text-filter filter ${isEnabled ? 'enabled' : 'disabled'}`">
+        <div class="name" @click="isEnabled = !isEnabled">
+            Players <v-icon class="small">mdi-account-group</v-icon>
         </div>
-        <div class="input">
-            <v-autocomplete
-                ref="vAutocomplete"
-                v-model="selectedItems"
-                :items="items"
-                item-text="username"
-                item-value="username"
-                auto-select-firstchips
-                clearable
-                deletable-chips
-                multiple
-                dense
-                small-chips
-                @change="clear"
-            >
+        <div class="input" @click="isEnabled = true">
+            <v-autocomplete ref="vAutocomplete" v-model="selectedItems" :items="items" item-text="username" item-value="username" auto-select-firstchips
+                clearable deletable-chips multiple dense small-chips @change="clear">
                 <template v-slot:item="data">
                     <v-list-item-avatar>
                         <img :src="countryImage(data.item.countryCode)">
@@ -37,19 +23,28 @@
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 import _ from "lodash";
 
-@Component({ fetchOnServer: false })
+@Component({ 
+    fetchOnServer: false,
+    watch: {
+        isEnabled: function(this: PlayerFilter) {
+            this.$emit("input", this.isEnabled ? this.selectedItems : undefined);
+        }
+    }
+})
 export default class PlayerFilter extends Vue {
     @Prop({ type: Array, required: false, default: () => [] }) readonly value!: string[];
+    @Prop({ type: Boolean, required: false, default: true }) readonly enabled!: boolean;
 
     items: any[] = [];
     selectedItems: string[] = [];
+    isEnabled: boolean = this.enabled;
 
     beforeMount() {
         this.selectedItems = _.clone(this.value);
     }
 
     async fetch() {
-        const players = await this.$http.$get("cached-users") as Array<{ id: number, username: string, countryCode: string }>;
+        const players = await this.$axios.$get("cached-users") as Array<{ id: number, username: string, countryCode: string }>;
         this.items = players;
     }
 

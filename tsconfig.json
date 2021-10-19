@@ -28,7 +28,7 @@
             "@types/node",
             "@types/jest",
             "@nuxt/types",
-            "@nuxt/http",
+            "@nuxtjs/axios",
             "@nuxtjs/moment",
             "@nuxt/vue-app",
             "@nuxtjs/vuetify",

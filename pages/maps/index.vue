@@ -16,12 +16,12 @@
                 <MapPreview v-for="(map, index) in maps" :key="index" :map="map" />
             </div>
         </div>
-        <v-pagination v-model="page" :length="numOfPages" :total-visible="10" @input="changePage" />
+        <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
     </div>
 </template>
 
 <script lang="ts">
-import { SpringMap } from "bar-db";
+import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
 
 import _ from "lodash";
@@ -34,20 +34,23 @@ import _ from "lodash";
 })
 export default class MapsPage extends Vue {
     totalResults = 0;
-    page = 1;
-    numOfPages = 0;
-    maps: SpringMap[] = [];
+    maps: DBSchema.SpringMap.Schema[] = [];
     timeTaken = 0;
+    filters: {
+        page: number;
+        limit: number;
+    } = {
+        page: 1,
+        limit: 10
+    };
 
     async fetch(): Promise<any> {
         const beforeTime = Date.now();
-        const searchParams = new URLSearchParams(this.$route.query as {});
-        const response = await this.$http.$get("maps", { searchParams }) as any;
+        const { totalResults, page, limit, data } = await this.$axios.$get("maps") as any;
         this.timeTaken = Date.now() - beforeTime;
-        this.totalResults = response.totalResults;
-        this.page = response.page;
-        this.numOfPages = Math.ceil(response.totalResults / response.limit);
-        this.maps = response.data;
+        this.totalResults = totalResults;
+        this.filters.limit = limit;
+        this.maps = data;
     }
 
     async changePage(page: number) {

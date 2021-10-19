@@ -15,9 +15,7 @@
 </template>
 
 <script lang="ts">
-import { AI } from "bar-db/dist/model/ai";
-import { AllyTeam } from "bar-db/dist/model/ally-team";
-import { Player } from "bar-db/dist/model/player";
+import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 
 @Component({
@@ -26,7 +24,7 @@ import { Component, Prop, Vue } from "nuxt-property-decorator";
             if (binding.value === null) {
                 return;
             }
-            const { top, bottom, left, right } = binding.value as AllyTeam["startBox"];
+            const { top, bottom, left, right } = binding.value as DBSchema.AllyTeam.Schema["startBox"];
             const width = Math.abs(right - left);
             const height = Math.abs(top - bottom);
             el.style.top = `${top * 100}%`;
@@ -62,12 +60,12 @@ export default class MapComponent extends Vue {
 
     get mapTextureUrl(): string {
         if (this.replay.Map.fileName) {
-            return `/api/maps/${this.replay.Map.fileName}/texture-mq.jpg`;
+            return `${this.$axios.defaults.baseURL}/maps/${this.replay.Map.fileName}/texture-mq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }
 
-    get playersAndAi() : Array<Player | AI> {
+    get playersAndAi() : Array<DBSchema.Player.Schema | DBSchema.AI.Schema> {
         return this.replay.AllyTeams.flatMap((allyTeam: any) => [...allyTeam.AIs, ...allyTeam.Players]);
     }
 

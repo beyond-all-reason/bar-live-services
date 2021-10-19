@@ -29,14 +29,15 @@ export default class Page extends Vue {
     pollInterval = 0;
     numOfPlayers = 0;
 
-    async asyncData({ $http }: Context): Promise<any> {
-        const battles = await $http.$get("battles") as any[];
-        return { battles };
+    async asyncData({ $axios }: Context): Promise<any> {
+        const battles = await $axios.$get("battles") as any[];
+        const numOfPlayers = battles.reduce((total, battle) => total + battle.players.length, 0);
+        return { battles, numOfPlayers };
     }
 
     async fetch() {
         try {
-            this.battles = await this.$http.$get("battles") as any[];
+            this.battles = await this.$axios.$get("battles") as any[];
             this.numOfPlayers = this.battles.reduce((total, battle) => total + battle.players.length, 0);
         } catch (err) {
 

@@ -77,6 +77,16 @@ export default class ReplayPreview extends AbstractReplay {
     text-shadow: 1px 1px #000;
     &:before {
         position: absolute;
+        width: 100%;
+        height: 1px;
+        top: 0;
+        left: 0;
+        content: "";
+        background: rgba(255, 255, 255, 0.2);
+        z-index: 1;
+    }
+    &:after {
+        position: absolute;
         width: calc(100% - 2px);
         height: 100%;
         top: 1px;

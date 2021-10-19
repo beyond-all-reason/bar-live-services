@@ -1,9 +1,9 @@
 <template>
-    <div class="date-filter">
-        <div class="label">
+    <div :class="`date-filter filter ${isEnabled ? 'enabled' : 'disabled'}`">
+        <div class="name" @click="isEnabled = !isEnabled">
             Date <v-icon class="small">mdi-calendar</v-icon>
         </div>
-        <div class="input">
+        <div class="input" @click="isEnabled = true">
             <v-text-field id="txtDate" placeholder="Select Date Range" :value="text" readonly prepend-icon="mdi-calendar" clearable @click:clear="clear" />
             <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" activator="#txtDate">
                 <v-date-picker v-model="date" no-title range color="#fff" @input="dispatch">
@@ -20,12 +20,20 @@
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 import { cloneDeep } from "lodash";
 
-@Component
+@Component({
+    watch: {
+        isEnabled: function(this: DateFilterComponent) {
+            this.$emit("input", this.isEnabled ? this.date : undefined);
+        }
+    }
+})
 export default class DateFilterComponent extends Vue {
     @Prop({ type: Array, required: false, default: () => [] }) readonly value!: string[];
+    @Prop({ type: Boolean, required: false, default: true }) readonly enabled!: boolean;
 
     menu: boolean = false;
     date: string[] = [];
+    isEnabled: boolean = this.enabled;
 
     mounted() {
         this.date = cloneDeep(this.value);

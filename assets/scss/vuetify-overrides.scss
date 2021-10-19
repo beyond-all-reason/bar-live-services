@@ -28,7 +28,15 @@
     margin-right: 10px !important;
 }
 .v-slider__thumb-label.primary {
-    display: none;
+    background-color: transparent !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    top: 0  !important;
+    transform: translateX(-50%) !important;
+    margin-bottom: 7px  !important;
+    > * {
+        transform: none !important;
+    }
 }
 
 .text-filter {

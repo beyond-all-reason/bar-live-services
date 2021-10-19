@@ -6,7 +6,7 @@ console.log("API_URL", process.env.API_URL);
 const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
-    http: {
+    axios: {
         baseURL: process.env.API_URL || 'http://localhost:3001'
     },
     publicRuntimeConfig: {
@@ -70,12 +70,12 @@ const nuxtConfig: NuxtConfig = {
     buildModules: [
         "@nuxt/typescript-build",
         "@nuxtjs/moment",
-        "@nuxtjs/vuetify"
+        "@nuxtjs/vuetify",
     ],
     modules: [
         "@nuxtjs/pwa",
-        "@nuxt/http",
-    ],
+        '@nuxtjs/axios',
+    ]
 }
 
 export default nuxtConfig;

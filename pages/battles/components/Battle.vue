@@ -68,7 +68,7 @@ export default class BattleComponent extends Vue {
 
     get mapUrl() : string {
         if (this.battle.mapFileName) {
-            return `/api/maps/${this.battle.mapFileName}/texture-mq.jpg`;
+            return `${this.$axios.defaults.baseURL}/maps/${this.battle.mapFileName}/texture-mq.jpg`;
         }
         return require("assets/images/default-minimap.png");
     }

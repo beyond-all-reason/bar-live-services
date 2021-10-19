@@ -4,7 +4,8 @@
             Balance Changes
         </h1>
         <div class="wrapper">
-            <v-pagination v-model="page" :length="limit" :total-visible="10" @input="changePage" />
+            <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
+
             <div class="balance-changes">
                 <div v-for="(change, index1) in balanceChanges" :key="index1" class="balance-change">
                     <div class="meta">
@@ -33,14 +34,14 @@
                     </div>
                 </div>
             </div>
-            <v-pagination v-model="page" :length="limit" :total-visible="10" @input="changePage" />
+
+            <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Context } from "@nuxt/types/app";
-import { BalanceChange } from "bar-db";
+import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
 
 @Component({
@@ -49,30 +50,22 @@ import { Component, Vue } from "nuxt-property-decorator";
         "$route.query": "$fetch"
     }
 })
-export default class Page extends Vue {
-    totalResults = 0;
-    page = 1;
-    limit = 0;
-    balanceChanges: BalanceChange[] = [];
-
-    async asyncData({ store, $http, params, query }: Context): Promise<any> {
-        const searchParams = new URLSearchParams(query as {});
-        const result = await $http.$get("balance-changes", { searchParams }) as any;
-        return {
-            totalResults: result.totalResults,
-            page: result.page,
-            limit: Math.ceil(result.totalResults / result.resultsPerPage),
-            balanceChanges: result.data
-        };
-    }
+export default class BalanceChangesPage extends Vue {
+    totalResults = 10;
+    balanceChanges: DBSchema.BalanceChange.Schema[] = [];
+    filters: {
+        page: number;
+        limit: number;
+    } = {
+        page: 1,
+        limit: 10
+    };
 
     async fetch(): Promise<any> {
-        const searchParams = new URLSearchParams(this.$route.query as {});
-        const result = await this.$http.$get("balance-changes", { searchParams }) as any;
-        this.totalResults = result.totalResults;
-        this.page = result.page;
-        this.limit = Math.ceil(result.totalResults / result.resultsPerPage);
-        this.balanceChanges = result.data;
+        const { totalResults, page, limit, data } = await this.$axios.$get("balance-changes", { params: this.filters }) as any;
+        this.totalResults = totalResults;
+        this.filters.limit = limit;
+        this.balanceChanges = data;
     }
 
     async changePage(page: number) {

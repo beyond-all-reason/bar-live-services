@@ -6,27 +6,35 @@ export class AbstractReplay extends Vue {
 
     get highQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.replay.Map.fileName}/texture-hq.jpg`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.replay.Map.fileName}/texture-hq.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get lowQualityMapTextureUrl(): string {
         if (this.replay.Map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.replay.Map.fileName}/texture-mq.jpg`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.replay.Map.fileName}/texture-mq.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get mapThumbnailUrl(): string {
         if (this.replay.Map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.replay.Map.fileName}/texture-thumb.jpg`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.replay.Map.fileName}/texture-thumb.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get title(): string {
-        return this.getTitle(this.replay.AllyTeams);
+        if (this.replay.AllyTeams.length > 2) {
+            const numOfTeams = this.replay.AllyTeams.length;
+            return `${numOfTeams} Way FFA`;
+        } else if (this.replay.AllyTeams.length === 2) {
+            const teamALength = this.replay.AllyTeams[0].Players.length + this.replay.AllyTeams[0].AIs.length;
+            const teamBLength = this.replay.AllyTeams[1].Players.length + this.replay.AllyTeams[1].AIs.length;
+            return `${teamALength} vs ${teamBLength}`;
+        }
+        return "Unknown";
     }
 
     get timeAgo(): string {
@@ -39,18 +47,6 @@ export class AbstractReplay extends Vue {
 
     get mapName(): string {
         return this.replay.Map.scriptName!.replace(/[_-]/g, " ");
-    }
-
-    getTitle(allyTeams: any[]) : string {
-        if (allyTeams.length > 2) {
-            const numOfTeams = allyTeams.length;
-            return `${numOfTeams} Way FFA`;
-        } else if (allyTeams.length === 2) {
-            const teamALength = allyTeams[0].Players.length + allyTeams[0].AIs.length;
-            const teamBLength = allyTeams[1].Players.length + allyTeams[1].AIs.length;
-            return `${teamALength} vs ${teamBLength}`;
-        }
-        return "Unknown";
     }
 
     factionImage(factionStr: string) {

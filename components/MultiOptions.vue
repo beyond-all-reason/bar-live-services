@@ -21,8 +21,8 @@ import { cloneDeep } from "lodash";
     }
 })
 export default class OptionsComponent extends Vue {
-    @Prop({ required: false, default: undefined }) readonly value!: any;
-    @Prop({ type: Boolean, required: false, default: true }) readonly required!: boolean;
+    @Prop({ type: Array, required: false, default: undefined }) readonly value!: any;
+    @Prop({ type: Boolean, required: false, default: false }) readonly required!: boolean;
     @Prop({ type: Boolean, required: false, default: true }) readonly enabled!: boolean;
 
     selectedValue: any = this.enabled && this.value;
@@ -36,7 +36,16 @@ export default class OptionsComponent extends Vue {
 
         this.$on("optionSelected", (value: any) => {
             this.isEnabled = true;
-            this.selectedValue = value;
+
+            if (this.selectedValue === undefined) {
+                this.selectedValue = [value];
+            } else if (this.selectedValue.includes(value) && (!this.required || (this.required && this.selectedValue.length > 1))) {
+                this.selectedValue = this.selectedValue.filter((val: any) => val !== value);
+                this.selectedValue.sort();
+            } else if (!this.selectedValue.includes(value)) {
+                this.selectedValue = [...this.selectedValue, value];
+                this.selectedValue.sort();
+            }
 
             this.$emit("input", this.selectedValue);
         });

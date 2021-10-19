@@ -25,12 +25,12 @@ export default class MapUpload extends Vue {
         console.log("upload");
 
         console.log(this.files);
-        //const test = await this.$http.post("map-upload", );
+        //const test = await this.$axios.post("map-upload", );
         try {
             for (const file of this.files) {
                 const formData = new FormData();
                 formData.append("file", file);
-                const response = await this.$http.post("map-upload", formData, { headers: { "Content-Type": "multipart/form-data" } });
+                const response = await this.$axios.post("map-upload", formData, { headers: { "Content-Type": "multipart/form-data" } });
                 console.log(response);
             }
         } catch (err) {

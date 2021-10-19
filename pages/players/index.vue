@@ -12,7 +12,7 @@ import { Component, Vue } from "nuxt-property-decorator";
 
 @Component
 export default class Page extends Vue {
-    async asyncData({ store, $http, params }: Context): Promise<any> {
+    async asyncData({ store, $axios, params }: Context): Promise<any> {
 
     }
 }

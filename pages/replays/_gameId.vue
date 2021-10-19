@@ -171,8 +171,8 @@ export default class ReplayPage extends AbstractReplay {
         this.spoilResults = localStorage.getItem("spoilResults") === "true";
     }
 
-    async asyncData({ store, $http, params, $config }: Context): Promise<any> {
-        const replay = await $http.$get(`replays/${params.gameId}`) as any;
+    async asyncData({ store, $axios, params, $config }: Context): Promise<any> {
+        const replay = await $axios.$get(`replays/${params.gameId}`) as any;
         replay.AllyTeams.forEach((allyTeam: any) => {
             allyTeam.Players = allyTeam.Players.sort((a: any, b: any) => (b.trueSkill || 0) - (a.trueSkill || 0));
         });

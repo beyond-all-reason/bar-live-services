@@ -4,61 +4,58 @@
         
         <div class="filters">
 
-            <Options v-model="preset" multiple>
-                <template v-slot:title>
-                    Preset <v-icon class="small">mdi-account</v-icon>
-                </template>
-                <Option value="duel">Duel</Option>
-                <Option value="team">Team</Option>
-                <Option value="ffa">FFA</Option>
-            </Options>
-
-            <Options v-model="hasBots">
-                <template v-slot:title>
-                    Has Bots <v-icon class="small">mdi-robot</v-icon>
-                </template>
-                <Option :value="false" bg-color="#b83e3e" text-color="#fff">
-                    <v-icon color="#b13b3b">mdi-close-thick</v-icon>
-                </Option>
-                <Option :value="undefined">
-                    <v-icon>mdi-minus-thick</v-icon>
-                </Option>
-                <Option :value="true" bg-color="#70a232" text-color="#fff">
-                    <v-icon color="#91b64d">mdi-check-bold</v-icon>
-                </Option>
-            </Options>
-
-            <Options v-model="endedNormally">
+            <Options v-model="filters.endedNormally">
                 <template v-slot:title>
                     Ended Normally <v-icon class="small">mdi-checkbox-marked-circle</v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
                     <v-icon color="#b13b3b">mdi-close-thick</v-icon>
                 </Option>
-                <Option :value="undefined">
-                    <v-icon>mdi-minus-thick</v-icon>
+                <Option :value="true" bg-color="#70a232" text-color="#fff">
+                    <v-icon color="#91b64d">mdi-check-bold</v-icon>
+                </Option>
+            </Options>
+
+            <Options v-model="filters.hasBots">
+                <template v-slot:title>
+                    Has Bots <v-icon class="small">mdi-robot</v-icon>
+                </template>
+                <Option :value="false" bg-color="#b83e3e" text-color="#fff">
+                    <v-icon color="#b13b3b">mdi-close-thick</v-icon>
                 </Option>
                 <Option :value="true" bg-color="#70a232" text-color="#fff">
                     <v-icon color="#91b64d">mdi-check-bold</v-icon>
                 </Option>
             </Options>
 
-            <DateFilter v-model="date" />
+            <MultiOptions v-model="filters.preset">
+                <template v-slot:title>
+                    Preset <v-icon class="small">mdi-account-cog</v-icon>
+                </template>
+                <Option value="duel">Duel</Option>
+                <Option value="team">Team</Option>
+                <Option value="ffa">FFA</Option>
+            </MultiOptions>
 
-            <div class="flex-col range">
-                <label>Duration in minutes <v-icon class="small">mdi-clock</v-icon></label>
-                <v-range-slider :value="durationRangeMins" :min="0" :max="120" thumb-label="always" tick-size="1" hide-details="true" />
-            </div>
+            <DateFilter v-model="filters.date"/>
 
-            <div class="flex-col range">
-                <label>TrueSkill Range <v-icon class="small">mdi-chevron-triple-up</v-icon></label>
-                <v-range-slider :value="tsRange" :min="0" :max="50" thumb-label="always" tick-size="1" hide-details="true" />
-            </div>
+            <Range v-model="filters.durationRangeMins" :min="0" :max="120">
+                <template v-slot:title>
+                    Duration in minutes <v-icon class="small">mdi-clock</v-icon>
+                </template>
+            </Range>
 
-            <PlayerFilter v-model="players" />
+            <Range v-model="filters.tsRange" :min="0" :max="50">
+                <template v-slot:title>
+                    TrueSkill Range <v-icon class="small">mdi-chevron-triple-up</v-icon>
+                </template>
+            </Range>
 
-            <MapFilter v-model="maps" />
+            <PlayerFilter v-model="filters.players" />
+
+            <MapFilter v-model="filters.maps" />
         </div>
+        
         <div class="replays-container">
             <div class="toolbar">
                 <div class="left"></div>
@@ -74,61 +71,101 @@
                 <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" :spoilResults="spoilResults" />
             </div>
         </div>
-        <v-pagination v-model="page" :length="numOfPages" :total-visible="10" @input="changePage" />
+        <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
     </div>
 </template>
 
 <script lang="ts">
-import { Demo } from "bar-db/dist/model/demo";
+import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
+import { cloneDeep } from "lodash";
+import _ from "lodash";
+import { coerceObjectFactory } from "~/utils/coerce-object";
+import { stringifyQuery } from "~/utils/stringify-query";
+import { replaysQuerySchema } from "bar-db/dist/model/rest-api/replays";
+import { CancelTokenSource } from "axios";
+
+const coerceObject = coerceObjectFactory(replaysQuerySchema);
 
 @Component({
     head: { title: "BAR - Replays" },
     watch: {
-        "$route.query": "$fetch",
         filters: {
-            handler(this: ReplaysPage) {
-                
-            },
+            handler(this: ReplaysPage) { this.fetchReplays() },
             deep: true
         }
     }
 })
 export default class ReplaysPage extends Vue {
     totalResults = 0;
-    page = 1;
-    numOfPages = 0;
-    replays: Demo[] = [];
+    replays: DBSchema.Demo.Schema[] = [];
     timeTaken = 0;
     spoilResults = false;
+    cancelSourceToken?: CancelTokenSource;
+    waitingForResponse = false;
+    lastQuery: string = "";
 
-    preset?: string = "";
-    hasBots?: boolean = false;
-    endedNormally?: boolean = true;
-    date?: [string, string] | [string] = [""]
-    durationRangeMins?: [number, number] = [0, 120];
-    tsRange?: [number, number] = [0, 50];
-    players?: string[] = [];
-    maps?: string[] = [];
+    filters: {
+        [key: string]: any;
+        page?: number,
+        limit?: number;
+        preset?: string[];
+        hasBots?: boolean;
+        endedNormally?: boolean;
+        date?: [string] | [string, string];
+        durationRangeMins?: [number, number];
+        tsRange?: [number, number];
+        players?: string[];
+        maps?: string[];
+        reported?: boolean;
+    } = {
+        page: 1,
+        limit: 24,
+        preset: undefined,
+        hasBots: false,
+        endedNormally: true,
+        date: undefined,
+        durationRangeMins: undefined,
+        tsRange: undefined,
+        players: undefined,
+        maps: undefined,
+        reported: undefined
+    };
 
-    async fetch(): Promise<any> {
-        const beforeTime = Date.now();
-        const searchParams = new URLSearchParams(this.$route.query as {});
-        const response = await this.$http.$get("replays", { searchParams }) as any;
-        this.timeTaken = Date.now() - beforeTime;
-        this.totalResults = response.totalResults;
-        this.page = response.page;
-        this.numOfPages = Math.ceil(response.totalResults / response.limit);
-        this.replays = response.data;
+    async fetchReplays() {
+        const query = stringifyQuery(this.filters);
+        this.$router.push({ path: this.$route.path, query: this.filters });
+
+        if (this.waitingForResponse && this.cancelSourceToken) {
+            this.cancelSourceToken.cancel();
+        }
+        
+        try {
+            this.cancelSourceToken = this.$axios.CancelToken.source();
+            const beforeTime = Date.now();
+            this.waitingForResponse = true;
+            const { totalResults, page, limit, data } = await this.$axios.$get(`replays${query}`, { cancelToken: this.cancelSourceToken.token }) as any;
+            this.waitingForResponse = false;
+            this.timeTaken = Date.now() - beforeTime;
+            this.totalResults = totalResults;
+            this.replays = data;
+        } catch (err) {
+            if (this.$axios.isCancel(err)) {
+            } else {
+                console.error(err);
+            }
+        }
     }
 
     async changePage(page: number) {
-        this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
         window.scrollTo(0, 0);
     }
 
     beforeMount() {
         this.spoilResults = localStorage.getItem("spoilResults") === "true";
+
+        const obj = coerceObject(this.$route.query);
+        this.filters = Object.assign({}, this.filters, obj);
     }
 
     spoilResultsChanged() {

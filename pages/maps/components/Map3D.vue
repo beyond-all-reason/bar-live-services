@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-import { SpringMap } from "bar-db";
+import { DBSchema } from "bar-db/dist/model/db";
 import * as THREE from 'three';
 import { AmbientLight, BackSide, CameraHelper, DirectionalLight, DoubleSide, Mesh, MeshPhongMaterial, PCFSoftShadowMap } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -66,7 +66,7 @@ import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessC
 
 @Component
 export default class Map3D extends Vue {
-    @Prop({ type: Object, required: true }) readonly map!: SpringMap;
+    @Prop({ type: Object, required: true }) readonly map!: DBSchema.SpringMap.Schema;
 
     map3D!: SpringMapWebGL;
 
@@ -76,8 +76,8 @@ export default class Map3D extends Vue {
             containerId: "three-container",
             mapWidth: this.map.width!,
             mapHeight: this.map.height!,
-            textureUrl: `${this.$http.getBaseURL()}/maps/${this.map.fileName}/texture-hq.jpg`,
-            heightUrl: `${this.$http.getBaseURL()}/maps/${this.map.fileName}/height.png`
+            textureUrl: `${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/texture-hq.jpg`,
+            heightUrl: `${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/height.png`
         });
 
         this.map3D.init();
@@ -89,7 +89,7 @@ export default class Map3D extends Vue {
 }
 
 interface SpringMapWebGLConfig {
-    map: SpringMap,
+    map: DBSchema.SpringMap.Schema,
     containerId: string;
     mapWidth: number;
     mapHeight: number;

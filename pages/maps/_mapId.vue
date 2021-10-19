@@ -4,12 +4,6 @@
             {{ mapName }}
         </h1>
         <div class="map-container">
-            <div class="preload">
-                <img :src="`/api/maps/${this.map.fileName}/texture-hq.jpg`">
-                <img :src="`/api/maps/${this.map.fileName}/metal.png`">
-                <img :src="`/api/maps/${this.map.fileName}/height.png`">
-                <img :src="`/api/maps/${this.map.fileName}/type.png`">
-            </div>
             <div class="left-col">
                 <div class="maps-view">
                     <v-tabs v-model="tab" >
@@ -26,7 +20,7 @@
                                 <Map3D :map="map" />
                             </client-only>
                         </v-tab-item>
-                        <v-tab-item class="map-view">
+                        <v-tab-item class="map-view" eager>
                             <img :src="textureMap">
                             <div v-if="map.startPositions" class="start-positions">
                                 <div v-for="(startPos, index) in map.startPositions" :key="index" v-startPos="[startPos, map.width, map.height]" class="start-pos">
@@ -36,13 +30,13 @@
                                 </div>
                             </div>
                         </v-tab-item>
-                        <v-tab-item class="map-view">
+                        <v-tab-item class="map-view" eager>
                             <img :src="metalMap">
                         </v-tab-item>
-                        <v-tab-item class="map-view">
+                        <v-tab-item class="map-view" eager>
                             <img :src="heightMap">
                         </v-tab-item>
-                        <v-tab-item class="map-view">
+                        <v-tab-item class="map-view" eager>
                             <img :src="typeMap">
                         </v-tab-item>
                     </v-tabs-items>
@@ -126,8 +120,8 @@ export default class ReplayPage extends Vue {
     map!: any;
     tab: number | null = null;
 
-    async asyncData({ store, $http, params, $config }: Context): Promise<any> {
-        const map = await $http.$get(`maps/${params.mapId}`) as any;
+    async asyncData({ store, $axios, params, $config }: Context): Promise<any> {
+        const map = await $axios.$get(`maps/${params.mapId}`) as any;
 
         return { map, $config };
     }
@@ -138,28 +132,28 @@ export default class ReplayPage extends Vue {
 
     get textureMap() : string {
         if (this.map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/texture-mq.jpg`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/texture-mq.jpg`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get metalMap() : string {
         if (this.map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/metal.png`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/metal.png`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get heightMap() : string {
         if (this.map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/height.png`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/height.png`);
         }
         return require("assets/images/default-minimap.png");
     }
 
     get typeMap() : string {
         if (this.map.fileName) {
-            return (`${this.$http.getBaseURL()}/maps/${this.map.fileName}/type.png`);
+            return (`${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/type.png`);
         }
         return require("assets/images/default-minimap.png");
     }
