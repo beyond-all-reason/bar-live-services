@@ -78,7 +78,6 @@
 <script lang="ts">
 import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
-import { cloneDeep } from "lodash";
 import _ from "lodash";
 import { coerceObjectFactory } from "~/utils/coerce-object";
 import { stringifyQuery } from "~/utils/stringify-query";
@@ -91,7 +90,12 @@ const coerceObject = coerceObjectFactory(replaysQuerySchema);
     head: { title: "BAR - Replays" },
     watch: {
         filters: {
-            handler(this: ReplaysPage) { this.fetchReplays() },
+            handler(this: ReplaysPage) {
+                if (!this.ready) {
+                    return;
+                }
+                this.fetchReplays();
+            },
             deep: true
         }
     }
@@ -103,7 +107,7 @@ export default class ReplaysPage extends Vue {
     spoilResults = false;
     cancelSourceToken?: CancelTokenSource;
     waitingForResponse = false;
-    lastQuery: string = "";
+    ready = false;
 
     filters: {
         [key: string]: any;
@@ -165,7 +169,12 @@ export default class ReplaysPage extends Vue {
         this.spoilResults = localStorage.getItem("spoilResults") === "true";
 
         const obj = coerceObject(this.$route.query);
-        this.filters = Object.assign({}, this.filters, obj);
+        Object.assign(this.filters, obj);
+    }
+
+    mounted() {
+        this.ready = true;
+        this.fetchReplays();
     }
 
     spoilResultsChanged() {

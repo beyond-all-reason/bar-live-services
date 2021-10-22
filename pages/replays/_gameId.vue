@@ -54,9 +54,9 @@
                 <table class="players">
                     <tbody v-for="(AllyTeam, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex">
                         <tr>
-                            <td class="team-heading" colspan="100%">
+                            <th class="team-heading" colspan="100%">
                                 Team {{ AllyTeam.allyTeamId + 1 }} {{ AllyTeam.winningTeam && spoilResults ? "🏆" : "" }}
-                            </td>
+                            </th>
                         </tr>
                         <tr v-for="(Player, index) in AllyTeam.Players" :key="`player-`+index">
                             <td><img :src="factionImage(Player.faction)"></td>
@@ -83,9 +83,9 @@
                 <table class="players">
                     <tbody>
                         <tr>
-                            <td class="team-heading" colspan="100%">
+                            <th class="team-heading" colspan="100%">
                                 Spectators
-                            </td>
+                            </th>
                         </tr>
                         <tr v-for="(Spectator, specIndex) in replay.Spectators" :key="`spec-`+specIndex">
                             <td><img :src="countryImage(Spectator.countryCode)"></td>
@@ -103,6 +103,19 @@
                             <v-expansion-panel-header>Host Settings</v-expansion-panel-header>
                             <v-expansion-panel-content>
                                 <div v-for="(value, name) in hostSettings" :key="`host-setting-${name}`" class="setting">
+                                    <div class="setting-key">
+                                        {{ name }}
+                                    </div>
+                                    <div class="setting-value">
+                                        {{ value }}
+                                    </div>
+                                </div>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel v-if="spadsSettings">
+                            <v-expansion-panel-header>SPADS Settings</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <div v-for="(value, name) in spadsSettings" :key="`spads-setting-${name}`" class="setting">
                                     <div class="setting-key">
                                         {{ name }}
                                     </div>
@@ -191,6 +204,13 @@ export default class ReplayPage extends AbstractReplay {
         return Object.fromEntries(Object.entries(this.replay.hostSettings).sort());
     }
 
+    get spadsSettings() : { [key: string]: any; } | undefined {
+        if (this.replay.spadsSettings === undefined) {
+            return;
+        }
+        return Object.fromEntries(Object.entries(this.replay.spadsSettings).sort());
+    }
+
     get gameSettings() : { [key: string]: any; } {
         return Object.fromEntries(Object.entries(this.replay.gameSettings).sort());
     }
@@ -261,6 +281,9 @@ table {
 }
 .players {
     margin-bottom: 10px;
+    tr:nth-child(2n) {
+        padding-top: 5px;
+    }
 }
 hr {
     margin: 16px 0;

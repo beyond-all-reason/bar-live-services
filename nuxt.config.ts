@@ -75,7 +75,13 @@ const nuxtConfig: NuxtConfig = {
     modules: [
         "@nuxtjs/pwa",
         '@nuxtjs/axios',
-    ]
+    ],
+    loading: {
+        color: "rgba(255, 255, 255, 0.4)",
+        height: "2px",
+        throttle: 50,
+        continuous: true
+    }
 }
 
 export default nuxtConfig;
