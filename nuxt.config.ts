@@ -9,6 +9,11 @@ const nuxtConfig: NuxtConfig = {
     axios: {
         baseURL: process.env.BASE_URL || 'http://localhost:3001',
     },
+    privateRuntimeConfig: {
+        axios: {
+            baseURL: process.env.BASE_URL || 'http://localhost:3001',
+        }
+    },
     publicRuntimeConfig: {
         objectStorageUrl: "https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR"
     },
