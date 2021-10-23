@@ -48,17 +48,32 @@
 <script lang="ts">
 import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
+import { coerceObjectFactory } from "~/utils/coerce-object";
+import { paginationQuerySchema } from "bar-db/dist/model/rest-api/pagination";
+import { stringifyQuery } from "~/utils/stringify-query";
+
+const coerceObject = coerceObjectFactory(paginationQuerySchema);
 
 @Component({
     head: { title: "BAR - Balance Changes" },
     watch: {
-        "$route.query": "$fetch"
+        filters: {
+            handler(this: BalanceChangesPage) {
+                if (!this.ready) {
+                    return;
+                }
+                this.fetchBalanceChanges();
+            },
+            deep: true
+        }
     }
 })
 export default class BalanceChangesPage extends Vue {
     totalResults = 10;
     balanceChanges: DBSchema.BalanceChange.Schema[] = [];
+    ready = false;
     filters: {
+        [key: string]: any;
         page: number;
         limit: number;
     } = {
@@ -66,11 +81,24 @@ export default class BalanceChangesPage extends Vue {
         limit: 10
     };
 
-    async fetch(): Promise<any> {
-        const { totalResults, page, limit, data } = await this.$axios.$get("balance-changes", { params: this.filters }) as any;
+    async fetchBalanceChanges(): Promise<any> {
+        const query = stringifyQuery(this.filters);
+        this.$router.push({ path: this.$route.path, query: this.filters });
+
+        const { totalResults, page, limit, data } = await this.$axios.$get(`balance-changes${query}`) as any;
         this.totalResults = totalResults;
         this.filters.limit = limit;
         this.balanceChanges = data;
+    }
+
+    beforeMount() {
+        const obj = coerceObject(this.$route.query);
+        Object.assign(this.filters, obj);
+    }
+
+    mounted() {
+        this.ready = true;
+        this.fetchBalanceChanges();
     }
 
     async changePage(page: number) {

@@ -4,11 +4,11 @@
             Battles
         </h1>
 
-        <div class="full-width flex-row">
+        <!-- <div class="full-width flex-row">
             <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
                 <v-icon size="22">mdi-code-braces</v-icon>
             </a>
-        </div>
+        </div> -->
 
         <template v-if="battles && !battles.length">
             <div class="empty">
@@ -41,6 +41,16 @@ export default class Page extends Vue {
     pollInterval = 0;
     numOfPlayers = 0;
 
+    async asyncData({ $axios }: Context): Promise<any> {
+        try {
+            const battles = await $axios.$get("battles") as any[];
+            const numOfPlayers = battles.reduce((total, battle) => total + battle.players.length, 0);
+            return { battles, numOfPlayers };
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async fetch() {
         try {
             this.battles = await this.$axios.$get("battles") as any[];
@@ -54,8 +64,6 @@ export default class Page extends Vue {
         this.pollInterval = window.setInterval(async() => {
             this.$fetch();
         }, 3000);
-
-        this.$fetch();
     }
 
     beforeDestroy() {

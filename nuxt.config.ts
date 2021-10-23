@@ -7,7 +7,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
     axios: {
-        baseURL: process.env.BASE_URL || 'http://localhost:3001',
+        baseURL: process.env.BASE_URL || 'https://api.bar-rts.com',
     },
     publicRuntimeConfig: {
         objectStorageUrl: "https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR"
