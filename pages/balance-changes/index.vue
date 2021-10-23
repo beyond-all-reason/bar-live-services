@@ -102,7 +102,6 @@ export default class BalanceChangesPage extends Vue {
     }
 
     async changePage(page: number) {
-        this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
         window.scrollTo(0, 0);
     }
 }

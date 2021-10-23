@@ -26,25 +26,38 @@
 <script lang="ts">
 import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
+import { coerceObjectFactory } from "~/utils/coerce-object";
+import { stringifyQuery } from "~/utils/stringify-query";
+import { paginationQuerySchema } from "bar-db/dist/model/rest-api/pagination";
 
-import _ from "lodash";
+const coerceObject = coerceObjectFactory(paginationQuerySchema);
 
 @Component({
     head: { title: "BAR - Maps" },
     watch: {
-        "$route.query": "$fetch"
+        filters: {
+            handler(this: MapsPage) {
+                if (!this.ready) {
+                    return;
+                }
+                this.fetchMaps();
+            },
+            deep: true
+        }
     }
 })
 export default class MapsPage extends Vue {
     totalResults = 0;
     maps: DBSchema.SpringMap.Schema[] = [];
     timeTaken = 0;
+    ready = false;
     filters: {
+        [key: string]: any;
         page: number;
         limit: number;
     } = {
         page: 1,
-        limit: 10
+        limit: 24,
     };
 
     async fetch(): Promise<any> {
@@ -56,9 +69,36 @@ export default class MapsPage extends Vue {
         this.maps = data;
     }
 
+    async fetchMaps() {
+        const query = stringifyQuery(this.filters);
+        this.$router.push({ path: this.$route.path, query: this.filters });
+        
+        try {
+            const beforeTime = Date.now();
+            const { totalResults, page, limit, data } = await this.$axios.$get(`maps${query}`) as any;
+            this.timeTaken = Date.now() - beforeTime;
+            this.totalResults = totalResults;
+            this.maps = data;
+        } catch (err) {
+            if (this.$axios.isCancel(err)) {
+            } else {
+                console.error(err);
+            }
+        }
+    }
+
     async changePage(page: number) {
-        this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: page.toString() } });
         window.scrollTo(0, 0);
+    }
+
+    beforeMount() {
+        const obj = coerceObject(this.$route.query);
+        Object.assign(this.filters, obj);
+    }
+
+    mounted() {
+        this.ready = true;
+        this.fetchMaps();
     }
 }
 </script>

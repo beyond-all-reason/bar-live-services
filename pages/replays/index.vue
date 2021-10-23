@@ -79,7 +79,6 @@
 <script lang="ts">
 import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
-import _ from "lodash";
 import { coerceObjectFactory } from "~/utils/coerce-object";
 import { stringifyQuery } from "~/utils/stringify-query";
 import { replaysQuerySchema } from "bar-db/dist/model/rest-api/replays";
