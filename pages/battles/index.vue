@@ -43,6 +43,8 @@ export default class Page extends Vue {
 
     async asyncData({ $axios }: Context): Promise<any> {
         try {
+            console.log($axios.getUri());
+            console.log($axios.defaults);
             const battles = await $axios.$get("battles") as any[];
             const numOfPlayers = battles.reduce((total, battle) => total + battle.players.length, 0);
             return { battles, numOfPlayers };
