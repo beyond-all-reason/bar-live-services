@@ -42,6 +42,13 @@ import { Component, Prop, Vue } from "nuxt-property-decorator";
             el.style.top = `${top * 100}%`;
             if (left < 0.2) { el.classList.add("left"); }
             if (left > 0.8) { el.classList.add("right"); }
+            if (top < 0.2) {
+                if (left < 0.5) {
+                    el.classList.add("left");
+                } else {
+                    el.classList.add("right");
+                }
+            }
         },
         setPlayerColor(el, binding) {
             const { r, g, b } = binding.value as { r: number, g: number, b: number };
@@ -123,9 +130,9 @@ export default class MapComponent extends Vue {
         transform: translateX(-50%);
         left: 6px;
         bottom: 13px;
-        font-size: 14px;
+        font-size: 12px;
         .left &, .right & {
-            bottom: -4px;
+            bottom: -2px;
             transform: none;
         }
         .left & {

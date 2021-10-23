@@ -76,12 +76,6 @@ export default class BalanceChangesPage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
 .balance-changes {
     width: 100%;
     max-width: 800px;
@@ -89,9 +83,9 @@ export default class BalanceChangesPage extends Vue {
 }
 .balance-change {
     position: relative;
-    /* border-bottom: 5px solid hsla(0,0%,100%,.1); */
     background: hsla(0,0%,100%,.05);
     margin-bottom: 35px;
+    width: 100%;
 }
 .sha {
     margin-right: 10px;
@@ -102,7 +96,6 @@ export default class BalanceChangesPage extends Vue {
     padding: 15px 40px;
     padding-bottom: 18px;
     background: #98989852;
-    /* border: 1px solid hsla(0,0%,100%,.3); */
     box-shadow: 0 1px 3px rgb(0 0 0 / 60%);
 }
 .date {

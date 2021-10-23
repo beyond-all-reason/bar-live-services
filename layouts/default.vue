@@ -1,11 +1,11 @@
 <template>
     <v-app id="vApp" :class="`${this.$route.name} ${this.$vuetify.breakpoint.name} ${!this.$store.state.embedded ? 'not-embedded' : 'embedded'}`">
         <Navigation v-show="!this.$store.state.embedded" />
-        <v-main>
-            <v-container>
+        <div class="wrapper-container">
+            <div class="wrapper">
                 <Nuxt />
-            </v-container>
-        </v-main>
+            </div>
+        </div>
     </v-app>
 </template>
 
@@ -45,7 +45,7 @@ export default class DefaultLayout extends Vue {
 }
 .page-title {
     margin: 10px 0;
-    font-size: 68px;
+    font-size: clamp(2rem, 4vw, 10rem);
     font-weight: 700;
     text-align: center;
     display: none;
@@ -55,5 +55,26 @@ export default class DefaultLayout extends Vue {
 }
 .v-toolbar__content {
     padding: 0;
+}
+.wrapper-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 20px;
+}
+.wrapper {
+    width: 100%;
+    max-width: 1700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & > div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 </style>

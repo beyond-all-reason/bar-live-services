@@ -1,3 +1,6 @@
+html {
+    background: #000;
+}
 a, .v-application a {
     text-decoration: none;
     color: #b4b4b4;
@@ -22,4 +25,9 @@ a, .v-application a {
     position: absolute;
     left: -9999px;
     top: -9999px;
+}
+.component-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

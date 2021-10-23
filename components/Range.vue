@@ -52,5 +52,17 @@ export default class RangeComponent extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
+.range {
+    width: 200px;
+    border: 1px solid #4a4a4a;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    label {
+        width: 100%;
+        padding: 2px 7px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-bottom: solid 1px #4a4a4a;
+    }
+}
 </style>

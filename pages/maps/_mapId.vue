@@ -45,7 +45,7 @@
             <div class="right-col">
                 <div class="dl-links">
                     <a class="download" :href="`${$config.objectStorageUrl}/maps/${map.fileNameWithExtension || map.fileName + '.sd7'}`">Download</a>
-                    <a class="json-api" target="_blank" :href="`/api/maps/${map.id}`">
+                    <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/maps/${map.fileName}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>
                 </div>
@@ -164,28 +164,20 @@ export default class ReplayPage extends Vue {
 .map-container {
     display: flex;
     flex-direction: row;
+    gap: 20px;
     text-shadow: 1px 1px #000;
     @media screen and (max-width: 600px) {
         flex-wrap: wrap;
     }
 }
 .left-col {
-    position: relative;
     width: 55%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     @media screen and (max-width: 600px) {
         width: 100%;
     }
 }
 .right-col {
-    display: flex;
-    flex-direction: column;
     width: 45%;
-    margin-left: 20px;
     @media screen and (max-width: 600px) {
         width: 100%;
         margin-left: 0;

@@ -6,14 +6,13 @@
         <div class="replay-container">
             <div class="left-col">
                 <Map :replay="replay" />
-                <!-- <ChatLog v-if="replay.chatlog.length" :chatlog="replay.chatlog.filter(msg => msg.playerId !== 255)" :player-colors="playerColors" /> -->
             </div>
             <div class="right-col">
                 <div class="dl-links">
                     <a class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download</a>
-                    <!-- <a class="json-api" target="_blank" :href="`/api/replays/${replay.id}`">
+                    <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays/${replay.id}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
-                    </a> -->
+                    </a>
                 </div>
                 <table class="meta">
                     <tbody>
@@ -47,7 +46,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="spoilers noselect">
+                <div class="spoilers noselect flex-right">
                     <label for="chkSpoilers">Spoil Results</label>
                     <input type="checkbox" id="chkSpoilers" v-model="spoilResults" @change="spoilResultsChanged">
                 </div>
@@ -62,21 +61,33 @@
                             <td><img :src="factionImage(Player.faction)"></td>
                             <td><img :src="countryImage(Player.countryCode)"></td>
                             <td><img :src="rankImage(Player.rank)"></td>
-                            <td :class="`trueskill uncertainty-${Player.skillUncertainty}`">
-                                {{ Player.skill }}
+                            <td v-setPlayerColor="Player.rgbColor" class="name">
+                                {{ Player.name }}<span v-if="Player.clanId" class="clan-id">{{ Player.clanId }}</span>
                             </td>
-                            <td v-setPlayerColor="Player.rgbColor">
-                                {{ Player.name }}
+                            <td v-show="Player.trueSkillMuBefore && spoilResults" class="trueskill trueskill-before" :style="`color: hsl(0 100% ${uncertaintyPercent(Player.trueSkillSigmaBefore)}%)`">
+                                {{ Player.trueSkillMuBefore && Player.trueSkillMuBefore.toFixed(2) }}
+                            </td>
+                            <td v-show="Player.trueSkillMuBefore && spoilResults">
+                                <v-icon size="large" :class="`${Player.trueSkillMuAfter > Player.trueSkillMuBefore ? 'ts-gain' : 'ts-loss'}`">mdi-menu-right</v-icon>
+                            </td>
+                            <td v-show="Player.trueSkillMuBefore && spoilResults" class="trueskill trueskill-after" :style="`color: hsl(0 100% ${uncertaintyPercent(Player.trueSkillSigmaBefore)}%)`">
+                                {{ Player.trueSkillMuBefore && Player.trueSkillMuAfter.toFixed(2) }}
+                            </td>
+                            <td v-show="Player.trueSkillMuBefore && spoilResults" :class="`trueskill-diff ${Player.trueSkillMuAfter > Player.trueSkillMuBefore ? 'ts-gain' : 'ts-loss'}`">
+                                {{ Player.trueSkillMuBefore > Player.trueSkillMuAfter ? '' : '+' }}{{ (Player.trueSkillMuAfter - Player.trueSkillMuBefore).toFixed(2) }}
+                            </td>
+                            <td v-show="!Player.trueSkillMuBefore || !spoilResults" class="trueskill" :style="`color: hsl(0 100% ${uncertaintyPercent(Player.skillUncertainty)}%)`">
+                                {{ Player.trueSkillMuBefore || Player.trueSkill || Player.skill }}
                             </td>
                         </tr>
                         <tr v-for="(AI, index) in AllyTeam.AIs" :key="`ai-`+index">
                             <td><img :src="factionImage(AI.faction)"></td>
                             <td />
                             <td />
-                            <td />
                             <td v-setPlayerColor="AI.rgbColor">
                                 {{ AI.name }}
                             </td>
+                            <td />
                         </tr>
                     </tbody>
                 </table>
@@ -90,10 +101,10 @@
                         <tr v-for="(Spectator, specIndex) in replay.Spectators" :key="`spec-`+specIndex">
                             <td><img :src="countryImage(Spectator.countryCode)"></td>
                             <td><img :src="rankImage(Spectator.rank)"></td>
-                            <td :class="`trueskill uncertainty-${Spectator.skillUncertainty}`">
+                            <td>{{ Spectator.name }}</td>
+                            <td class="trueskill" :style="`color: hsl(0 100% ${uncertaintyPercent(Spectator.skillUncertainty)}%)`">
                                 {{ Spectator.skill }}
                             </td>
-                            <td>{{ Spectator.name }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -187,9 +198,9 @@ export default class ReplayPage extends AbstractReplay {
     async asyncData({ store, $axios, params, $config }: Context): Promise<any> {
         const replay = await $axios.$get(`replays/${params.gameId}`) as any;
         replay.AllyTeams.forEach((allyTeam: any) => {
-            allyTeam.Players = allyTeam.Players.sort((a: any, b: any) => (b.trueSkill || 0) - (a.trueSkill || 0));
+            allyTeam.Players = allyTeam.Players.sort((a: any, b: any) => (b.trueSkillMuBefore || b.trueSkill || 0) - (a.trueSkillMuBefore || a.trueSkill || 0));
         });
-        replay.Spectators = replay.Spectators.sort((a: any, b: any) => (parseInt(b.skill) || 0) - (parseInt(a.skill) || 0));
+        replay.Spectators = replay.Spectators.sort((a: any, b: any) => (parseInt(b.skill.replace("~","")) || 0) - (parseInt(a.skill.replace("~","")) || 0));
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
         for (const allyTeam of replay.AllyTeams) {
             for (const player of allyTeam.Players) {
@@ -205,7 +216,7 @@ export default class ReplayPage extends AbstractReplay {
     }
 
     get spadsSettings() : { [key: string]: any; } | undefined {
-        if (this.replay.spadsSettings === undefined) {
+        if (!this.replay.spadsSettings) {
             return;
         }
         return Object.fromEntries(Object.entries(this.replay.spadsSettings).sort());
@@ -219,6 +230,16 @@ export default class ReplayPage extends AbstractReplay {
         return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
     }
 
+    uncertaintyPercent(sigma: number) : number {
+        // https://github.com/Yaribz/SLDB/blob/master/ratingEngine.pl#L57
+        if (sigma < 1.5) return 100;
+        else if (sigma < 2) return 90;
+        else if (sigma < 3) return 80;
+        else if (sigma < 4) return 70;
+        else if (sigma < 5) return 60;
+        else return 50;
+    }
+
     spoilResultsChanged() {
         localStorage.setItem("spoilResults", String(this.spoilResults));
     }
@@ -229,32 +250,22 @@ export default class ReplayPage extends AbstractReplay {
 .replay-container {
     display: flex;
     flex-direction: row;
+    gap: 20px;
     text-shadow: 1px 1px #000;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 900px) {
         flex-wrap: wrap;
     }
 }
 .left-col {
-    position: relative;
     width: 55%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 900px) {
         width: 100%;
     }
 }
 .right-col {
-    display: flex;
-    flex-direction: column;
     width: 45%;
-    margin-left: 20px;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 900px) {
         width: 100%;
-        margin-left: 0;
-        margin-top: 20px;
     }
     .meta {
         margin-bottom: 10px;
@@ -264,25 +275,44 @@ export default class ReplayPage extends AbstractReplay {
         }
     }
 }
-table {
-    td:first-child {
-        padding-right: 5px;
+.players, .meta {
+    margin-bottom: 10px;
+    border-collapse: collapse;
+    th {
+        padding-top: 5px;
     }
-    td:not(:nth-child(1)) {
-        padding: 0 5px;
+    td {
+        width: 0.1%;
+        white-space: nowrap;
+        padding: 2px 5px 2px 0;
+        font-size: clamp(12px, 1.5vw, 16px);
+        &:last-child {
+            width: 100%;
+            text-align: right;
+        }
+        &:first-child {
+            padding-right: 5px;
+        }
+        img {
+            display: block;
+            height: 16px;
+        }
     }
-    td:last-child {
+    .trueskill-before {
         width: 100%;
     }
-    td img {
-        display: block;
-        height: 16px;
+}
+.meta {
+    tr:nth-child(2n+2) {
+        background: rgba(255, 255, 255, 0.03);
     }
 }
 .players {
-    margin-bottom: 10px;
-    tr:nth-child(2n) {
+    tr:nth-child(2) td {
         padding-top: 5px;
+    }
+    tr:nth-child(2n+3) {
+        background: rgba(255, 255, 255, 0.03);
     }
 }
 hr {
@@ -326,21 +356,38 @@ hr {
     padding-bottom: 3px;
 }
 .trueskill {
-    display: flex;
-    justify-content: flex-end;
+    text-align: right;
     &:after {
         content: "TS";
         font-size: 10px;
         font-weight: 300;
         color: #bbb;
         vertical-align: super;
-        margin-left: 2px;
+        margin-left: -3px;
     }
-    &.uncertainty {
-        &-null { color: rgb(255, 255, 255); }
-        &-1 { color: rgb(255, 200, 200); }
-        &-2 { color: rgb(255, 150, 150); }
-        &-3 { color: rgb(255, 100, 100); }
+}
+.ts-gain {
+    color: rgb(138, 255, 60) !important;
+}
+.ts-loss {
+    color: rgb(255, 64, 64) !important;
+}
+.trueskill-diff {
+    font-size: clamp(10px, 1vw, 12px) !important;
+    &:before { content: "("; color: rgba(255, 255, 255, 0.8); }
+    &:after { content: ")"; color: rgba(255, 255, 255, 0.8); }
+}
+.clan-id {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 9px;
+    vertical-align: middle;
+    margin-left: 5px;
+    font-weight: 300;
+    &:before {
+        content: "CLAN ";
+    }
+    &:after {
+        content: "";
     }
 }
 .setting {
@@ -348,7 +395,7 @@ hr {
     flex-direction: row;
     justify-content: space-between;
     padding: 2px 0;
-    font-size: 13px;
+    font-size: clamp(10px, 1vw, 12px);
     &:nth-child(odd) {
         background: rgba(255, 255, 255, 0.03);
     }

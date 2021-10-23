@@ -7,7 +7,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
     axios: {
-        baseURL: process.env.API_URL || 'http://localhost:3001'
+        baseURL: process.env.API_URL || 'http://localhost:3001',
     },
     publicRuntimeConfig: {
         objectStorageUrl: "https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR"
@@ -46,8 +46,14 @@ const nuxtConfig: NuxtConfig = {
         ]
     },
     css: [
-        '~/assets/scss/main.scss'
+        '~/assets/scss/styles.scss'
     ],
+    styleResources: {
+        scss: [
+            '~/assets/scss/variables.scss',
+            '~/assets/scss/mixins.scss',
+        ]
+    },
     vuetify: {
         customVariables: ['~/assets/scss/variables.scss'],
         treeShake: true,
@@ -75,9 +81,10 @@ const nuxtConfig: NuxtConfig = {
     modules: [
         "@nuxtjs/pwa",
         '@nuxtjs/axios',
+        '@nuxtjs/style-resources'
     ],
     loading: {
-        color: "rgba(255, 255, 255, 0.4)",
+        color: "rgba(255, 255, 255, 0.7)",
         height: "2px",
         throttle: 50,
         continuous: true

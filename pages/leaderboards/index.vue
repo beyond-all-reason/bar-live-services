@@ -6,28 +6,33 @@
         <div class="disclaimer text-center">
             <p>The TrueSkill values shown on this page are <em>Trusted</em>, as opposed to <em>Estimated</em>. It is calculated by <strong>Estimated Skill - (3 * Uncertainty)</strong>. See <a href="https://springrts.com/phpbb/viewtopic.php?p=536862#p536862" target="_blank">here</a> for more info.</p>
         </div>
+        <div class="full-width flex-row">
+            <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
+                <v-icon size="22">mdi-code-braces</v-icon>
+            </a>
+        </div>
         <div class="leaderboards">
             <div v-for="leaderboard of leaderboards" :key="leaderboard.gameType" class="leaderboard">
                 <h2>{{ leaderboard.gameType }}</h2>
-                <div class="row row--header">
-                    <div class="row__rank">
+                <div class="leaderboard-row leaderboard-row--header">
+                    <div class="leaderboard-row__rank">
                         Rank
                     </div>
-                    <div class="row__name">
+                    <div class="leaderboard-row__name">
                         Name
                     </div>
-                    <div class="row__trueskill">
+                    <div class="leaderboard-row__trueskill">
                         TrueSkill
                     </div>
                 </div>
-                <div v-for="(player, index) in leaderboard.players" :key="index" class="row">
-                    <div class="row__rank">
+                <div v-for="(player, index) in leaderboard.players" :key="index" class="leaderboard-row">
+                    <div class="leaderboard-row__rank">
                         {{ index + 1 }}
                     </div>
-                    <div class="row__name">
+                    <div class="leaderboard-row__name">
                         {{ player.name }}
                     </div>
-                    <div class="row__trueskill">
+                    <div class="leaderboard-row__trueskill">
                         {{ player.trustedSkill.toFixed(2) }}
                     </div>
                 </div>
@@ -52,21 +57,17 @@ export default class Page extends Vue {
 </script>
 
 <style lang="scss" scoped>
-a {
-    text-decoration: underline;
-}
 .leaderboards {
     width: 100%;
     display: flex;
     flex-direction: row;
-    padding: 25px;
+    gap: 20px;
     @media screen and (max-width: 900px) {
         flex-wrap: wrap;
     }
 }
 .leaderboard {
     width: 100%;
-    padding: 0 2%;
     padding-bottom: 5px;
 }
 h2 {
@@ -76,7 +77,7 @@ h2 {
     font-size: 28px;
     text-transform: uppercase;
 }
-.row {
+.leaderboard-row {
     display: flex;
     flex-direction: row;
     font-size: 14px;
@@ -101,12 +102,17 @@ h2 {
     &:nth-child(odd){
         background: rgba(255, 255, 255, 0.08);
     }
-    &:nth-child(3) .row__name {
+    &:nth-child(3) .leaderboard-row__name {
         &:after{
             margin-left: 5px;
             font-size: 14px;
             content: "🏆";
         }
+    }
+}
+.disclaimer {
+    a {
+        text-decoration: underline;
     }
 }
 </style>

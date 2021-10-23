@@ -20,6 +20,7 @@
         "@nuxtjs/eslint-module": "^2.0.0",
         "@nuxtjs/moment": "^1.6.1",
         "@nuxtjs/pwa": "^3.0.2",
+        "@nuxtjs/style-resources": "^1.2.1",
         "@nuxtjs/vuetify": "^1.11.3",
         "@types/ajv": "^1.0.0",
         "@types/jest": "^26.0.20",

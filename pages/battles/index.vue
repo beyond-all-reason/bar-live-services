@@ -3,17 +3,25 @@
         <h1 class="page-title">
             Battles
         </h1>
-        <div v-if="battles && !battles.length" class="empty">
-            No active battles 😞
-        </div>
-        <div v-else>
-            <div class="players-online">
-                There are currently <span class="player-count">{{ numOfPlayers }}</span> players in active battles.
+        <template v-if="battles && !battles.length">
+            <div class="empty">
+                No active battles 😞
+            </div>
+        </template>
+        <template v-else>
+            <div class="flex-row players-online">
+                <div class="flex-left"></div>
+                <div>
+                    There are currently <span class="player-count">{{ numOfPlayers }}</span> players in active battles.
+                </div>
+                <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
+                    <v-icon size="22">mdi-code-braces</v-icon>
+                </a>
             </div>
             <div class="battles">
                 <Battle v-for="(battle, index) in battles" :key="index" :battle="battle" />
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
@@ -71,14 +79,12 @@ export default class Page extends Vue {
     }
 }
 .battles {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    grid-gap: 1em;
-}
-.battle {
     width: 100%;
-    @media (min-width: 800px) { width: calc(50% - 1em); }
-    @media (min-width: 1600px) { width: calc(100%/3 - 1em); }
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    @media screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 }
 </style>

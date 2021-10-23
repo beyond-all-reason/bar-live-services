@@ -1,5 +1,5 @@
 <template>
-    <NuxtLink :to="`/maps/${map.id}`" class="map-preview">
+    <NuxtLink :to="`/maps/${map.fileName}`" class="map-preview">
         <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
         <div class="meta">
             <div class="times">
