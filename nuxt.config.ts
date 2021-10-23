@@ -83,12 +83,6 @@ const nuxtConfig: NuxtConfig = {
         '@nuxtjs/axios',
         '@nuxtjs/style-resources'
     ],
-    loading: {
-        color: "rgba(255, 255, 255, 0.7)",
-        height: "2px",
-        throttle: 50,
-        continuous: true
-    }
 }
 
 export default nuxtConfig;
