@@ -41,12 +41,22 @@ export default class Page extends Vue {
     pollInterval = 0;
     numOfPlayers = 0;
 
+    async asyncData({ $axios }: Context) : Promise<any> {
+        try {
+            const battles = await $axios.$get("battles") as any[];
+            const numOfPlayers = battles.reduce((total, battle) => total + battle.players.length, 0);
+            return { battles, numOfPlayers };
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async fetch() {
         try {
             this.battles = await this.$axios.$get("battles") as any[];
             this.numOfPlayers = this.battles.reduce((total, battle) => total + battle.players.length, 0);
         } catch (err) {
-
+            console.log(err);
         }
     }
 
