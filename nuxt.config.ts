@@ -1,13 +1,13 @@
 import { NuxtConfig } from "@nuxt/types";
 
 console.log("NODE_ENV", process.env.NODE_ENV);
-console.log("API_URL", process.env.API_URL);
+console.log("BASE_URL", process.env.BASE_URL);
 
 const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
     axios: {
-        baseURL: process.env.API_URL || 'http://localhost:3001',
+        baseURL: process.env.BASE_URL || 'http://localhost:3001',
     },
     publicRuntimeConfig: {
         objectStorageUrl: "https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR"
