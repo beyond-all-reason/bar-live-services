@@ -63,7 +63,7 @@
                         <label for="chkSpoilers">Spoil Results</label>
                         <input type="checkbox" id="chkSpoilers" v-model="spoilResults" @change="spoilResultsChanged">
                     </div>
-                    <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
+                    <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>
                 </div>

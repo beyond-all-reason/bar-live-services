@@ -3,38 +3,43 @@
         <h1 class="page-title">
             Balance Changes
         </h1>
-        <div class="wrapper">
-            <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
 
-            <div class="balance-changes">
-                <div v-for="(change, index1) in balanceChanges" :key="index1" class="balance-change">
-                    <div class="meta">
-                        <div class="flex-row flex-space-between flex-wrap">
-                            <div class="date">
-                                {{ $moment(change.date).format("dddd, MMMM Do YYYY") }}
-                            </div>
-                            <div class="flex-row flex-center">
-                                <div class="sha">
-                                    <a :href="change.url" target="_parent">{{ change.sha.substr(0, 7) }}</a>
-                                </div>
-                                <a class="author" :href="change.author.url" target="_parent">
-                                    {{ change.author.name }}
-                                    <img class="author__avatar" :src="change.author.img">
-                                </a>
-                            </div>
-                        </div>
-                        <div>
-                            <div v-for="(message, index2) in change.message.split('\n')" :key="index2" class="message">
-                                {{ message }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="changes">
-                        <PropertyChange v-for="(change2, index) in change.changes" :key="index" :data="change2.unit" :depth="0" />
-                    </div>
-                </div>
+        <div class="balance-changes">
+            <div class="full-width flex-row">
+                <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/balance-changes`">
+                    <v-icon size="22">mdi-code-braces</v-icon>
+                </a>
             </div>
 
+            <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
+
+            <div v-for="(change, index1) in balanceChanges" :key="index1" class="balance-change">
+                <div class="meta">
+                    <div class="flex-row flex-space-between flex-wrap">
+                        <div class="date">
+                            {{ $moment(change.date).format("dddd, MMMM Do YYYY") }}
+                        </div>
+                        <div class="flex-row flex-center">
+                            <div class="sha">
+                                <a :href="change.url" target="_parent">{{ change.sha.substr(0, 7) }}</a>
+                            </div>
+                            <a class="author" :href="change.author.url" target="_parent">
+                                {{ change.author.name }}
+                                <img class="author__avatar" :src="change.author.img">
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="(message, index2) in change.message.split('\n')" :key="index2" class="message">
+                            {{ message }}
+                        </div>
+                    </div>
+                </div>
+                <div class="changes">
+                    <PropertyChange v-for="(change2, index) in change.changes" :key="index" :data="change2.unit" :depth="0" />
+                </div>
+            </div>
+            
             <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
         </div>
     </div>
@@ -79,12 +84,13 @@ export default class BalanceChangesPage extends Vue {
 .balance-changes {
     width: 100%;
     max-width: 800px;
-    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 .balance-change {
     position: relative;
     background: hsla(0,0%,100%,.05);
-    margin-bottom: 35px;
     width: 100%;
 }
 .sha {

@@ -11,7 +11,7 @@
                 <div class="total-results">
                     Found {{ totalResults }} maps in {{ timeTaken }}ms.
                 </div>
-                <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
+                <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/maps`">
                     <v-icon size="22">mdi-code-braces</v-icon>
                 </a>
             </div>

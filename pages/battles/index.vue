@@ -3,6 +3,13 @@
         <h1 class="page-title">
             Battles
         </h1>
+
+        <div class="full-width flex-row">
+            <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
+                <v-icon size="22">mdi-code-braces</v-icon>
+            </a>
+        </div>
+
         <template v-if="battles && !battles.length">
             <div class="empty">
                 No active battles 😞
@@ -14,9 +21,6 @@
                 <div>
                     There are currently <span class="player-count">{{ numOfPlayers }}</span> players in active battles.
                 </div>
-                <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
-                    <v-icon size="22">mdi-code-braces</v-icon>
-                </a>
             </div>
             <div class="battles">
                 <Battle v-for="(battle, index) in battles" :key="index" :battle="battle" />

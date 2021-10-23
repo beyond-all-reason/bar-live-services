@@ -7,7 +7,7 @@
             <p>The TrueSkill values shown on this page are <em>Trusted</em>, as opposed to <em>Estimated</em>. It is calculated by <strong>Estimated Skill - (3 * Uncertainty)</strong>. See <a href="https://springrts.com/phpbb/viewtopic.php?p=536862#p536862" target="_blank">here</a> for more info.</p>
         </div>
         <div class="full-width flex-row">
-            <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/battles`">
+            <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/leaderboards`">
                 <v-icon size="22">mdi-code-braces</v-icon>
             </a>
         </div>
