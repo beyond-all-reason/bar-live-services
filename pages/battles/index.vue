@@ -41,22 +41,15 @@ export default class Page extends Vue {
     pollInterval = 0;
     numOfPlayers = 0;
 
-    async asyncData({ $axios }: Context): Promise<any> {
+    async fetchBattles() {
         try {
-            console.log($axios.getUri());
-            console.log($axios.defaults);
-            const battles = await $axios.$get("battles") as any[];
+            const battles = await this.$axios.$get("battles") as any[];
             const numOfPlayers = battles.reduce((total, battle) => total + battle.players.length, 0);
-            return { battles, numOfPlayers };
-        } catch (err) {
-            console.log(err);
-        }
-    }
 
-    async fetch() {
-        try {
-            this.battles = await this.$axios.$get("battles") as any[];
-            this.numOfPlayers = this.battles.reduce((total, battle) => total + battle.players.length, 0);
+            if (Array.isArray(battles)) {
+                this.battles = battles;
+                this.numOfPlayers = numOfPlayers;
+            }
         } catch (err) {
             console.log(err);
         }
@@ -64,8 +57,10 @@ export default class Page extends Vue {
 
     mounted() {
         this.pollInterval = window.setInterval(async() => {
-            this.$fetch();
+            this.fetchBattles();
         }, 3000);
+
+        this.fetchBattles();
     }
 
     beforeDestroy() {
