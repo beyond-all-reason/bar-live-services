@@ -5,7 +5,8 @@
         </h1>
         <div class="replay-container">
             <div class="left-col">
-                <Map :replay="replay" />
+                <ReplayMap :replay="replay" />
+                <Awards :replay="replay" />
             </div>
             <div class="right-col">
                 <div class="dl-links">
@@ -257,6 +258,9 @@ export default class ReplayPage extends AbstractReplay {
     }
 }
 .left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     width: 55%;
     @media screen and (max-width: 900px) {
         width: 100%;

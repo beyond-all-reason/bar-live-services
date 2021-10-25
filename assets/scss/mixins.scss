@@ -1,0 +1,6 @@
+.text-xs { font-size: clamp(10px, 1vw, 12px); }
+.text-sm { font-size: clamp(12px, 1.2vw, 14px); }
+.text-md { font-size: clamp(14px, 1.4vw, 16px); }
+.text-lg { font-size: clamp(18px, 1.6vw, 22px); }
+.text-xl { font-size: clamp(24px, 1.8vw, 30px); }
+.text-xxl { font-size: clamp(34px, 2vw, 40px); }

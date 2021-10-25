@@ -59,7 +59,7 @@ import { Component, Prop, Vue } from "nuxt-property-decorator";
         }
     }
 })
-export default class MapComponent extends Vue {
+export default class ReplayMapComponent extends Vue {
     @Prop({ type: Object, required: true }) readonly replay!: any;
 
     mapWidthElmos = this.replay.Map.width ? this.replay.Map.width * 512 : null;
@@ -93,7 +93,7 @@ export default class MapComponent extends Vue {
     overflow: hidden;
     img {
         max-height: 100%;
-        max-width: 100%;
+        width: 100%;
         image-rendering: pixelated;
     }
 }
