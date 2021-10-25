@@ -6,7 +6,7 @@
         <div class="replay-container">
             <div class="left-col">
                 <ReplayMap :replay="replay" />
-                <Awards :replay="replay" />
+                <Awards v-if="replay.awards" :replay="replay" />
             </div>
             <div class="right-col">
                 <div class="dl-links">
