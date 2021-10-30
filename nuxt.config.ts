@@ -46,8 +46,6 @@ const nuxtConfig: NuxtConfig = {
         ],
         link: [
             { rel: "icon", type: "image/png", href: "/favicon.png" },
-            { rel: "preconnect", href: "https://fonts.gstatic.com" },
-            { rel: "preconnect", href: "https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900", media: "all" },
         ]
     },
     css: [
@@ -68,6 +66,11 @@ const nuxtConfig: NuxtConfig = {
         name: "slide-transition",
         mode: "out-in"
     },
+    googleFonts: {
+        families: {
+            Poppins: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+        }
+    },
     build: {
         transpile: [
             "three"
@@ -82,6 +85,7 @@ const nuxtConfig: NuxtConfig = {
         "@nuxt/typescript-build",
         "@nuxtjs/moment",
         "@nuxtjs/vuetify",
+        "@nuxtjs/google-fonts"
     ],
     modules: [
         "@nuxtjs/pwa",
