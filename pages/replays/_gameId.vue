@@ -49,7 +49,7 @@
                 </table>
                 <div class="spoilers noselect flex-right">
                     <label for="chkSpoilers">Spoil Results</label>
-                    <input type="checkbox" id="chkSpoilers" v-model="spoilResults" @change="spoilResultsChanged">
+                    <input id="chkSpoilers" v-model="spoilResults" type="checkbox" @change="spoilResultsChanged">
                 </div>
                 <table class="players">
                     <tbody v-for="(AllyTeam, allyTeamIndex) in replay.AllyTeams" :key="`team-`+allyTeamIndex">
@@ -69,7 +69,9 @@
                                 {{ Player.trueSkillMuBefore && Player.trueSkillMuBefore.toFixed(2) }}
                             </td>
                             <td v-show="Player.trueSkillMuBefore && spoilResults">
-                                <v-icon size="large" :class="`${Player.trueSkillMuAfter > Player.trueSkillMuBefore ? 'ts-gain' : 'ts-loss'}`">mdi-menu-right</v-icon>
+                                <v-icon size="large" :class="`${Player.trueSkillMuAfter > Player.trueSkillMuBefore ? 'ts-gain' : 'ts-loss'}`">
+                                    mdi-menu-right
+                                </v-icon>
                             </td>
                             <td v-show="Player.trueSkillMuBefore && spoilResults" class="trueskill trueskill-after" :style="`color: hsl(0 100% ${uncertaintyPercent(Player.trueSkillSigmaBefore)}%)`">
                                 {{ Player.trueSkillMuBefore && Player.trueSkillMuAfter.toFixed(2) }}
@@ -201,7 +203,7 @@ export default class ReplayPage extends AbstractReplay {
         replay.AllyTeams.forEach((allyTeam: any) => {
             allyTeam.Players = allyTeam.Players.sort((a: any, b: any) => (b.trueSkillMuBefore || b.trueSkill || 0) - (a.trueSkillMuBefore || a.trueSkill || 0));
         });
-        replay.Spectators = replay.Spectators.sort((a: any, b: any) => (parseInt(b.skill.replace("~","")) || 0) - (parseInt(a.skill.replace("~","")) || 0));
+        replay.Spectators = replay.Spectators.sort((a: any, b: any) => (parseInt(b.skill?.replace("~", "")) || 0) - (parseInt(a.skill?.replace("~", "")) || 0));
         const playerColors: { [playerId: number]: { r: number, g: number, b: number } } = {};
         for (const allyTeam of replay.AllyTeams) {
             for (const player of allyTeam.Players) {
@@ -233,12 +235,7 @@ export default class ReplayPage extends AbstractReplay {
 
     uncertaintyPercent(sigma: number) : number {
         // https://github.com/Yaribz/SLDB/blob/master/ratingEngine.pl#L57
-        if (sigma < 1.5) return 100;
-        else if (sigma < 2) return 90;
-        else if (sigma < 3) return 80;
-        else if (sigma < 4) return 70;
-        else if (sigma < 5) return 60;
-        else return 50;
+        if (sigma < 1.5) { return 100; } else if (sigma < 2) { return 90; } else if (sigma < 3) { return 80; } else if (sigma < 4) { return 70; } else if (sigma < 5) { return 60; } else { return 50; }
     }
 
     spoilResultsChanged() {
