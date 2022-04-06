@@ -60,10 +60,11 @@ export class AbstractReplay extends Vue {
     }
 
     countryImage(countryCode: string) {
-        if (countryCode === "??") {
+        try {
+            return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
+        } catch (err) {
             return "";
         }
-        return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
     }
 
     rankImage(rank: number) {

@@ -13,8 +13,12 @@
                 <img src="~/assets/images/lock.png">
             </div>
             <div class="map-gametime">
-                <div class="map">{{ mapName }}</div>
-                <div class="gametime" v-if="battle.lobbyStatus === 'running'">Running for {{ runTime }} minutes</div>
+                <div class="map">
+                    {{ mapName }}
+                </div>
+                <div v-if="battle.lobbyStatus === 'running'" class="gametime">
+                    Running for {{ runTime }} minutes
+                </div>
             </div>
             <div v-if="playerCount" class="player-count">
                 {{ playerCount }}
@@ -25,8 +29,10 @@
                 <img src="~/assets/images/spectator.png">
             </div>
         </div>
-        <div class="players" v-if="players.length">
-            <div class="heading">Players</div>
+        <div v-if="players.length" class="players">
+            <div class="heading">
+                Players
+            </div>
             <div v-for="(player, index) in players" :key="index" class="player">
                 <div v-if="player.country !== '??'" class="flag">
                     <img :src="countryImage(player.country.toLowerCase())" alt="">
@@ -40,8 +46,10 @@
                 </div>
             </div>
         </div>
-        <div class="players" v-if="spectators.length">
-            <div class="heading">Spectators</div>
+        <div v-if="spectators.length" class="players">
+            <div class="heading">
+                Spectators
+            </div>
             <div v-for="(player, index) in spectators" :key="index" class="player">
                 <div v-if="player.country !== '??'" class="flag">
                     <img :src="countryImage(player.country.toLowerCase())" alt="">
@@ -60,7 +68,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "nuxt-property-decorator";
-
 
 @Component
 export default class BattleComponent extends Vue {
@@ -105,7 +112,11 @@ export default class BattleComponent extends Vue {
     }
 
     countryImage(countryCode: string) {
-        return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode}.svg`);
+        try {
+            return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
+        } catch (err) {
+            return "";
+        }
     }
 }
 </script>

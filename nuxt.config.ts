@@ -7,7 +7,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nuxtConfig: NuxtConfig = {
     axios: {
-        baseURL: process.env.BASE_URL || 'http://localhost:3001',
+        baseURL: process.env.BASE_URL || 'http://localhost:3001'
     },
     privateRuntimeConfig: {
         axios: {

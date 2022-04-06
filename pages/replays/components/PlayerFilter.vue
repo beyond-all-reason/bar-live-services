@@ -1,11 +1,25 @@
 <template>
     <div :class="`text-filter filter ${isEnabled ? 'enabled' : 'disabled'}`">
         <div class="name" @click="isEnabled = !isEnabled">
-            Players <v-icon class="small">mdi-account-group</v-icon>
+            Players <v-icon class="small">
+                mdi-account-group
+            </v-icon>
         </div>
         <div class="input" @click="isEnabled = true">
-            <v-autocomplete ref="vAutocomplete" v-model="selectedItems" :items="items" item-text="username" item-value="username" auto-select-firstchips
-                clearable deletable-chips multiple dense small-chips @change="clear">
+            <v-autocomplete
+                ref="vAutocomplete"
+                v-model="selectedItems"
+                :items="items"
+                item-text="username"
+                item-value="username"
+                auto-select-firstchips
+                clearable
+                deletable-chips
+                multiple
+                dense
+                small-chips
+                @change="clear"
+            >
                 <template v-slot:item="data">
                     <v-list-item-avatar>
                         <img :src="countryImage(data.item.countryCode)">
@@ -23,10 +37,10 @@
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 import _ from "lodash";
 
-@Component({ 
+@Component({
     fetchOnServer: false,
     watch: {
-        isEnabled: function(this: PlayerFilter) {
+        isEnabled(this: PlayerFilter) {
             this.$emit("input", this.isEnabled ? this.selectedItems : undefined);
         }
     }
@@ -49,10 +63,11 @@ export default class PlayerFilter extends Vue {
     }
 
     countryImage(countryCode: string) {
-        if (countryCode === "??") {
+        try {
+            return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
+        } catch (err) {
             return "";
         }
-        return require(`~/node_modules/flag-icon-css/flags/4x3/${countryCode.toLowerCase()}.svg`);
     }
 
     clear() {
