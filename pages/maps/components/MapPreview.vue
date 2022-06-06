@@ -1,6 +1,6 @@
 <template>
     <NuxtLink :to="`/maps/${map.fileName}`" class="map-preview">
-        <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
+        <div class="map" :style="{backgroundImage: `url('${mapThumbnailUrl}')`}" />
         <div class="meta">
             <div class="times">
                 <div class="duration">
@@ -28,6 +28,7 @@ export default class MapPreview extends Vue {
 
     get mapThumbnailUrl(): string {
         if (this.map.fileName) {
+            console.log(this.map.fileName);
             return (`${this.$axios.defaults.baseURL}/maps/${this.map.fileName}/texture-thumb.jpg`);
         }
         return require("assets/images/default-minimap.png");
