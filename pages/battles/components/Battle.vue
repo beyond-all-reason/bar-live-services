@@ -1,6 +1,6 @@
 <template>
     <div class="battle">
-        <div class="background" :style="{backgroundImage: `url(${mapUrl})`}" />
+        <div class="background" :style="{backgroundImage: `url('${mapUrl}')`}" />
         <div class="top">
             <div class="ingame">
                 <img v-if="battle.founder.status.ingame" src="~/assets/images/ingame.png">
