@@ -1,6 +1,6 @@
 <template>
     <NuxtLink :to="`/replays/${replay.id}`" class="replay-preview">
-        <div class="map" :style="{backgroundImage: `url(${mapThumbnailUrl})`}" />
+        <div class="map" :style="{backgroundImage: `url('${mapThumbnailUrl}')`}" />
         <template v-if="replay.AllyTeams.length > 2">
             <div class="hover-info hover-info--ffa">
                 <div class="players">
