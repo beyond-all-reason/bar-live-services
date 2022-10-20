@@ -31,7 +31,7 @@
         "@vue/test-utils": "^1.1.0",
         "ajv": "^8.6.3",
         "ajv-formats": "^2.1.1",
-        "bar-db": "Jazcash/bar-db",
+        "bar-db": "^6.4.1",
         "core-js": "^3.14.0",
         "eslint": "^7.10.0",
         "eslint-plugin-nuxt": "^1.0.0",

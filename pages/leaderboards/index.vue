@@ -12,8 +12,8 @@
             </a>
         </div>
         <div class="leaderboards">
-            <div v-for="leaderboard of leaderboards" :key="leaderboard.gameType" class="leaderboard">
-                <h2>{{ leaderboard.gameType }}</h2>
+            <div v-for="(leaderboard, name) in leaderboards" :key="name" class="leaderboard">
+                <h2>{{ name }}</h2>
                 <div class="leaderboard-row leaderboard-row--header">
                     <div class="leaderboard-row__rank">
                         Rank
@@ -25,7 +25,7 @@
                         TrueSkill
                     </div>
                 </div>
-                <div v-for="(player, index) in leaderboard.players" :key="index" class="leaderboard-row">
+                <div v-for="(player, index) in leaderboard" :key="index" class="leaderboard-row">
                     <div class="leaderboard-row__rank">
                         {{ index + 1 }}
                     </div>
@@ -33,7 +33,7 @@
                         {{ player.name }}
                     </div>
                     <div class="leaderboard-row__trueskill">
-                        {{ player.trustedSkill.toFixed(2) }}
+                        {{ player.rating.toFixed(2) }}
                     </div>
                 </div>
             </div>
@@ -44,13 +44,14 @@
 <script lang="ts">
 import { Context } from "@nuxt/types/app";
 import { Component, Vue } from "nuxt-property-decorator";
+import { Leaderboards } from "bar-db/dist/model/rest-api/leaderboards";
 
 @Component({
     head: { title: "BAR - Leaderboards" }
 })
 export default class Page extends Vue {
     async asyncData({ store, $axios, params }: Context): Promise<any> {
-        const leaderboards = await $axios.$get("leaderboards") as any;
+        const leaderboards = await $axios.$get("leaderboards") as Leaderboards;
         return { leaderboards };
     }
 }
