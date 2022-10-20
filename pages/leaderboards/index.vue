@@ -29,7 +29,7 @@
                     <div class="leaderboard-row__rank">
                         {{ index + 1 }}
                     </div>
-                    <div class="leaderboard-row__name">
+                    <div :class="`leaderboard-row__name ${player.name.toLowerCase().includes('mightysheep') ? 'blur' : ''}`">
                         {{ player.name }}
                     </div>
                     <div class="leaderboard-row__trueskill">
@@ -96,6 +96,9 @@ h2 {
     &__name{
         width: 65%;
         display: flex;
+        &.blur {
+            filter: blur(3px);
+        }
     }
     &__trueskill{
         width: 20%;
