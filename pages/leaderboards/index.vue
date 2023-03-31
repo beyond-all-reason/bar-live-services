@@ -22,14 +22,14 @@
                         Name
                     </div>
                     <div class="leaderboard-row__trueskill">
-                        TrueSkill
+                        OpenSkill
                     </div>
                 </div>
                 <div v-for="(player, index) in leaderboard" :key="index" class="leaderboard-row">
                     <div class="leaderboard-row__rank">
                         {{ index + 1 }}
                     </div>
-                    <div :class="`leaderboard-row__name ${player.name.toLowerCase().includes('mightysheep') ? 'blur' : ''}`">
+                    <div class="leaderboard-row__name">
                         {{ player.name }}
                     </div>
                     <div class="leaderboard-row__trueskill">
@@ -96,9 +96,6 @@ h2 {
     &__name{
         width: 65%;
         display: flex;
-        &.blur {
-            filter: blur(3px);
-        }
     }
     &__trueskill{
         width: 20%;
