@@ -1,53 +1,77 @@
 <template>
     <div>
-        <h1 class="page-title">Replays</h1>
+        <h1 class="page-title">
+            Replays
+        </h1>
         <div class="filters">
             <Options v-model="filters.endedNormally">
                 <template v-slot:title>
-                    Ended Normally <v-icon class="small">mdi-checkbox-marked-circle</v-icon>
+                    Ended Normally <v-icon class="small">
+                        mdi-checkbox-marked-circle
+                    </v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
-                    <v-icon color="#b13b3b">mdi-close-thick</v-icon>
+                    <v-icon color="#b13b3b">
+                        mdi-close-thick
+                    </v-icon>
                 </Option>
                 <Option :value="true" bg-color="#70a232" text-color="#fff">
-                    <v-icon color="#91b64d">mdi-check-bold</v-icon>
+                    <v-icon color="#91b64d">
+                        mdi-check-bold
+                    </v-icon>
                 </Option>
             </Options>
 
             <Options v-model="filters.hasBots">
                 <template v-slot:title>
-                    Has Bots <v-icon class="small">mdi-robot</v-icon>
+                    Has Bots <v-icon class="small">
+                        mdi-robot
+                    </v-icon>
                 </template>
                 <Option :value="false" bg-color="#b83e3e" text-color="#fff">
-                    <v-icon color="#b13b3b">mdi-close-thick</v-icon>
+                    <v-icon color="#b13b3b">
+                        mdi-close-thick
+                    </v-icon>
                 </Option>
                 <Option :value="true" bg-color="#70a232" text-color="#fff">
-                    <v-icon color="#91b64d">mdi-check-bold</v-icon>
+                    <v-icon color="#91b64d">
+                        mdi-check-bold
+                    </v-icon>
                 </Option>
             </Options>
 
             <MultiOptions v-model="filters.preset">
                 <template v-slot:title>
-                    Preset <v-icon class="small">mdi-account-cog</v-icon>
+                    Preset <v-icon class="small">
+                        mdi-account-cog
+                    </v-icon>
                 </template>
-                <Option value="duel">Duel</Option>
-                <Option value="team">Team</Option>
-                <Option value="ffa">FFA</Option>
+                <Option value="duel">
+                    Duel
+                </Option>
+                <Option value="team">
+                    Team
+                </Option>
+                <Option value="ffa">
+                    FFA
+                </Option>
             </MultiOptions>
 
-            <DateFilter v-model="filters.date"/>
+            <DateFilter v-model="filters.date" />
 
             <Range v-model="filters.durationRangeMins" :min="0" :max="120">
                 <template v-slot:title>
-                    Duration in minutes <v-icon class="small">mdi-clock</v-icon>
+                    Duration in minutes <v-icon class="small">
+                        mdi-clock
+                    </v-icon>
                 </template>
             </Range>
 
-            <Range v-model="filters.tsRange" :min="0" :max="50">
+            <!-- <Range v-model="filters.tsRange" :min="0" :max="50">
                 <template v-slot:title>
                     TrueSkill Range <v-icon class="small">mdi-chevron-triple-up</v-icon>
                 </template>
-            </Range>
+            </Range> -->
 
             <PlayerFilter v-model="filters.players" />
 
@@ -61,7 +85,7 @@
                 <div class="flex-row">
                     <div class="spoilers">
                         <label for="chkSpoilers">Spoil Results</label>
-                        <input type="checkbox" id="chkSpoilers" v-model="spoilResults" @change="spoilResultsChanged">
+                        <input id="chkSpoilers" v-model="spoilResults" type="checkbox" @change="spoilResultsChanged">
                     </div>
                     <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays`">
                         <v-icon size="22">mdi-code-braces</v-icon>
@@ -69,7 +93,7 @@
                 </div>
             </div>
             <div class="tiles">
-                <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" :spoilResults="spoilResults" />
+                <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" :spoil-results="spoilResults" />
             </div>
         </div>
         <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
@@ -79,10 +103,10 @@
 <script lang="ts">
 import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
-import { coerceObjectFactory } from "~/utils/coerce-object";
-import { stringifyQuery } from "~/utils/stringify-query";
 import { replaysQuerySchema } from "bar-db/dist/model/rest-api/replays";
 import { CancelTokenSource } from "axios";
+import { coerceObjectFactory } from "~/utils/coerce-object";
+import { stringifyQuery } from "~/utils/stringify-query";
 
 const coerceObject = coerceObjectFactory(replaysQuerySchema);
 
@@ -143,7 +167,7 @@ export default class ReplaysPage extends Vue {
         if (this.waitingForResponse && this.cancelSourceToken) {
             this.cancelSourceToken.cancel();
         }
-        
+
         try {
             this.cancelSourceToken = this.$axios.CancelToken.source();
             const beforeTime = Date.now();
