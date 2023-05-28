@@ -1,10 +1,10 @@
 <template>
     <div>
         <h1 class="page-title">
-            Leaderboards
+            Season Zero Leaderboard
         </h1>
         <div class="disclaimer text-center">
-            <p>The TrueSkill values shown on this page are <em>Trusted</em>, as opposed to <em>Estimated</em>. It is calculated by <strong>Estimated Skill - (3 * Uncertainty)</strong>. See <a href="https://springrts.com/phpbb/viewtopic.php?p=536862#p536862" target="_blank">here</a> for more info.</p>
+            <p>The OpenSkill values shown on this page are <strong>"Leaderboard Rating"</strong>, as opposed to the usual in-game <strong>"Match Rating"</strong>. See <a href="https://www.beyondallreason.info/guide/rating-and-lobby-balance" target="_parent">here</a> for more info.</p>
         </div>
         <div class="full-width flex-row">
             <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/leaderboards`">
