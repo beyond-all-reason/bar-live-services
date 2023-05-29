@@ -80,7 +80,7 @@
         <div class="tiles-container">
             <div class="toolbar">
                 <div class="total-results">
-                    Found {{ totalResults }} replays in {{ timeTaken }}ms.
+                    Found replays in {{ timeTaken }}ms.
                 </div>
                 <div class="flex-row">
                     <div class="spoilers">
@@ -96,7 +96,8 @@
                 <ReplayPreview v-for="(replay, index) in replays" :key="index" :replay="replay" :spoil-results="spoilResults" />
             </div>
         </div>
-        <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
+
+        <LengthlessNavigation v-model="filters.page" @input="changePage" />
     </div>
 </template>
 
