@@ -184,6 +184,7 @@ import { AbstractReplay } from "~/mixins/AbstractReplay";
     },
     directives: {
         setPlayerColor(el, binding) {
+            if (!binding.value) { return; }
             const { r, g, b } = binding.value as { r: number, g: number, b: number };
             const lightness = 0.299 * r + 0.587 * g + 0.114 * b; // https://stackoverflow.com/a/596243/1864403
             el.style.color = `rgba(${r}, ${g}, ${b}, 1)`;
