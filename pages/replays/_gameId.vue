@@ -10,7 +10,8 @@
             </div>
             <div class="right-col">
                 <div class="dl-links">
-                    <a class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download</a>
+                    <a v-if="!downloadExpired" class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download</a>
+                    <div v-else>Download expired (older than a year)</div>
                     <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays/${replay.id}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>
@@ -234,6 +235,13 @@ export default class ReplayPage extends AbstractReplay {
         return Object.fromEntries(Object.entries(this.replay.mapSettings).sort());
     }
 
+    get downloadExpired() : boolean {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(new Date().getFullYear() - 1);
+
+        return new Date(this.replay.startTime) < oneYearAgo;
+    }
+
     uncertaintyPercent(sigma: number) : number {
         // https://github.com/Yaribz/SLDB/blob/master/ratingEngine.pl#L57
         if (sigma < 1.5) { return 100; } else if (sigma < 2) { return 90; } else if (sigma < 3) { return 80; } else if (sigma < 4) { return 70; } else if (sigma < 5) { return 60; } else { return 50; }
@@ -412,6 +420,7 @@ hr {
         padding-left: 10px;
         display: flex;
         align-items: center;
+        word-wrap: anywhere;
     }
 }
 </style>
