@@ -368,7 +368,7 @@ hr {
 .trueskill {
     text-align: right;
     &:after {
-        content: "TS";
+        content: "OS";
         font-size: 10px;
         font-weight: 300;
         color: #bbb;

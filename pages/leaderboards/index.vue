@@ -4,7 +4,7 @@
             Season Zero Leaderboard
         </h1>
         <div class="disclaimer text-center">
-            <p>The OpenSkill values shown on this page are <strong>"Leaderboard Rating"</strong>, as opposed to the usual in-game <strong>"Match Rating"</strong>. See <a href="https://www.beyondallreason.info/guide/rating-and-lobby-balance" target="_parent">here</a> for more info.</p>
+            <p>See <a href="https://www.beyondallreason.info/guide/rating-and-lobby-balance" target="_parent">here</a> to learn about the rating system.</p>
         </div>
         <div class="full-width flex-row">
             <a class="json-api flex-right" target="_blank" :href="`${$axios.defaults.baseURL}/leaderboards`">
