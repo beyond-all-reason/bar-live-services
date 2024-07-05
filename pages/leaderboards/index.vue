@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 class="page-title">
-            Season Zero Leaderboard
+            Leaderboards
         </h1>
         <div class="disclaimer text-center">
             <p>See <a href="https://www.beyondallreason.info/guide/rating-and-lobby-balance" target="_parent">here</a> to learn about the rating system.</p>
