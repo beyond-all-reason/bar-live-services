@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "nuxt",
-        "dev-live": "SET BASE_URL=https://api.bar-rts.com & nuxt",
+        "dev-live": "SET BASE_URL=https://api.bar-rts.com& nuxt",
         "build": "nuxt build",
         "start": "nuxt start",
         "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",

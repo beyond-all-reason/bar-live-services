@@ -7,6 +7,7 @@
         <div v-if="replay.Map.width" class="start-positions">
             <div v-for="(PlayerOrAI, index) in playersAndAi.filter(p => p.startPos)" :key="index" v-startPos="[PlayerOrAI.startPos, mapWidthElmos, mapHeightElmos]" v-setPlayerColor="PlayerOrAI.rgbColor" class="start-pos">
                 <div class="start-pos-tooltip">
+                    <img :src="factionImage(PlayerOrAI.faction)"/>
                     <span>{{ PlayerOrAI.name }}</span>
                 </div>
             </div>
@@ -77,8 +78,13 @@ export default class ReplayMapComponent extends Vue {
     }
 
     factionImage(factionStr: string) {
-        const faction = /arm/i.test(factionStr) ? "armada" : "cortex";
-        return require(`assets/images/${faction}_default.png`);
+        let faction = "unknown";
+        if (factionStr === "Cortex") {
+            faction = "cortex";
+        } else if (factionStr === "Armada") {
+            faction = "armada";
+        }
+        return require(`assets/images/${faction}_faction.png`);
     }
 }
 </script>
@@ -126,6 +132,8 @@ export default class ReplayMapComponent extends Vue {
     box-shadow: 1px 1px rgb(0 0 0 / 43%);
     transform: translateX(-6px) translateY(-6px);
     &-tooltip {
+        display: flex;
+        align-items: center;
         position: absolute;
         transform: translateX(-50%);
         left: 6px;
@@ -141,6 +149,10 @@ export default class ReplayMapComponent extends Vue {
         .right & {
             right: 16px;
             left: initial;
+        }
+        img {
+            height: 16px;
+            width: 16px;
         }
     }
 }
