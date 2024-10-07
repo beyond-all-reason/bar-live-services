@@ -15,7 +15,7 @@ export default class OptionComponent extends Vue {
     @Prop({ type: String, required: false, default: "#000" }) readonly textColor!: string;
 
     optionSelected() {
-        this.$parent.$emit("optionSelected", this.value);
+        this.$parent?.$emit("optionSelected", this.value);
     }
 
     isSelected() : boolean {

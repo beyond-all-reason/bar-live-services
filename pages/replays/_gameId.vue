@@ -11,6 +11,7 @@
             <div class="right-col">
                 <div class="dl-links">
                     <a class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download<span v-if="downloadExpired"> (May be expired if older than a year)</span></a>
+                    <a v-if="teiserverUrl" class="download" :href="teiserverUrl">Server Link</a>
                     <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays/${replay.id}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>
@@ -44,10 +45,6 @@
                         <tr>
                             <td>Ended Normally</td>
                             <td>{{ replay.gameEndedNormally ? "Yes" : "No" }}</td>
-                        </tr>
-                        <tr v-if="teiserverUrl">
-                            <td>Teiserver URL</td>
-                            <td><a :href="teiserverUrl">{{ teiserverUrl.slice(teiserverUrl.lastIndexOf("/battle")) }}</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -342,7 +339,7 @@ hr {
     margin-bottom: 15px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 7px;
 }
 .download {
     padding: 8px 16px;
@@ -358,6 +355,7 @@ hr {
     }
 }
 .json-api {
+    margin-left: auto;
     cursor: pointer;
     &:hover .v-icon {
         color: #fff;
