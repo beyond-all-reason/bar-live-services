@@ -10,8 +10,7 @@
             </div>
             <div class="right-col">
                 <div class="dl-links">
-                    <a v-if="!downloadExpired" class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download</a>
-                    <div v-else>Download expired (older than a year)</div>
+                    <a class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download<span v-if="downloadExpired"> (May be expired if older than a year)</span></a>
                     <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays/${replay.id}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>
@@ -45,6 +44,10 @@
                         <tr>
                             <td>Ended Normally</td>
                             <td>{{ replay.gameEndedNormally ? "Yes" : "No" }}</td>
+                        </tr>
+                        <tr v-if="teiserverUrl">
+                            <td>Teiserver URL</td>
+                            <td><a :href="teiserverUrl">{{ teiserverUrl.slice(teiserverUrl.lastIndexOf("/battle")) }}</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -240,6 +243,12 @@ export default class ReplayPage extends AbstractReplay {
         oneYearAgo.setFullYear(new Date().getFullYear() - 1);
 
         return new Date(this.replay.startTime) < oneYearAgo;
+    }
+
+    get teiserverUrl() : string | undefined {
+        if (this.replay.hostSettings.server_match_id) {
+            return `https://server4.beyondallreason.info/battle/${this.replay.hostSettings.server_match_id}`;
+        }
     }
 
     uncertaintyPercent(sigma: number) : number {
