@@ -11,7 +11,7 @@
             <div class="right-col">
                 <div class="dl-links">
                     <a class="download" :href="`${$config.objectStorageUrl}/demos/${replay.fileName}`">Download<span v-if="downloadExpired"> (May be expired if older than a year)</span></a>
-                    <a v-if="teiserverUrl" class="download" :href="teiserverUrl">Server Link</a>
+                    <a v-if="teiserverUrl" class="download" :href="teiserverUrl" target="_blank">Server Link</a>
                     <a class="json-api" target="_blank" :href="`${$axios.defaults.baseURL}/replays/${replay.id}`">
                         <v-icon size="22">mdi-code-braces</v-icon>
                     </a>
