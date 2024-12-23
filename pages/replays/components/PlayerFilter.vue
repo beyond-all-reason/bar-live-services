@@ -18,6 +18,7 @@
                 multiple
                 dense
                 small-chips
+                :search-input.sync="search"
                 @change="clear"
             >
                 <template v-slot:item="data">
@@ -37,11 +38,20 @@
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 import _ from "lodash";
 
+type User = { id: number, username: string, countryCode: string };
+
 @Component({
     fetchOnServer: false,
     watch: {
         isEnabled(this: PlayerFilter) {
             this.$emit("input", this.isEnabled ? this.selectedItems : undefined);
+        },
+        search(this: PlayerFilter) {
+            if (this.search) {
+                this.searchedUsers = this.binarySearch(this.items, this.search);
+            } else {
+                this.searchedUsers = [];
+            }
         }
     }
 })
@@ -49,16 +59,18 @@ export default class PlayerFilter extends Vue {
     @Prop({ type: Array, required: false, default: () => [] }) readonly value!: string[];
     @Prop({ type: Boolean, required: false, default: true }) readonly enabled!: boolean;
 
-    items: any[] = [];
+    items: User[] = [];
+    searchedUsers: User[] = [];
     selectedItems: string[] = [];
     isEnabled: boolean = this.enabled;
+    search: string | null = null;
 
     beforeMount() {
         this.selectedItems = _.clone(this.value);
     }
 
     async fetch() {
-        const players = await this.$axios.$get("cached-users") as Array<{ id: number, username: string, countryCode: string }>;
+        const players = await this.$axios.$get("cached-users") as Array<User>;
         this.items = players;
     }
 
@@ -73,6 +85,34 @@ export default class PlayerFilter extends Vue {
     clear() {
         (this.$refs.vAutocomplete as any).lazySearch = ""; // temp fix for last text not clearing, fixed in latest vuetify
         this.$emit("input", this.selectedItems);
+    }
+
+    binarySearch(arr: User[], target: string): User[] {
+        let left = 0;
+        let right = arr.length - 1;
+        const result: User[] = [];
+        while (left <= right) {
+            const mid = left + Math.floor((right - left) / 2);
+            if (arr[mid].username === target) {
+                result.push(arr[mid]);
+                let i = mid - 1;
+                while (i >= 0 && arr[i].username === target) {
+                    result.push(arr[i]);
+                    i--;
+                }
+                i = mid + 1;
+                while (i < arr.length && arr[i].username === target) {
+                    result.push(arr[i]);
+                    i++;
+                }
+                break;
+            } else if (arr[mid].username < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return result;
     }
 }
 </script>
