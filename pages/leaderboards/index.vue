@@ -11,9 +11,10 @@
                 <v-icon size="22">mdi-code-braces</v-icon>
             </a>
         </div>
+        <h2>Season {{ seasonId }}</h2>
         <div class="leaderboards">
-            <div v-for="(leaderboard, name) in leaderboards" :key="name" class="leaderboard">
-                <h2>{{ name }}</h2>
+            <div v-for="(leaderboard, i) in currentLeaderboard" :key="i" class="leaderboard">
+                <h2>{{ leaderboard.name }}</h2>
                 <div class="leaderboard-row leaderboard-row--header">
                     <div class="leaderboard-row__rank">
                         Rank
@@ -25,7 +26,7 @@
                         OpenSkill
                     </div>
                 </div>
-                <div v-for="(player, index) in leaderboard" :key="index" class="leaderboard-row">
+                <div v-for="(player, index) in leaderboard.players" :key="index" class="leaderboard-row">
                     <div class="leaderboard-row__rank">
                         {{ index + 1 }}
                     </div>
@@ -38,23 +39,81 @@
                 </div>
             </div>
         </div>
+        <h3>Season</h3>
+        <v-pagination v-model="seasonId" :length="seasonInfo.length" :total-visible="10" @input="changePage" />
     </div>
 </template>
 
 <script lang="ts">
-import { Context } from "@nuxt/types/app";
-import { Component, Vue } from "nuxt-property-decorator";
-import { Leaderboards } from "bar-db/dist/model/rest-api/leaderboards";
+import { defineComponent } from "vue";
 
-@Component({
-    head: { title: "BAR - Leaderboards" }
-})
-export default class Page extends Vue {
-    async asyncData({ store, $axios, params }: Context): Promise<any> {
-        const leaderboards = await $axios.$get("leaderboards") as Leaderboards;
-        return { leaderboards };
+export type LeaderboardMetaResponse = Array<{
+    season: number;
+    // eslint-disable-next-line camelcase
+    game_types: string[];
+}>;
+
+export type LeaderboardResponse = LeaderboardData[];
+
+export type LeaderboardData = {
+    name: string;
+    players: LeaderboardPlayer[];
+};
+
+export type LeaderboardPlayer = {
+    id: number;
+    name: string;
+    rating: number;
+};
+
+export default defineComponent({
+    async asyncData({ $axios, query }) {
+        const response = await $axios.$get<LeaderboardMetaResponse>(
+            "/api/leaderboard",
+            { baseURL: "http://localhost:3000" }
+        );
+
+        // Get the season from the query parameter or default to the latest season
+        const seasonId = query.season ? parseInt(query.season as string, 10) : response[response.length - 1].season;
+
+        // Fetch the leaderboard for the selected season
+        const leaderboardResponse = await $axios.$get<LeaderboardResponse>(
+            `/api/leaderboard/${seasonId}`,
+            { baseURL: "http://localhost:3000" }
+        );
+
+        return {
+            seasonInfo: response,
+            currentLeaderboard: leaderboardResponse,
+            seasonId
+        };
+    },
+    data() {
+        return {
+            seasonInfo: [] as LeaderboardMetaResponse,
+            currentLeaderboard: [] as LeaderboardResponse,
+            seasonId: 0
+        };
+    },
+    watch: {
+        // Watch for changes to the seasonId and update the URL query parameter
+        seasonId(newSeasonId) {
+            this.$router.push({ query: { ...this.$route.query, season: newSeasonId.toString() } });
+        }
+    },
+    methods: {
+        async changePage(seasonId: number) {
+            this.seasonId = seasonId;
+            const apiUrl = `/api/leaderboard/${seasonId}`;
+            try {
+                const response = await this.$axios.$get<LeaderboardResponse>(apiUrl, { baseURL: "http://localhost:3000" });
+                this.currentLeaderboard = response;
+            } catch (err) {
+                console.error(err);
+            }
+        }
     }
-}
+});
 </script>
 
 <style lang="scss" scoped>

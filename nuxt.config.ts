@@ -92,6 +92,7 @@ const nuxtConfig: NuxtConfig = {
         '@nuxtjs/axios',
         '@nuxtjs/style-resources'
     ],
+    serverMiddleware: [{ path: '/api/leaderboard', handler: '~/serverMiddleware/proxy.js' }]
 }
 
 export default nuxtConfig;
