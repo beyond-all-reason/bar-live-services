@@ -84,7 +84,7 @@ export default class BalanceChangesPage extends Vue {
     async asyncData({ $axios, query }: Context) {
         const response = await $axios.$get<LeaderboardMetaResponse>(
             "/api/leaderboard",
-            { baseURL: "http://localhost:3000" }
+            { baseURL: process.env.NODE_ENV === "production" ? "https://bar-rts.com" : "http://localhost:3000" }
         );
 
         // Get the season from the query parameter or default to the latest season
@@ -93,7 +93,7 @@ export default class BalanceChangesPage extends Vue {
         // Fetch the leaderboard for the selected season
         const leaderboardResponse = await $axios.$get<LeaderboardResponse>(
             `/api/leaderboard/${seasonId}`,
-            { baseURL: "http://localhost:3000" }
+            { baseURL: process.env.NODE_ENV === "production" ? "https://bar-rts.com" : "http://localhost:3000" }
         );
 
         return {
@@ -107,7 +107,10 @@ export default class BalanceChangesPage extends Vue {
         this.seasonId = seasonId;
         const apiUrl = `/api/leaderboard/${seasonId}`;
         try {
-            const response = await this.$axios.$get<LeaderboardResponse>(apiUrl, { baseURL: "http://localhost:3000" });
+            const response = await this.$axios.$get<LeaderboardResponse>(
+                apiUrl,
+                { baseURL: process.env.NODE_ENV === "production" ? "https://bar-rts.com" : "http://localhost:3000" }
+            );
             this.currentLeaderboard = response;
         } catch (err) {
             console.error(err);
