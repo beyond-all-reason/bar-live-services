@@ -72,6 +72,8 @@ const nuxtConfig: NuxtConfig = {
         }
     },
     build: {
+        parallel: !isProd,
+        cache: true,
         transpile: [
             "three"
         ],
