@@ -39,7 +39,7 @@
                     <PropertyChange v-for="(change2, index) in change.changes" :key="index" :data="change2.unit" :depth="0" />
                 </div>
             </div>
-            
+
             <v-pagination v-model="filters.page" :length="Math.ceil(totalResults / filters.limit)" :total-visible="10" @input="changePage" />
         </div>
     </div>
@@ -48,8 +48,8 @@
 <script lang="ts">
 import { DBSchema } from "bar-db/dist/model/db";
 import { Component, Vue } from "nuxt-property-decorator";
-import { coerceObjectFactory } from "~/utils/coerce-object";
 import { paginationQuerySchema } from "bar-db/dist/model/rest-api/pagination";
+import { coerceObjectFactory } from "~/utils/coerce-object";
 import { stringifyQuery } from "~/utils/stringify-query";
 
 const coerceObject = coerceObjectFactory(paginationQuerySchema);

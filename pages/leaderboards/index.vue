@@ -45,7 +45,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { Component, Vue } from "nuxt-property-decorator";
+import { Context } from "@nuxt/types/app";
 
 export type LeaderboardMetaResponse = Array<{
     season: number;
@@ -66,8 +67,21 @@ export type LeaderboardPlayer = {
     rating: number;
 };
 
-export default defineComponent({
-    async asyncData({ $axios, query }) {
+@Component({
+    head: { title: "BAR - Leaderboards" },
+    watch: {
+        // Watch for changes to the seasonId and update the URL query parameter
+        seasonId(newSeasonId) {
+            this.$router.push({ query: { ...this.$route.query, season: newSeasonId.toString() } });
+        }
+    }
+})
+export default class BalanceChangesPage extends Vue {
+    seasonInfo: LeaderboardMetaResponse = [];
+    currentLeaderboard: LeaderboardResponse = [];
+    seasonId = 0;
+
+    async asyncData({ $axios, query }: Context) {
         const response = await $axios.$get<LeaderboardMetaResponse>(
             "/api/leaderboard",
             { baseURL: "http://localhost:3000" }
@@ -87,33 +101,19 @@ export default defineComponent({
             currentLeaderboard: leaderboardResponse,
             seasonId
         };
-    },
-    data() {
-        return {
-            seasonInfo: [] as LeaderboardMetaResponse,
-            currentLeaderboard: [] as LeaderboardResponse,
-            seasonId: 0
-        };
-    },
-    watch: {
-        // Watch for changes to the seasonId and update the URL query parameter
-        seasonId(newSeasonId) {
-            this.$router.push({ query: { ...this.$route.query, season: newSeasonId.toString() } });
-        }
-    },
-    methods: {
-        async changePage(seasonId: number) {
-            this.seasonId = seasonId;
-            const apiUrl = `/api/leaderboard/${seasonId}`;
-            try {
-                const response = await this.$axios.$get<LeaderboardResponse>(apiUrl, { baseURL: "http://localhost:3000" });
-                this.currentLeaderboard = response;
-            } catch (err) {
-                console.error(err);
-            }
+    }
+
+    async changePage(seasonId: number) {
+        this.seasonId = seasonId;
+        const apiUrl = `/api/leaderboard/${seasonId}`;
+        try {
+            const response = await this.$axios.$get<LeaderboardResponse>(apiUrl, { baseURL: "http://localhost:3000" });
+            this.currentLeaderboard = response;
+        } catch (err) {
+            console.error(err);
         }
     }
-});
+}
 </script>
 
 <style lang="scss" scoped>
