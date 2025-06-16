@@ -17,9 +17,9 @@
         </template>
         <template v-else>
             <div class="flex-row players-online">
-                <div class="flex-left"></div>
+                <div class="flex-left" />
                 <div>
-                    There are currently <span class="player-count">{{ numOfPlayers }}</span> players in active battles.
+                    There are currently <span class="player-count">{{ numOfPlayers }}</span> players in online battles.
                 </div>
             </div>
             <div class="battles">
