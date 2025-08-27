@@ -2,6 +2,9 @@
     "name": "bar-live-services",
     "version": "1.0.0",
     "private": true,
+    "engines": {
+        "node": "14"
+    },
     "scripts": {
         "dev": "nuxt",
         "dev-live": "SET BASE_URL=https://api.bar-rts.com& nuxt",
