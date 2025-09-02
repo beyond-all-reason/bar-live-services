@@ -1,9 +1,10 @@
 <template>
     <div :class="`text-filter filter ${isEnabled ? 'enabled' : 'disabled'}`">
         <div class="name" @click="isEnabled = !isEnabled">
-            Players <v-icon class="small">
-            mdi-account-group
-        </v-icon>
+            Players
+            <v-icon class="small">
+                mdi-account-group
+            </v-icon>
         </div>
         <div class="input" @click="isEnabled = true">
             <v-autocomplete
@@ -27,7 +28,7 @@
                         <img :src="countryImage(data.item.countryCode)">
                     </v-list-item-avatar>
                     <v-list-item-content>
-                        <v-list-item-title v-text="data.item.username" />
+                        <v-list-item-title v-text="data.item.username"/>
                     </v-list-item-content>
                 </template>
             </v-autocomplete>
@@ -46,6 +47,14 @@ type User = { id: number, username: string, countryCode: string };
     watch: {
         isEnabled(this: PlayerFilter) {
             this.$emit("input", this.isEnabled ? this.selectedItems : undefined);
+        },
+        selectedItems(this: PlayerFilter) {
+            if (this.allItems.length > 0) {
+                const currentFiltered = this.itemsForAutocomplete.filter(item =>
+                    !this.selectedItems.includes(item.username)
+                );
+                this.updateItemsForAutocomplete(currentFiltered);
+            }
         }
     }
 })
@@ -54,7 +63,7 @@ export default class PlayerFilter extends Vue {
     @Prop({ type: Boolean, required: false, default: true }) readonly enabled!: boolean;
 
     allItems: User[] = [];
-    filteredItems: User[] = [];
+    itemsForAutocomplete: User[] = [];
     selectedItems: string[] = [];
     isEnabled: boolean = this.enabled;
     isSearching: boolean = false;
@@ -63,47 +72,41 @@ export default class PlayerFilter extends Vue {
 
     private filterItemsDebounced = _.debounce(this.filterItems, 250);
 
-    // Computed property that ensures selected items are always available for chips
-    get itemsForAutocomplete(): User[] {
-        if (this.allItems.length === 0) {
-            return [];
-        }
-
-        // Get selected users from allItems
-        const selectedUsers = this.allItems.filter(user =>
-            this.selectedItems.includes(user.username)
-        );
-
-        // Create a Set of selected usernames for faster lookup
-        const selectedUsernames = new Set(selectedUsers.map(user => user.username));
-
-        // Combine selected users with filtered items, avoiding duplicates
-        const combinedItems = [...selectedUsers];
-        this.filteredItems.forEach(item => {
-            if (!selectedUsernames.has(item.username)) {
-                combinedItems.push(item);
-            }
-        });
-
-        return combinedItems;
-    }
-
     private filterItems(searchText: string) {
         this.isSearching = false;
-        // Don't search if data hasn't loaded yet
         if (this.allItems.length === 0) {
             return;
         }
 
+        let filteredItems: User[];
         if (!searchText || searchText.trim().length === 0) {
-            this.filteredItems = this.allItems.slice(0, 50); // Show first 50 items when no search
+            filteredItems = this.allItems.slice(0, 50); // Show the first 50 items when no search
         } else {
             const search = searchText.toLowerCase().trim();
             const matchingItems = this.allItems.filter((item) => {
                 return item.username.toLowerCase().includes(search);
             });
-            this.filteredItems = matchingItems.slice(0, 50); // Limit to 50 results for performance
+            filteredItems = matchingItems.slice(0, 50); // Limit to 50 results for performance
         }
+
+        this.updateItemsForAutocomplete(filteredItems);
+    }
+
+    private updateItemsForAutocomplete(filteredItems: User[]) {
+        const selectedUsers = this.allItems.filter(user =>
+            this.selectedItems.includes(user.username)
+        );
+
+        const selectedUsernames = new Set(selectedUsers.map(user => user.username));
+
+        const combinedItems = [...selectedUsers];
+        filteredItems.forEach((item) => {
+            if (!selectedUsernames.has(item.username)) {
+                combinedItems.push(item);
+            }
+        });
+
+        this.itemsForAutocomplete = combinedItems;
     }
 
     onSearchInput(val: string) {
@@ -118,7 +121,8 @@ export default class PlayerFilter extends Vue {
     async fetch() {
         const players = await this.$axios.$get("cached-users") as Array<User>;
         this.allItems = players;
-        this.filteredItems = players.slice(0, 50); // Initialize with first 50 items
+        const initialItems = players.slice(0, 50);
+        this.updateItemsForAutocomplete(initialItems);
     }
 
     countryImage(countryCode: string) {
@@ -153,8 +157,10 @@ export default class PlayerFilter extends Vue {
     border-radius: 3px;
     border: solid 1px #4a4a4a;
 }
+
 .input {
     padding: 0 7px;
+
     input {
         color: #fff;
         outline: none;
