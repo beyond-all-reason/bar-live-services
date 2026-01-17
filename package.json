@@ -48,12 +48,14 @@
         "nuxt-property-decorator": "^2.9.1",
         "sass": "^1.32.5",
         "sass-loader": "^10.1.1",
-        "three": "latest",
+        "three": "^0.179.1",
         "ts-jest": "^26.4.1",
         "ufo": "^0.7.9",
         "vue-class-component": "^7.2.6",
-        "vue-jest": "^3.0.4",
         "vue-property-decorator": "^9.1.2",
         "vuex-module-decorators": "^1.0.1"
+    },
+    "devDependencies": {
+        "vue-jest": "^4.0.1"
     }
 }
