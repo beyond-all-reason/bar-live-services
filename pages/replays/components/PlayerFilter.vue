@@ -21,7 +21,7 @@
                 small-chips
                 :no-data-text="isSearching ? 'Searching...' : 'No players found'"
                 @update:search-input="onSearchInput"
-                @change="clear"
+                @change="onChange"
             >
                 <template v-slot:item="data">
                     <v-list-item-avatar>
@@ -144,9 +144,9 @@ export default class PlayerFilter extends Vue {
         }
     }
 
-    clear() {
-        (this.$refs.vAutocomplete as any).lazySearch = ""; // temp fix for last text not clearing, fixed in latest vuetify
-        this.$emit("input", this.selectedItems);
+    onChange() {
+        (this.$refs.vAutocomplete as any).isMenuActive = false;
+        this.$emit("input", this.selectedItems?.length ? this.selectedItems : undefined);
     }
 }
 </script>
