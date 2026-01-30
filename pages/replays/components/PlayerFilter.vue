@@ -86,6 +86,28 @@ export default class PlayerFilter extends Vue {
             const matchingItems = this.allItems.filter((item) => {
                 return item.username.toLowerCase().includes(search);
             });
+
+            matchingItems.sort((a, b) => {
+                const aName = a.username.toLowerCase();
+                const bName = b.username.toLowerCase();
+
+                if (aName === search) {
+                    return -1;
+                }
+                if (bName === search) {
+                    return 1;
+                }
+
+                const isPrefixOfA = aName.startsWith(search);
+                const isPrefixOfB = bName.startsWith(search);
+
+                if (isPrefixOfA !== isPrefixOfB) {
+                    return isPrefixOfA ? -1 : 1;
+                }
+
+                return aName.localeCompare(bName);
+            });
+
             filteredItems = matchingItems.slice(0, 50); // Limit to 50 results for performance
         }
 
