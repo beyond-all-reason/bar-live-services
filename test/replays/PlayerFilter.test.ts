@@ -122,4 +122,50 @@ describe("PlayerFilter.vue", () => {
         expect(vm.$refs.vAutocomplete.lazySearch).toBe("");
         expect(wrapper.emitted().input).toBeTruthy();
     });
+
+    it("should have exact match first", async() => {
+        const wrapper = factory();
+        const vm = wrapper.vm as any;
+
+        vm.allItems = mockPlayers;
+        // Should include only usernames containing "alice", with exact match first
+        vm.filterItems("alice");
+        // Remaining results should be ordered: prefix vs infix then lexicographic
+        expect(vm.itemsForAutocomplete.map((i: any) => i.username)).toEqual<Array<string>>(["alice", "xalicex"]);
+    });
+
+    it("should do case-insensitive search and trim search whitespace", async() => {
+        const wrapper = factory();
+        const vm = wrapper.vm as any;
+
+        vm.allItems = mockPlayers;
+        vm.filterItems(" AL ");
+        // Same as searching for 'al'
+        expect(vm.itemsForAutocomplete.map((i: any) => i.username)).toEqual<Array<string>>(["alice", "Alix", "ally", "xalicex"]);
+    });
+
+    it("should preserve lexicographic order within same class (no exact, both prefixes)", async() => {
+        const wrapper = factory();
+        const vm = wrapper.vm as any;
+
+        vm.allItems = mockPlayers;
+        vm.filterItems("bo");
+        // Prefixes: bob, bobby -> compare lower case names lexicographically
+        expect(vm.itemsForAutocomplete.map((i: any) => i.username)).toEqual<Array<string>>(["bob", "bobby"]);
+    });
+
+    it("should preserve duplicates and remain stable within same username", async() => {
+        const wrapper = factory();
+        const vm = wrapper.vm as any;
+
+        // Extend the base fixture with a duplicate username 'bob' (different id)
+        vm.allItems = [...mockPlayers, {id: 9, username: "bob"}];
+        vm.filterItems("bo");
+        // Expect: both "bob" entries (prefix matches) come before "bobby", and
+        // among identical usernames the original relative order is preserved (stable sort).
+        expect(vm.itemsForAutocomplete.map((i: any) => i.username)).toEqual<Array<string>>(["bob", "bob", "bobby"]);
+
+        // Additionally verify stability for identical usernames by checking ids order
+        expect(vm.itemsForAutocomplete.map((i: any) => i.id)).toEqual<Array<Number>>([3, 9, 4]);
+    });
 });
