@@ -5,7 +5,7 @@
         </div>
         <div class="input" @click="isEnabled = true">
             <v-autocomplete ref="vAutocomplete" v-model="selectedItems" :items="items" item-text="scriptName" item-value="scriptName" auto-select-firstchips
-                clearable deletable-chips multiple dense small-chips @change="clear">
+                clearable deletable-chips multiple dense small-chips @change="onChange">
                 <template v-slot:item="data">
                     <v-list-item-content>
                         <v-list-item-title v-text="data.item.scriptName" />
@@ -20,7 +20,7 @@
 import { Component, Prop, Vue } from "nuxt-property-decorator";
 import _ from "lodash";
 
-@Component({ 
+@Component({
     fetchOnServer: false,
     watch: {
         isEnabled: function(this: MapFilterComponent) {
@@ -45,9 +45,9 @@ export default class MapFilterComponent extends Vue {
         this.items = players;
     }
 
-    clear() {
-        (this.$refs.vAutocomplete as any).lazySearch = ""; // temp fix for last text not clearing, fixed in latest vuetify
-        this.$emit("input", this.selectedItems);
+    onChange() {
+        (this.$refs.vAutocomplete as any).isMenuActive = false;
+        this.$emit("input", this.selectedItems?.length ? this.selectedItems : undefined);
     }
 }
 </script>
